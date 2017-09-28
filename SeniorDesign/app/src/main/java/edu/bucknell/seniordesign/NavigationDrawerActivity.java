@@ -80,17 +80,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.all_lists) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.lists_in_progress) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.completed_lists) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.create_list) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nearby_sites) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.top_lists) {
 
         }
 
