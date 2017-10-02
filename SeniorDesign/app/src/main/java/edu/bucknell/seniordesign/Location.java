@@ -8,6 +8,7 @@ public class Location {
 
     private String LocationName;
     private String LocationDescription;
+    private int GPS;
 
     public Location(String Name, String Description){
         this.LocationName= Name;
