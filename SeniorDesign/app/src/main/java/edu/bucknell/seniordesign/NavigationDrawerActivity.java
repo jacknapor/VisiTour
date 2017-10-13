@@ -1,5 +1,6 @@
 package edu.bucknell.seniordesign;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -91,6 +92,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nearby_sites) {
 
         } else if (id == R.id.top_lists) {
+
+        } else if (id == R.id.default_lists){
+
+            View v= findViewById(R.id.t);
+            Intent i = new Intent(v.getContext(),DefaultListLoader.class);
+            setResult(RESULT_OK, i);
+            finish();
 
         }
 
