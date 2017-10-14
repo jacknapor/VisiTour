@@ -84,6 +84,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.create_list) {
 
+            Intent intent = new Intent(this, NewListActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nearby_sites) {
 
             Intent intent = new Intent(this, MapsActivity.class);
