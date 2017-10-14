@@ -1,6 +1,9 @@
 package edu.bucknell.seniordesign;
 
+
 import android.Manifest;
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -84,12 +87,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.create_list) {
 
+            Intent intent = new Intent(this, NewListActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nearby_sites) {
 
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.top_lists) {
+
+        } else if (id == R.id.default_lists){
+
+            View v= findViewById(R.id.t);
+            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+            startActivity(i);
+
 
         }
 

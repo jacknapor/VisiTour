@@ -39,7 +39,23 @@
 
         <activity
             android:name=".MapsActivity"
+<<<<<<< HEAD
             android:label="@string/title_activity_maps"></activity>
+
+        <activity android:name=".DefaultListLoader"
+            android:label="Default Lists"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".ListLoader"
+            android:label="Default Lists"
+            android:theme="@style/AppTheme">
+        </activity>
+
+
+=======
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".NewListActivity"></activity>
+>>>>>>> database
     </application>
 
 </manifest>

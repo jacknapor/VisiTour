@@ -3,9 +3,15 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SeniorDesign.iml" filepath="$PROJECT_DIR$/SeniorDesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+
+<!--<<<<<<< HEAD
       <module fileurl="file:///nfs/unixspace/linux/accounts/student/n/nrs007/national-parks-app/SeniorDesign/SeniorDesign.iml" filepath="/nfs/unixspace/linux/accounts/student/n/nrs007/national-parks-app/SeniorDesign/SeniorDesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file:///nfs/unixspace/linux/accounts/student/n/nrs007/national-parks-app/SeniorDesign/app/app.iml" filepath="/nfs/unixspace/linux/accounts/student/n/nrs007/national-parks-app/SeniorDesign/app/app.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+>>>>>>> origin/master -->
     </modules>
   </component>
 </project>
