@@ -24,7 +24,7 @@ import static android.R.layout.simple_list_item_1;
  */
 
 public class DefaultListLoader extends AppCompatActivity {
-    String dlist[]= {"National Parks", "State Capitals", "7 Wonders of the World", "Lewisburg Restaurants" };
+    String dlist[]= {"National Parks", "Lewisburg Museums", "Lewisburg Restaurants" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,32 @@ public class DefaultListLoader extends AppCompatActivity {
                     Location acadia = new Location("Acadia National Park", "Acadia National Park");
                     Location parks[]={yosemite,yellowstone,grandcanyon,acadia};
                     n.setLocationArray(parks);
+                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
+                    i.putExtra("list",n);
+                    startActivity(i);
+
+                }
+                if (itemPosition==1){
+                    List n= new List("Lewisburg Museums", "List of Lewisburg Museums");
+                    Location silfer= new Location("Slifer House Museum", "Slifer House Museum");
+                    Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum");
+                    Location packwood = new Location("Packwood House Museum", "Packwood House Museum");
+
+                    Location museums[]={silfer,children,packwood};
+                    n.setLocationArray(museums);
+                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
+                    i.putExtra("list",n);
+                    startActivity(i);
+
+                }
+                if (itemPosition==2){
+                    List n= new List("Lewisburg Restaurants", "List of Lewisburg Restaurants");
+                    Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar");
+                    Location elizabeths= new Location("Elizabeth's", "Elizabeth's");
+                    Location mercado = new Location("Mercado Burrito", "Mercado Burrito");
+
+                    Location restaurants[]={siam,elizabeths,mercado};
+                    n.setLocationArray(restaurants);
                     Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
                     i.putExtra("list",n);
                     startActivity(i);
