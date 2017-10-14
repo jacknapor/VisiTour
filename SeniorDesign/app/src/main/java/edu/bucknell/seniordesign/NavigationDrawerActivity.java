@@ -96,9 +96,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else if (id == R.id.default_lists){
 
             View v= findViewById(R.id.t);
-            Intent i = new Intent(v.getContext(),DefaultListLoader.class);
-            setResult(RESULT_OK, i);
-            finish();
+            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+            startActivity(i);
+
 
         }
 

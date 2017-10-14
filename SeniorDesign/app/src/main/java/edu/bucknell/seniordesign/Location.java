@@ -1,10 +1,12 @@
 package edu.bucknell.seniordesign;
 
+import java.io.Serializable;
+
 /**
  * Created by Jack on 9/29/2017.
  */
 
-public class Location {
+public class Location implements Serializable{
 
     private String LocationName;
     private String LocationDescription;
