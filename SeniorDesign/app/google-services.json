@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "640321639342",
+    "firebase_url": "https://natparksdb.firebaseio.com",
+    "project_id": "natparksdb",
+    "storage_bucket": "natparksdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640321639342:android:a763f2c3c69e4e9b",
+        "android_client_info": {
+          "package_name": "edu.bucknell.seniordesign"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640321639342-k78grkj8m71fu9rtv1e1te6glpf0tsmr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.bucknell.seniordesign",
+            "certificate_hash": "a34dde4bf80be875c53d2bc0fe62e4d9809a4136"
+          }
+        },
+        {
+          "client_id": "640321639342-rtlnpvch52gq7811k6g8sj6hrb6mjqnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa8WbgziZTmv7KWfr1yMeYj2ZoWhooZq8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640321639342-rtlnpvch52gq7811k6g8sj6hrb6mjqnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
