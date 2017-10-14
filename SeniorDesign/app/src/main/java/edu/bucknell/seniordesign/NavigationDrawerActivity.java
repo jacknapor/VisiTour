@@ -1,9 +1,9 @@
 package edu.bucknell.seniordesign;
 
-<<<<<<< HEAD
+
 import android.Manifest;
-=======
->>>>>>> Example-National-Parks-List
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
