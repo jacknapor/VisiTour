@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context="edu.bucknell.seniordesign.NewListActivity">
 
+    <Button
+        android:id="@+id/newListButton"
+        android:layout_width="184dp"
+        android:layout_height="79dp"
+        android:text="Create New List"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="67dp" />
 </android.support.constraint.ConstraintLayout>
