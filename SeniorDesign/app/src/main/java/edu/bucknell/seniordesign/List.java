@@ -8,6 +8,7 @@ public class List {
 
     private String listName = "";
     private String listDescription = "";
+    private Location[] locationArray;
 
     public List(String listName, String listDescription) {
         this.listName = listName;
@@ -22,6 +23,13 @@ public class List {
         return listDescription;
     }
 
+    public Location[] getLocationArray(){
+        return locationArray;
+    }
+    public void setLocationArray(Location[] locations){
+        this.locationArray= locations;
+    }
+
     public void setListName(String listName) {
         this.listName = listName;
     }
@@ -29,4 +37,5 @@ public class List {
     public void setListDescription(String listDescription) {
         this.listDescription = listDescription;
     }
+
 }
