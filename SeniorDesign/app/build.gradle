@@ -25,7 +25,13 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.google.android.gms:play-services-maps:11.0.2'
     compile 'com.google.android.gms:play-services-location:11.0.2'
+    compile 'com.google.firebase:firebase-core:11.0.2'
+    compile 'com.google.firebase:firebase-database:11.0.2'
+    compile 'com.google.firebase:firebase-crash:11.0.2'
+    compile 'com.google.firebase:firebase-auth:11.0.2'
+    compile 'com.android.support.constraint:constraint-layout:+'
     testCompile 'junit:junit:4.12'
+/*<<<<<<< HEAD
 
     compile 'com.android.support:appcompat-v7:25.+'
     compile 'com.android.support:design:25.+'
@@ -34,5 +40,7 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:11.0.2'
     compile 'com.google.firebase:firebase-auth:11.0.2'
 
+=======
+>>>>>>> database*/
 }
 apply plugin: 'com.google.gms.google-services'
