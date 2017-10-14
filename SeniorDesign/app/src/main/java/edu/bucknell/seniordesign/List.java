@@ -1,10 +1,12 @@
 package edu.bucknell.seniordesign;
 
+import java.io.Serializable;
+
 /**
  * Created by Caroline Whitman on 9/28/2017.
  */
 
-public class List {
+public class List implements Serializable {
 
     private String listName = "";
     private String listDescription = "";

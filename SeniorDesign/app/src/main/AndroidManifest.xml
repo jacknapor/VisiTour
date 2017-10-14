@@ -25,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -40,6 +41,17 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
+=======
+        <activity android:name=".DefaultListLoader"
+            android:label="Default Lists"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".ListLoader"
+            android:label="Default Lists"
+            android:theme="@style/AppTheme">
+        </activity>
+
+>>>>>>> Example-National-Parks-List
     </application>
 
 </manifest>

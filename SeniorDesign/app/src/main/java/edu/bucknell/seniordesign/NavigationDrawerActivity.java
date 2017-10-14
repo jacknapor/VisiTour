@@ -1,6 +1,9 @@
 package edu.bucknell.seniordesign;
 
+<<<<<<< HEAD
 import android.Manifest;
+=======
+>>>>>>> Example-National-Parks-List
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -90,6 +93,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.top_lists) {
+
+        } else if (id == R.id.default_lists){
+
+            View v= findViewById(R.id.t);
+            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+            startActivity(i);
+
 
         }
 

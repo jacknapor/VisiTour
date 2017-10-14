@@ -26,6 +26,10 @@
             android:id="@+id/top_lists"
             android:icon="@drawable/ic_menu_manage"
             android:title="Top Lists" />
+        <item
+            android:id="@+id/default_lists"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Default Lists" />
     </group>
 
     <item android:title="Communicate">
