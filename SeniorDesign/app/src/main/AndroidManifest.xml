@@ -39,6 +39,7 @@
 
         <activity
             android:name=".MapsActivity"
+
             android:label="@string/title_activity_maps"></activity>
 
         <activity android:name=".DefaultListLoader"
@@ -49,8 +50,10 @@
             android:label="Default Lists"
             android:theme="@style/AppTheme">
         </activity>
+
             android:label="@string/title_activity_maps" />
         <activity android:name=".NewListActivity"></activity>
+
     </application>
 
 </manifest>

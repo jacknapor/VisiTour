@@ -42,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             requestPermissons();
         }
 
-        initializeLocationManager();
+        //initializeLocationManager();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -69,6 +69,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //LatLng loc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(loc).title("Marker for current location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13));
+
+
     }
 
     private void initializeLocationManager() {

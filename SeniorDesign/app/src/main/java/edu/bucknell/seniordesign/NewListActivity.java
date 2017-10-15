@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,6 +15,8 @@ public class NewListActivity extends AppCompatActivity {
     private Button mNewListButton;
     //private FirebaseDatabase db;
     public static DatabaseReference mDatabase;
+
+    private EditText mNameField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class NewListActivity extends AppCompatActivity {
 
 
         mNewListButton = (Button) findViewById(R.id.newListButton);
+        mNameField = (EditText) findViewById(R.id.nameField);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -33,7 +37,9 @@ public class NewListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                mDatabase.child("name").setValue("this is a value");
+                String name = mNameField.getText().toString().trim();
+
+                mDatabase.push().setValue(name);
                 //DatabaseReference mRefChild = mRef.child("Name");
 
             }
