@@ -28,9 +28,9 @@ public class ListLoader extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_list);
         ListView v = (ListView) findViewById(R.id.list);
-        List n = (List) this.getIntent().getSerializableExtra("list");
+        List n = (List) this.getIntent().getSerializableExtra("list"); //retrieve the list object passed from the defaultlist activity
         Location x[] = n.getLocationArray();
-        String names[] = new String[x.length];
+        String names[] = new String[x.length]; //need list of strings for arrayadapter
         for (int i = 0; i <= x.length - 1; i++) {
             names[i] = x[i].getLocationName();
         }
@@ -38,8 +38,13 @@ public class ListLoader extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 simple_list_item_1, names);
         v.setAdapter(adapter);
+
+        //want to change title bar from "Default lists" to the name of this list, need to define this instance as an activity
         final Activity activity = this;
-        activity.setTitle(n.getListName());
+
+        activity.setTitle(n.getListName()); //set the title bar to the name of this list
+
+        //create listener for the location items of this list
         v.setOnItemClickListener(new OnItemClickListener() {
 
             @Override

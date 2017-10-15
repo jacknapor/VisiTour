@@ -23,7 +23,7 @@ import static android.R.layout.simple_list_item_1;
  * Created by Jack on 10/13/2017.
  */
 
-public class DefaultListLoader extends AppCompatActivity {
+public class DefaultListLoader extends AppCompatActivity { //extend appcompatactivity to have a title bar at the top
     String dlist[]= {"National Parks", "Lewisburg Museums", "Lewisburg Restaurants" };
 
     @Override
@@ -32,15 +32,20 @@ public class DefaultListLoader extends AppCompatActivity {
         setContentView(R.layout.activity_choose_list);
         ListView v= (ListView) findViewById(R.id.list);
 
+        //create adapter that will feed array into the listview layout
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 simple_list_item_1, dlist);
+
+
         v.setAdapter(adapter);
+
+        //create listener on the list for each item
         v.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                int itemPosition     = position;
+                int itemPosition     = position; //position of item in array
 
                 if (itemPosition==0){
                     List n= new List("National Parks", "List of several National Parks");
@@ -50,8 +55,8 @@ public class DefaultListLoader extends AppCompatActivity {
                     Location acadia = new Location("Acadia National Park", "Acadia National Park");
                     Location parks[]={yosemite,yellowstone,grandcanyon,acadia};
                     n.setLocationArray(parks);
-                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
-                    i.putExtra("list",n);
+                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
+                    i.putExtra("list",n); //pass the list instance we just made to the new activity
                     startActivity(i);
 
                 }
