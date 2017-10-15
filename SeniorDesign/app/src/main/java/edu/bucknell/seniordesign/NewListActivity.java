@@ -12,8 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class NewListActivity extends AppCompatActivity {
 
     private Button mNewListButton;
-    private FirebaseDatabase db;
-    public static DatabaseReference mRef;
+    //private FirebaseDatabase db;
+    public static DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +21,20 @@ public class NewListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_list);
 
         //mRef = new FirebaseDatabase("https://natparksdb.firebaseio.com/");
-        db = FirebaseDatabase.getInstance();
-        DatabaseReference mRef = db.getReference("https://natparksdb.firebaseio.com/");
+        //db = FirebaseDatabase.getInstance();
+        //DatabaseReference mRef = db.getReference("https://natparksdb.firebaseio.com/");
 
 
         mNewListButton = (Button) findViewById(R.id.newListButton);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         mNewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View viw) {
-                DatabaseReference mRefChild = mRef.child("Name");
+            public void onClick(View v) {
+
+                mDatabase.child("name").setValue("this is a value");
+                //DatabaseReference mRefChild = mRef.child("Name");
 
             }
         });
