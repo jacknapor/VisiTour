@@ -51,8 +51,6 @@
             android:theme="@style/AppTheme">
         </activity>
 
-
-
             android:label="@string/title_activity_maps" />
         <activity android:name=".NewListActivity"></activity>
 
