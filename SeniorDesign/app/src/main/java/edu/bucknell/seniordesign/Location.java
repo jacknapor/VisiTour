@@ -1,5 +1,7 @@
 package edu.bucknell.seniordesign;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.Serializable;
 
 /**
@@ -12,11 +14,15 @@ public class Location implements Serializable{
     private String LocationDescription;
     private int GPS;
 
-    public Location(String Name, String Description){
+    private LatLng latLong;
+
+    public Location(String Name, String Description, LatLng latLong){
         this.LocationName= Name;
         this.LocationDescription= Description;
-
+        this.latLong = latLong;
     }
+
+    public LatLng getLatLong() {return latLong; }
 
     public String getLocationName(){
         return LocationName;

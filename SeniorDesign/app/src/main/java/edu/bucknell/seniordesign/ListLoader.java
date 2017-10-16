@@ -28,7 +28,7 @@ public class ListLoader extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_list);
         ListView v = (ListView) findViewById(R.id.list);
-        List n= (List) this.getIntent().getSerializableExtra("list");
+        final List n= (List) this.getIntent().getSerializableExtra("list");
         Location x[]=n.getLocationArray();
         String names[]= new String[x.length];
         for (int i=0;i<= x.length-1; i++){
@@ -40,6 +40,19 @@ public class ListLoader extends AppCompatActivity{
         v.setAdapter(adapter);
         final Activity activity = this;
         activity.setTitle(n.getListName());
+
+        /*v.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int pos = position;
+
+                System.out.print("HELLO");
+
+                Location location = n.getLocationArray()[pos];
+
+
+            }
+        });*/
 
     }
 }
