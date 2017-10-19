@@ -51,22 +51,11 @@ public class ListLoader extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 int itemPosition = position;
+
+
             }
         });
 
-
-        /*v.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int pos = position;
-
-                System.out.print("HELLO");
-
-                Location location = n.getLocationArray()[pos];
-
-
-            }
-        });*/
 
     }
 }
