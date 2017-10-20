@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.*;
 
+import java.util.ArrayList;
+
+import static android.R.attr.x;
 import static android.R.layout.simple_list_item_1;
 
 /**
@@ -29,10 +32,11 @@ public class ListLoader extends AppCompatActivity {
         setContentView(R.layout.activity_choose_list);
         ListView v = (ListView) findViewById(R.id.list);
         List n = (List) this.getIntent().getSerializableExtra("list"); //retrieve the list object passed from the defaultlist activity
-        Location x[] = n.getLocationArray();
-        String names[] = new String[x.length]; //need list of strings for arrayadapter
-        for (int i = 0; i <= x.length - 1; i++) {
-            names[i] = x[i].getLocationName();
+        //Location x[] = n.getLocationArray();
+        ArrayList<Location> x = n.getLocationArray();
+        String names[] = new String[x.size()]; //need list of strings for arrayadapter
+        for (int i = 0; i <= x.size() - 1; i++) {
+            names[i] = x.get(i).getLocationName();
         }
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this,

@@ -33,4 +33,6 @@ public class Location implements Serializable{
     public void setLocationDescription(String description){
         this.LocationDescription= description;
     }
+
+    public Location() {}
 }

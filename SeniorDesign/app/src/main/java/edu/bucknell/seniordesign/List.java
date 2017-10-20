@@ -1,6 +1,7 @@
 package edu.bucknell.seniordesign;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Caroline Whitman on 9/28/2017.
@@ -10,7 +11,7 @@ public class List implements Serializable {
 
     private String listName = "";
     private String listDescription = "";
-    private Location[] locationArray;
+    private ArrayList<Location> locationArray;
 
     public List(String listName, String listDescription) {
         this.listName = listName;
@@ -25,10 +26,10 @@ public class List implements Serializable {
         return listDescription;
     }
 
-    public Location[] getLocationArray(){
+    public ArrayList<Location> getLocationArray(){
         return locationArray;
     }
-    public void setLocationArray(Location[] locations){
+    public void setLocationArray(ArrayList<Location> locations){
         this.locationArray= locations;
     }
 
@@ -39,5 +40,7 @@ public class List implements Serializable {
     public void setListDescription(String listDescription) {
         this.listDescription = listDescription;
     }
+
+    public List (){} //no argument constructor, necessary for datasnapshot.getvalue(list.class)
 
 }
