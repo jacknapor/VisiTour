@@ -4,10 +4,14 @@ package edu.bucknell.seniordesign;
 import android.Manifest;
 
 
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,8 +23,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.MapFragment;
+
+import java.util.Map;
+
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +37,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,7 +83,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        selectDrawerItem(item);
         // Handle navigation view item clicks here.
+        /**
+
         int id = item.getItemId();
 
         if (id == R.id.all_lists) {
@@ -105,9 +115,38 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
 
         }
+        **/
+
+
+        return true;
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        android.app.Fragment fragment = null;
+        Class fragmentClass = MapFragment.class;
+        switch(menuItem.getItemId()) {
+            case R.id.nearby_sites:
+                fragmentClass = MapFragment.class;
+                break;
+            case R.id.create_list:
+                break;
+            case R.id.default_lists:
+                break;
+            default:
+                fragmentClass = MapFragment.class;
+        }
+
+        try {
+            fragment = (android.app.Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
+
 }
