@@ -85,7 +85,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         selectDrawerItem(item);
         // Handle navigation view item clicks here.
+
+
+
         /**
+         *
+         * Commented out until fragment transactions are figured out for navigation
 
         int id = item.getItemId();
 
@@ -112,8 +117,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
             View v= findViewById(R.id.t);
             Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
             startActivity(i);
-
-
         }
         **/
 
@@ -121,6 +124,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
+    //Handles fragment changes when menu item is selected by user.
     public void selectDrawerItem(MenuItem menuItem) {
         android.app.Fragment fragment = null;
         Class fragmentClass = MapFragment.class;
