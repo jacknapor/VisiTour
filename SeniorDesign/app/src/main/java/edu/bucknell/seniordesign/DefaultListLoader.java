@@ -44,7 +44,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_list);
-        ListView v= (ListView) findViewById(R.id.list);
+        ListView v= (ListView) findViewById(android.R.id.list);
 
         //create adapter that will feed array into the listview layout
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
