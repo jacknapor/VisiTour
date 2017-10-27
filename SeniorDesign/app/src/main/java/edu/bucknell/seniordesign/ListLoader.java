@@ -30,7 +30,7 @@ public class ListLoader extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_list);
-        ListView v = (ListView) findViewById(android.R.id.list);
+        ListView v = (ListView) findViewById(R.id.list);
         List n = (List) this.getIntent().getSerializableExtra("list"); //retrieve the list object passed from the defaultlist activity
         //Location x[] = n.getLocationArray();
         ArrayList<Location> x = n.getLocationArray();

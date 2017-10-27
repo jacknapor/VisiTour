@@ -131,6 +131,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             case R.id.create_list:
                 break;
             case R.id.default_lists:
+                fragmentClass= CustomListFragment.class;
                 break;
             default:
                 fragmentClass = MapFragment.class;

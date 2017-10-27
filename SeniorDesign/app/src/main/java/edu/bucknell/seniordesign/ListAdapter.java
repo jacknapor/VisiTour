@@ -28,6 +28,9 @@ public class ListAdapter extends ArrayAdapter<List> {
 
         lists=items;
     }
+
+
+
     @Override
     public int getCount(){
         return lists.size();
