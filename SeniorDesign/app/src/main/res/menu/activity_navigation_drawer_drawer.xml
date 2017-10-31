@@ -14,10 +14,10 @@
             android:id="@+id/completed_lists"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Completed Lists" />-->
-        <item
+        <!--<item
             android:id="@+id/create_list"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Create List" />
+            android:title="Create List" />-->
         <item
             android:id="@+id/nearby_sites"
             android:icon="@drawable/ic_menu_manage"
@@ -26,10 +26,18 @@
             android:id="@+id/top_lists"
             android:icon="@drawable/ic_menu_manage"
             android:title="Top Lists" />-->
-        <item
+        <!--<item
             android:id="@+id/default_lists"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Default Lists" />
+            android:title="Default Lists" />-->
+        <item
+            android:id="@+id/test_fragment"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Test" />
+        <item
+            android:id="@+id/search_locations"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Search Locations" />
     </group>
 
     <!--<item android:title="Communicate">
