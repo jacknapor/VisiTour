@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,13 +23,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.MapFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private android.app.Fragment fragment;
+
 
 
     @Override
@@ -121,9 +131,65 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
+
+
     public void selectDrawerItem(MenuItem menuItem) {
-        android.app.Fragment fragment = null;
+        this.fragment = null;
         Class fragmentClass = MapFragment.class;
+       final ArrayList<List> dlist= new ArrayList<List>();
+        /*
+        List test= new List ("test","test");
+        ArrayList<Location> testloc= new ArrayList<Location>();
+        Location loc1= new Location("test1","test2",1.0,1.0);
+        testloc.add(loc1);
+        test.setLocationArray(testloc);
+        dlist.add(test);
+        */
+        DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
+
+        /*
+        mDb.child("DefaultLists").child("DefaultList0").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                android.app.Fragment fragment = null;
+                List n = dataSnapshot.getValue(List.class);
+                dlist.add(n);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDb.child("DefaultLists").child("DefaultList1").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                android.app.Fragment fragment = null;
+                List n = dataSnapshot.getValue(List.class);
+                dlist.add(n);
+                Log.e("tag3", n.getListName());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDb.child("DefaultLists").child("DefaultList2").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                android.app.Fragment fragment = null;
+                List n = dataSnapshot.getValue(List.class);
+                dlist.add(n);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        */
+        boolean def=false;
         switch(menuItem.getItemId()) {
             case R.id.nearby_sites:
                 fragmentClass = MapFragment.class;
@@ -131,20 +197,58 @@ public class NavigationDrawerActivity extends AppCompatActivity
             case R.id.create_list:
                 break;
             case R.id.default_lists:
+
                 fragmentClass= CustomListFragment.class;
+               mDb.child("DefaultLists").addValueEventListener(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       for(DataSnapshot s:dataSnapshot.getChildren()){
+                           Log.e("key", s.getKey());
+                           if(s.getKey().equals("DefaultList0")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+
+
+                           }
+                           if(s.getKey().equals("DefaultList1")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+                           }
+                           if(s.getKey().equals("DefaultList2")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+                               fragment = CustomListFragment.newInstance(dlist, true);
+                               FragmentManager fragmentManager = getFragmentManager();
+                               fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                           }
+                       }
+
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+               });
+
+                def=true;
                 break;
             default:
                 fragmentClass = MapFragment.class;
         }
 
         try {
+            if(def){
+                //fragment = CustomListFragment.newInstance(dlist, true);
+            }else{
             fragment = (android.app.Fragment) fragmentClass.newInstance();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

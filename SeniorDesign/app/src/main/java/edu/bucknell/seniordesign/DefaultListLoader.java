@@ -64,22 +64,6 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
 
                 if (itemPosition==0) {
 
-                    /*List n= new List("National Parks", "List of several National Parks");
-                    Location yosemite= new Location("Yosemite National Park", "Yosemite National Park", 37.8651, -119.5383);
-                    Location yellowstone= new Location("Yellowstone National Park", "Yellowstone National Park", 44.4280, -110.5885);
-                    Location grandcanyon= new Location("Grand Canyon National Park", "Grand Canyon National Park", 36.0544, -112.1401);
-                    Location acadia = new Location("Acadia National Park", "Acadia National Park", 44.3386, -68.2733);
-                    ArrayList parks = new ArrayList();
-                    parks.add(yosemite);
-                    parks.add(yellowstone);
-                    parks.add(grandcanyon);
-                    parks.add(acadia);
-
-                    n.setLocationArray(parks);
-                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
-                    i.putExtra("list",n); //pass the list instance we just made to the new activity
-                    startActivity(i);
-                    mDb.child("DefaultLists").child("DefaultList0").setValue(n);*/
 
                     mDb.child("DefaultLists").child("DefaultList0").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -101,21 +85,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
                 if (itemPosition==1){
 
 
-                    /*List n= new List("Lewisburg Museums", "List of Lewisburg Museums");
-                    Location silfer= new Location("Slifer House Museum", "Slifer House Museum", 40.975443, -76.882733);
-                    Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", 40.960241, -76.891185);
-                    Location packwood = new Location("Packwood House Museum", "Packwood House Museum", 40.966640, -76.881917);
 
-
-                    ArrayList<Location> museums= new ArrayList();
-                    museums.add(silfer);
-                    museums.add(children);
-                    museums.add(packwood);
-                    n.setLocationArray(museums);
-                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
-                    i.putExtra("list",n);
-                    startActivity(i);
-                    mDb.child("DefaultLists").child("DefaultList1").setValue(n);*/
 
                     mDb.child("DefaultLists").child("DefaultList1").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -136,21 +106,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
                 if (itemPosition==2){
 
 
-                    /*List n= new List("Lewisburg Restaurants", "List of Lewisburg Restaurants");
-                    Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", 40.962939,-76.88770);
-                    Location elizabeths= new Location("Elizabeth's", "Elizabeth's", 40.963738, -76.886577);
-                    Location mercado = new Location("Mercado Burrito", "Mercado Burrito", 40.962949, -76.887841);
 
-
-                    ArrayList<Location> restaurants = new ArrayList();
-                    restaurants.add(siam);
-                    restaurants.add(elizabeths);
-                    restaurants.add(mercado);
-                    n.setLocationArray(restaurants);
-                    Intent i = new Intent(DefaultListLoader.this,ListLoader.class);
-                    i.putExtra("list",n);
-                    startActivity(i);
-                    mDb.child("DefaultLists").child("DefaultList2").setValue(n);*/
 
                     mDb.child("DefaultLists").child("DefaultList2").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

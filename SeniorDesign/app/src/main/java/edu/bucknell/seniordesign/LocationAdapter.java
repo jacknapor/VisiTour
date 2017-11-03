@@ -17,23 +17,23 @@ import java.util.ArrayList;
  * Created by Jack on 10/23/2017.
  */
 
-public class ListAdapter extends ArrayAdapter<Location> {
-    List list;
-    public ListAdapter(Context context, int textViewResourceId) {
+public class LocationAdapter extends ArrayAdapter<Location> {
+    ArrayList<Location> locations;
+    public LocationAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public ListAdapter(Context context, int resource, List newList) {
-        super(context, resource, newList.getLocationArray());
+    public LocationAdapter(Context context, int resource, ArrayList<Location> items) {
+        super(context, resource, items);
 
-        list=newList;
+        locations=items;
     }
 
 
 
     @Override
     public int getCount(){
-        return list.getLocationArray().size();
+        return locations.size();
     }
 
 
@@ -42,7 +42,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
         View v = convertView;
 
-
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
@@ -50,7 +49,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
         }
 
 
-        Location p = list.getLocationArray().get(position);
+        Location p = locations.get(position);
 
 
         if (p != null) {

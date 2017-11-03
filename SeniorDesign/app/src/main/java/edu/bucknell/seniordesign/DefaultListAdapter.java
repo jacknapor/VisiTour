@@ -17,23 +17,25 @@ import java.util.ArrayList;
  * Created by Jack on 10/23/2017.
  */
 
-public class ListAdapter extends ArrayAdapter<Location> {
-    List list;
-    public ListAdapter(Context context, int textViewResourceId) {
+public class DefaultListAdapter extends ArrayAdapter<List> {
+    private ArrayList<List> defaultLists= new ArrayList<List>();
+    public DefaultListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public ListAdapter(Context context, int resource, List newList) {
-        super(context, resource, newList.getLocationArray());
+    public DefaultListAdapter(Context context, int resource, ArrayList<List> dList) {
+        super(context, resource, dList);
 
-        list=newList;
+        this.defaultLists=dList;
     }
 
 
 
     @Override
     public int getCount(){
-        return list.getLocationArray().size();
+
+        return this.defaultLists.size();
+
     }
 
 
@@ -42,7 +44,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
         View v = convertView;
 
-
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
@@ -50,7 +51,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
         }
 
 
-        Location p = list.getLocationArray().get(position);
+        List p = this.defaultLists.get(position);
 
 
         if (p != null) {
@@ -64,11 +65,11 @@ public class ListAdapter extends ArrayAdapter<Location> {
             }
 
             if (name != null) {
-                name.setText(p.getLocationName());
+                name.setText(p.getListName());
             }
 
             if (description != null) {
-                description.setText(p.getLocationDescription());
+                description.setText(p.getListDescription());
             }
         }
 
