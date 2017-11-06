@@ -31,7 +31,17 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import android.widget.ListView;
+
+
 import com.google.android.gms.maps.MapFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
+import java.util.Map;
 
 import junit.framework.Test;
 
@@ -41,6 +51,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
 
     private String TAG = "NAV_DRAWER";
+
+
+
+
+    private android.app.Fragment fragment;
+
+
 
 
     @Override
@@ -149,10 +166,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
-    //Handles fragment changes when menu item is selected by user.
+
+
+
     public void selectDrawerItem(MenuItem menuItem) {
-        Fragment fragment = null;
-        Class fragmentClass = null;
+        this.fragment = null;
+        Class fragmentClass = MapFragment.class;
+       final ArrayList<List> dlist= new ArrayList<List>();
+
+        DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
+
+        boolean def=false;
+
         switch(menuItem.getItemId()) {
             /*case R.id.create_list:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
@@ -166,21 +191,69 @@ public class NavigationDrawerActivity extends AppCompatActivity
             case R.id.test_fragment:
                 fragmentClass = TestFragment.class;
                 break;
+
             case R.id.search_locations:
                 fragmentClass = SearchLocationsFragment.class;
+
+            case R.id.default_lists:
+
+                fragmentClass= CustomListFragment.class;
+               mDb.child("DefaultLists").addValueEventListener(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       for(DataSnapshot s:dataSnapshot.getChildren()){
+
+                           if(s.getKey().equals("DefaultList0")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+
+
+                           }
+                           if(s.getKey().equals("DefaultList1")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+                           }
+                           if(s.getKey().equals("DefaultList2")) {
+                               List n = s.getValue(List.class);
+                               dlist.add(n);
+                               fragment = CustomListFragment.newInstance(dlist, true);
+                               FragmentManager fragmentManager = getFragmentManager();
+                               fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                           }
+                       }
+
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+               });
+
+                def=true;
+
                 break;
             default:
                 fragmentClass = SearchLocationsFragment.class;
         }
 
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+
+            if(def){
+                //fragment = CustomListFragment.newInstance(dlist, true);
+            }else{
+            fragment = (android.app.Fragment) fragmentClass.newInstance();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
+
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
