@@ -3,7 +3,9 @@ package edu.bucknell.seniordesign;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +43,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e("tag2","2");
+
 
         View rootView = inflater.inflate(R.layout.activity_choose_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.list);
@@ -79,6 +81,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public static CustomListFragment newInstance(List l) {
         Bundle args = new Bundle();
         args.putSerializable("list", l);
@@ -90,12 +93,12 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
         return n;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public static CustomListFragment newInstance(ArrayList<List> defaultList, boolean d) {
         CustomListFragment n = new CustomListFragment();
         Bundle args = new Bundle();
         args.putSerializable("list", defaultList);
-        Log.e("tag","1/n");
-        Log.e("tag",defaultList.get(0).getListName());
+
         n.setDefault(d);
         n.setmDb();
         n.setArguments(args);
@@ -129,100 +132,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Log.e("tag", "wtf");
-    }
-}
- /*
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l,v,position, id);
-        final  View view=v;
-
-        if(isDefault){
-            int itemPosition     = position; //position of item in array
-
-
-            if (itemPosition==0) {
-
-
-                mDb.child("DefaultLists").child("DefaultList0").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        android.app.Fragment fragment=null;
-                        List n = dataSnapshot.getValue(List.class);
-
-                        try {
-                           fragment = (android.app.Fragment) CustomListFragment.newInstance(n);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace((ViewGroup)view.getParent().getParent(), fragment).commit();
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-
-            if (itemPosition==1){
-
-
-
-
-                mDb.child("DefaultLists").child("DefaultList1").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        android.app.Fragment fragment=null;
-                        List n = dataSnapshot.getValue(List.class);
-                        try {
-                            fragment = (android.app.Fragment) CustomListFragment.newInstance(n);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(getListView().getId(), fragment).commit();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-            if (itemPosition==2){
-
-
-
-
-                mDb.child("DefaultLists").child("DefaultList2").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        android.app.Fragment fragment=null;
-                        List n = dataSnapshot.getValue(List.class);
-                        try {
-                            fragment = (android.app.Fragment) CustomListFragment.newInstance(n);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(getListView().getId(), fragment).commit();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        }
-
 
     }
 }
-*/
+

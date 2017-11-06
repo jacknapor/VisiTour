@@ -137,58 +137,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         this.fragment = null;
         Class fragmentClass = MapFragment.class;
        final ArrayList<List> dlist= new ArrayList<List>();
-        /*
-        List test= new List ("test","test");
-        ArrayList<Location> testloc= new ArrayList<Location>();
-        Location loc1= new Location("test1","test2",1.0,1.0);
-        testloc.add(loc1);
-        test.setLocationArray(testloc);
-        dlist.add(test);
-        */
+
         DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
 
-        /*
-        mDb.child("DefaultLists").child("DefaultList0").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                android.app.Fragment fragment = null;
-                List n = dataSnapshot.getValue(List.class);
-                dlist.add(n);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mDb.child("DefaultLists").child("DefaultList1").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                android.app.Fragment fragment = null;
-                List n = dataSnapshot.getValue(List.class);
-                dlist.add(n);
-                Log.e("tag3", n.getListName());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mDb.child("DefaultLists").child("DefaultList2").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                android.app.Fragment fragment = null;
-                List n = dataSnapshot.getValue(List.class);
-                dlist.add(n);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
         boolean def=false;
         switch(menuItem.getItemId()) {
             case R.id.nearby_sites:
@@ -203,7 +154,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
                        for(DataSnapshot s:dataSnapshot.getChildren()){
-                           Log.e("key", s.getKey());
+
                            if(s.getKey().equals("DefaultList0")) {
                                List n = s.getValue(List.class);
                                dlist.add(n);
