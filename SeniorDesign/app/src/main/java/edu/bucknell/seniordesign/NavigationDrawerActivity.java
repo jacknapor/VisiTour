@@ -176,7 +176,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
 
-        boolean def=false;
+        boolean defaultlist=false;
 
         switch(menuItem.getItemId()) {
             /*case R.id.create_list:
@@ -230,16 +230,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
                    }
                });
 
-                def=true;
+                defaultlist=true;
 
                 break;
             default:
-                fragmentClass = SearchLocationsFragment.class;
+                fragmentClass = MapFragment.class;
         }
 
         try {
 
-            if(def){
+            if(defaultlist){
                 //fragment = CustomListFragment.newInstance(dlist, true);
             }else{
             fragment = (android.app.Fragment) fragmentClass.newInstance();

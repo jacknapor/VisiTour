@@ -2,25 +2,17 @@ package edu.bucknell.seniordesign;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.app.ListFragment;
 
-import com.google.android.gms.maps.*;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -29,10 +21,10 @@ import java.util.ArrayList;
  */
 
 public class CustomListFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
-    private boolean isDefault;
+    private boolean isLists;
     private DatabaseReference mDb;
     private List list = null;
-    private ArrayList<List> defaultList = null;
+    private ArrayList<List> listoflists = null;
 
 
     @Override
@@ -49,8 +41,8 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup v=container;
 
-        if (isDefault) {
-            DefaultListAdapter adapter = new DefaultListAdapter(getActivity(),
+        if (isLists) {
+            ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
                     R.layout.listlayout, (ArrayList<List>) getArguments().getSerializable("list"));
             listView = (ListView) rootView.findViewById(R.id.list);
             listView.setAdapter(adapter);
@@ -59,7 +51,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
 
-                    List n= defaultList.get(position);
+                    List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(v.getId(), fragment).addToBackStack(null).commit();
@@ -86,7 +78,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
         Bundle args = new Bundle();
         args.putSerializable("list", l);
         CustomListFragment n = new CustomListFragment();
-        n.setDefault(false);
+        n.setIsLists(false);
         n.setmDb();
         n.setArguments(args);
         n.setList(l);
@@ -99,10 +91,10 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
         Bundle args = new Bundle();
         args.putSerializable("list", defaultList);
 
-        n.setDefault(d);
+        n.setIsLists(d);
         n.setmDb();
         n.setArguments(args);
-        n.setDefaultList(defaultList);
+        n.setListoflists(defaultList);
         return n;
     }
 
@@ -110,12 +102,12 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
         this.list = l;
     }
 
-    public void setDefaultList(ArrayList<List> dlist) {
-        this.defaultList = dlist;
+    public void setListoflists(ArrayList<List> dlist) {
+        this.listoflists = dlist;
     }
 
-    public void setDefault(boolean d) {
-        this.isDefault = d;
+    public void setIsLists(boolean d) {
+        this.isLists = d;
     }
 
     public void setmDb() {
