@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -46,10 +47,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private String TAG = "NAV_DRAWER";
 
 
-    private android.app.Fragment fragment;
-
-
-
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +61,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             Fragment fragment = null;
             Class fragmentClass = null;
             //fragmentClass = SearchLocationsFragment.class;
-            fragmentClass = ListFragment.class;
+            fragmentClass = TestFragment.class;
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
@@ -121,54 +119,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         selectDrawerItem(item);
         // Handle navigation view item clicks here.
-
-        /**
-         *
-         * Commented out until fragment transactions are figured out for navigation
-
-        int id = item.getItemId();
-
-        if (id == R.id.all_lists) {
-            // Handle the camera action
-        } else if (id == R.id.lists_in_progress) {
-
-        } else if (id == R.id.completed_lists) {
-
-        } else if (id == R.id.create_list) {
-
-            Intent intent = new Intent(this, NewListActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nearby_sites) {
-
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.top_lists) {
-
-        } else if (id == R.id.default_lists){
-
-            View v= findViewById(R.id.t);
-            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
-            startActivity(i);
-        }
-        **/
-
-
         return true;
     }
 
-
-
-
     public void selectDrawerItem(MenuItem menuItem) {
         this.fragment = null;
-        Class fragmentClass = MapFragment.class;
+        Class fragmentClass = null;
        final ArrayList<List> dlist= new ArrayList<List>();
 
         DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
 
-        boolean defaultlist=false;
+        boolean defaultList=false;
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
@@ -179,15 +140,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             case R.id.test_fragment:
                 fragmentClass = TestFragment.class;
+                Log.i(TAG, "case test_fragment");
                 break;
-
             case R.id.search_locations:
                 fragmentClass = SearchLocationsFragment.class;
-
+                break;
             case R.id.default_lists:
-
                 fragmentClass= CustomListFragment.class;
-               mDb.child("DefaultLists").addValueEventListener(new ValueEventListener() {
+                mDb.child("DefaultLists").addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
                        for(DataSnapshot s:dataSnapshot.getChildren()){
@@ -206,7 +166,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                List n = s.getValue(List.class);
                                dlist.add(n);
                                fragment = CustomListFragment.newInstance(dlist, true);
-                               FragmentManager fragmentManager = getFragmentManager();
+                               android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                            }
                        }
@@ -217,23 +177,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
                    public void onCancelled(DatabaseError databaseError) {
 
                    }
-               });
+                });
 
-                defaultlist=true;
-
+                defaultList=true;
                 break;
             default:
-                fragmentClass = SearchLocationsFragment.class;
+                fragmentClass = TestFragment.class;
                 break;
         }
 
         try {
 
-            if(defaultlist){
+            if(defaultList){
                 //fragment = CustomListFragment.newInstance(dlist, true);
             }else{
-            fragment = (android.app.Fragment) fragmentClass.newInstance();
-                FragmentManager fragmentManager = getFragmentManager();
+                fragment = (Fragment) fragmentClass.newInstance();
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
 
         } catch (Exception e) {

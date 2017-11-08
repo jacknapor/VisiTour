@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by Jack on 10/23/2017.
  */
 
-public class CustomListFragment extends Fragment implements View.OnClickListener, OnBackPressedListener {
+public class CustomListFragment extends android.support.v4.app.Fragment implements View.OnClickListener, OnBackPressedListener {
     private boolean isLists;
     private DatabaseReference mDb;
     private List list = null;
@@ -53,7 +53,7 @@ public class CustomListFragment extends Fragment implements View.OnClickListener
 
                     List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
-                    FragmentManager fragmentManager = getFragmentManager();
+                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(v.getId(), fragment).addToBackStack(null).commit();
 
 
