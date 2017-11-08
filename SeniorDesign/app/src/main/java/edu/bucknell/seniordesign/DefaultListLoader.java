@@ -49,6 +49,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
 
                 if (itemPosition==0) {
 
+
                     /**
                      *
                      * This code was used to push these lists to the database. This code should be moved to a file that is only ever
@@ -94,6 +95,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
                      * This code was used to push these lists to the database. This code should be moved to a file that is only ever
                      * called once.
 
+
                     List n= new List("Lewisburg Museums", "List of Lewisburg Museums");
                     Location silfer= new Location("Slifer House Museum", "Slifer House Museum", 40.975443, -76.882733);
                     Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", 40.960241, -76.891185);
@@ -108,6 +110,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
                     i.putExtra("list",n);
                     startActivity(i);
                     mDb.child("DefaultLists").child("DefaultList1").setValue(n);*/
+
 
                     mDb.child("DefaultLists").child("DefaultList1").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -144,6 +147,7 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
                     i.putExtra("list",n);
                     startActivity(i);
                     mDb.child("DefaultLists").child("DefaultList2").setValue(n);*/
+
 
                     mDb.child("DefaultLists").child("DefaultList2").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

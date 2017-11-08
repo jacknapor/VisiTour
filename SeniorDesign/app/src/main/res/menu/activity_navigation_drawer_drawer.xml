@@ -26,10 +26,10 @@
             android:id="@+id/top_lists"
             android:icon="@drawable/ic_menu_manage"
             android:title="Top Lists" />-->
-        <!--<item
+        <item
             android:id="@+id/default_lists"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Default Lists" />-->
+            android:title="Default Lists" />
         <item
             android:id="@+id/test_fragment"
             android:icon="@drawable/ic_menu_camera"
