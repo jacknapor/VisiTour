@@ -33,7 +33,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import android.widget.ListView;
 
-
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.MapFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,19 +45,19 @@ import java.util.Map;
 
 import junit.framework.Test;
 
+import junit.framework.Test;
+
 import java.util.Map;
 
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoginFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
 
     private String TAG = "NAV_DRAWER";
 
 
 
 
-    private android.app.Fragment fragment;
-
-
+    private android.support.v4.app.Fragment fragment;
 
 
     @Override
@@ -134,33 +134,33 @@ public class NavigationDrawerActivity extends AppCompatActivity
          *
          * Commented out until fragment transactions are figured out for navigation
 
-        int id = item.getItemId();
+         int id = item.getItemId();
 
-        if (id == R.id.all_lists) {
-            // Handle the camera action
-        } else if (id == R.id.lists_in_progress) {
+         if (id == R.id.all_lists) {
+         // Handle the camera action
+         } else if (id == R.id.lists_in_progress) {
 
-        } else if (id == R.id.completed_lists) {
+         } else if (id == R.id.completed_lists) {
 
-        } else if (id == R.id.create_list) {
+         } else if (id == R.id.create_list) {
 
-            Intent intent = new Intent(this, NewListActivity.class);
-            startActivity(intent);
+         Intent intent = new Intent(this, NewListActivity.class);
+         startActivity(intent);
 
-        } else if (id == R.id.nearby_sites) {
+         } else if (id == R.id.nearby_sites) {
 
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
+         Intent intent = new Intent(this, MapsActivity.class);
+         startActivity(intent);
 
-        } else if (id == R.id.top_lists) {
+         } else if (id == R.id.top_lists) {
 
-        } else if (id == R.id.default_lists){
+         } else if (id == R.id.default_lists){
 
-            View v= findViewById(R.id.t);
-            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
-            startActivity(i);
-        }
-        **/
+         View v= findViewById(R.id.t);
+         Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+         startActivity(i);
+         }
+         **/
 
 
         return true;
@@ -194,6 +194,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             case R.id.search_locations:
                 fragmentClass = SearchLocationsFragment.class;
+                break;
+
+            case R.id.login_button:
+                fragmentClass = LoginFragment.class;
+                break;
 
             case R.id.default_lists:
 
@@ -217,7 +222,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                List n = s.getValue(List.class);
                                dlist.add(n);
                                fragment = CustomListFragment.newInstance(dlist, true);
-                               FragmentManager fragmentManager = getFragmentManager();
+                               android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                            }
                        }
@@ -234,7 +239,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 break;
             default:
-                fragmentClass = MapFragment.class;
+                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
         }
 
         try {
@@ -242,17 +247,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
             if(defaultlist){
                 //fragment = CustomListFragment.newInstance(dlist, true);
             }else{
-            fragment = (android.app.Fragment) fragmentClass.newInstance();
-                FragmentManager fragmentManager = getFragmentManager();
+            fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-
-
+        //the following lines were just in Nick's code after writing the login stuff, might not be necessary, might cause bugs, idk
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
