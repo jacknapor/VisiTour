@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,13 +23,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.MapFragment;
+
+import junit.framework.Test;
 
 import java.util.Map;
 
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoginFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+
+    private String TAG = "NAV_DRAWER";
 
 
     @Override
@@ -38,6 +45,21 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState == null) {
+
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = LoginFragment.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
+
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -86,39 +108,37 @@ public class NavigationDrawerActivity extends AppCompatActivity
         selectDrawerItem(item);
         // Handle navigation view item clicks here.
 
-
-
         /**
          *
          * Commented out until fragment transactions are figured out for navigation
 
-        int id = item.getItemId();
+         int id = item.getItemId();
 
-        if (id == R.id.all_lists) {
-            // Handle the camera action
-        } else if (id == R.id.lists_in_progress) {
+         if (id == R.id.all_lists) {
+         // Handle the camera action
+         } else if (id == R.id.lists_in_progress) {
 
-        } else if (id == R.id.completed_lists) {
+         } else if (id == R.id.completed_lists) {
 
-        } else if (id == R.id.create_list) {
+         } else if (id == R.id.create_list) {
 
-            Intent intent = new Intent(this, NewListActivity.class);
-            startActivity(intent);
+         Intent intent = new Intent(this, NewListActivity.class);
+         startActivity(intent);
 
-        } else if (id == R.id.nearby_sites) {
+         } else if (id == R.id.nearby_sites) {
 
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
+         Intent intent = new Intent(this, MapsActivity.class);
+         startActivity(intent);
 
-        } else if (id == R.id.top_lists) {
+         } else if (id == R.id.top_lists) {
 
-        } else if (id == R.id.default_lists){
+         } else if (id == R.id.default_lists){
 
-            View v= findViewById(R.id.t);
-            Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
-            startActivity(i);
-        }
-        **/
+         View v= findViewById(R.id.t);
+         Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+         startActivity(i);
+         }
+         **/
 
 
         return true;
@@ -126,31 +146,40 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     //Handles fragment changes when menu item is selected by user.
     public void selectDrawerItem(MenuItem menuItem) {
-        android.app.Fragment fragment = null;
-        Class fragmentClass = MapFragment.class;
+        Fragment fragment = null;
+        Class fragmentClass = null;
         switch(menuItem.getItemId()) {
-            case R.id.nearby_sites:
-                fragmentClass = MapFragment.class;
-                break;
-            case R.id.create_list:
+            /*case R.id.create_list:
+                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
             case R.id.default_lists:
                 break;
+                */
+            case R.id.nearby_sites:
+                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
+                break;
+            case R.id.login_button:
+                fragmentClass = LoginFragment.class;
+                break;
             default:
-                fragmentClass = MapFragment.class;
+                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
         }
 
         try {
-            fragment = (android.app.Fragment) fragmentClass.newInstance();
+            fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
 }

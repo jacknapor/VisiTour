@@ -30,6 +30,10 @@
             android:id="@+id/default_lists"
             android:icon="@drawable/ic_menu_manage"
             android:title="Default Lists" />
+        <item
+            android:id="@+id/login_button"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Log In" />
     </group>
 
     <!--<item android:title="Communicate">

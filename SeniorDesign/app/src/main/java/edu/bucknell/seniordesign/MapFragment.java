@@ -4,12 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 /**
@@ -20,7 +26,7 @@ import com.google.android.gms.maps.MapView;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,9 +36,11 @@ public class MapFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private String TAG = "MapFragment";
+
     MapView mapView;
 
-    GoogleMap googleMap;
+    GoogleMap mMap;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,12 +58,8 @@ public class MapFragment extends Fragment {
      * @return A new instance of fragment MapFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MapFragment newInstance(String param1, String param2) {
+    public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -64,21 +68,20 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.content_navigation_drawer, container, false);
+        View view = inflater.inflate(R.layout.activity_maps, container, false);
+        Log.i(TAG, "onCreateView");
 
-        mapView = (MapView) view.findViewById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(MapFragment.this);
 
-        mapView.onCreate(savedInstanceState);
 
         if(mapView!=null)
         {
-            //googleMap = mapView.getMapAsync();
 
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-            //googleMap.setMyLocationEnabled(true);
 
-            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
         }
 
         return view;
@@ -88,7 +91,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume()
     {
-        mapView.onResume();
 
         super.onResume();
     }
@@ -97,14 +99,12 @@ public class MapFragment extends Fragment {
     {
         super.onDestroy();
 
-        mapView.onDestroy();
     }
     @Override
     public void onLowMemory()
     {
         super.onLowMemory();
 
-        mapView.onLowMemory();
     }
 
     @Override
@@ -141,6 +141,23 @@ public class MapFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        try {
+            mMap = googleMap;
+
+            LatLng loc = new LatLng(40.9547, -76.8836);
+            //LatLng loc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            //mMap.addMarker(new MarkerOptions().position(loc).title("Marker for current location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
