@@ -8,10 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +44,8 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
 
     private String TAG = "SearchLocationsFragment";
 
+    private List list = null;
+
     public SearchLocationsFragment() {
         // Required empty public constructor
     }
@@ -60,6 +64,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle("Add Location");
 
 
     }
@@ -69,14 +74,30 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        Log.i(TAG, "in onCreateView");
+        View view = inflater.inflate(R.layout.place_autocomplete_fragment, container, false);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            this.list = (List) bundle.getSerializable("current_list");
+            Log.i(TAG, "List to add to: " + this.list.getListName());
+        }
+
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+        //SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 Log.i(TAG, "Place: " + place.getName());
 
+                Location newLocation = new Location(place.getName().toString());
+                if (newLocation == null) {
+                    Log.i(TAG, "LOCATION IS NULL");
+                }
+                list.addLocation(newLocation);
+                if (list!=null) {
+                    Log.i(TAG, "New size of list: " + list.getListSize());
+                }
             }
 
             @Override
@@ -90,7 +111,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
         fragmentTransaction.replace(R.id.content_frag, autocompleteFragment);
         fragmentTransaction.commit();
 
-        return inflater.inflate(R.layout.place_autocomplete_fragment, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -37,8 +37,6 @@ public class TestFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment TestFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -60,6 +58,7 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        getActivity().setTitle("TEST");
         return inflater.inflate(R.layout.fragment_test, container, false);
     }
 

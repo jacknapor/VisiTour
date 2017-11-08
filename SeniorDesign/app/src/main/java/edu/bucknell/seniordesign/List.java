@@ -1,5 +1,7 @@
 package edu.bucknell.seniordesign;
 
+import android.widget.ExpandableListView;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -12,6 +14,8 @@ public class List implements Serializable {
     private String listName = "";
     private String listDescription = "";
     private ArrayList<Location> locationArray;
+
+    public List (){} //no argument constructor, necessary for datasnapshot.getvalue(list.class)
 
     public List(String listName, String listDescription) {
         this.listName = listName;
@@ -41,6 +45,15 @@ public class List implements Serializable {
         this.listDescription = listDescription;
     }
 
-    public List (){} //no argument constructor, necessary for datasnapshot.getvalue(list.class)
+    public void addLocation(Location location) {
+        try {
+            this.locationArray.add(location);
+        } catch (Exception e) {
+        }
+    }
+
+    public int getListSize() {
+        return this.locationArray.size();
+    }
 
 }

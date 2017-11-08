@@ -1,19 +1,10 @@
 package edu.bucknell.seniordesign;
 
 
-import android.Manifest;
-
-
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,22 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
-import com.google.android.gms.maps.MapFragment;
-
-import junit.framework.Test;
-
-import java.util.Map;
 
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+        implements CreateNewListFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
 
     private String TAG = "NAV_DRAWER";
 
@@ -54,7 +32,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
             Fragment fragment = null;
             Class fragmentClass = null;
-            fragmentClass = SearchLocationsFragment.class;
+            //fragmentClass = SearchLocationsFragment.class;
+            fragmentClass = ListFragment.class;
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
@@ -154,12 +133,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
         switch(menuItem.getItemId()) {
-            /*case R.id.create_list:
-                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
+            case R.id.create_list:
+                fragmentClass = CreateNewListFragment.class;
                 break;
             case R.id.default_lists:
+                View v= findViewById(R.id.t);
+                Intent i = new Intent(NavigationDrawerActivity.this,DefaultListLoader.class);
+                startActivity(i);
                 break;
-                */
+
             case R.id.nearby_sites:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
@@ -171,6 +153,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             default:
                 fragmentClass = SearchLocationsFragment.class;
+                break;
         }
 
         try {
@@ -183,6 +166,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
     }
 
     @Override
