@@ -38,6 +38,10 @@
             android:id="@+id/search_locations"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Search Locations" />
+        <item
+            android:id="@+id/login_button"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Log In" />
     </group>
 
 </menu>
