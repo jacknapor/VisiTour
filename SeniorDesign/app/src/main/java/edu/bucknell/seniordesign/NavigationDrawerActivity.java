@@ -156,7 +156,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                List n = s.getValue(List.class);
                                dlist.add(n);
 
-
                            }
                            if(s.getKey().equals("DefaultList1")) {
                                List n = s.getValue(List.class);

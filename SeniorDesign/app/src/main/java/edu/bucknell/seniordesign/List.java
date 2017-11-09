@@ -13,7 +13,9 @@ public class List implements Serializable {
 
     private String listName = "";
     private String listDescription = "";
-    private ArrayList<Location> locationArray;
+    private ArrayList<Location> locationArray = new ArrayList<Location>();
+
+    private int listSize;
 
     public List (){} //no argument constructor, necessary for datasnapshot.getvalue(list.class)
 
@@ -33,6 +35,7 @@ public class List implements Serializable {
     public ArrayList<Location> getLocationArray(){
         return locationArray;
     }
+
     public void setLocationArray(ArrayList<Location> locations){
         this.locationArray= locations;
     }
@@ -46,14 +49,12 @@ public class List implements Serializable {
     }
 
     public void addLocation(Location location) {
-        try {
             this.locationArray.add(location);
-        } catch (Exception e) {
-        }
+            this.listSize++;
     }
 
     public int getListSize() {
-        return this.locationArray.size();
+        return listSize;
     }
 
 }

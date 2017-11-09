@@ -26,6 +26,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -43,6 +45,8 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
     private OnFragmentInteractionListener mListener;
 
     private String TAG = "SearchLocationsFragment";
+
+    private DatabaseReference mDb;
 
     private List list = null;
 
@@ -74,6 +78,8 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        mDb = FirebaseDatabase.getInstance().getReference();
+
         View view = inflater.inflate(R.layout.place_autocomplete_fragment, container, false);
 
         Bundle bundle = getArguments();
@@ -84,20 +90,28 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
 
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
-        //SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Log.i(TAG, "Place: " + place.getName());
+                Log.i(TAG, "Place: " + place.getName().toString());
 
-                Location newLocation = new Location(place.getName().toString());
+                Location newLocation = new Location(place.getName().toString(), "", place.getLatLng().latitude, place.getLatLng().longitude);
                 if (newLocation == null) {
                     Log.i(TAG, "LOCATION IS NULL");
+                }
+                if (list == null) {
+                    Log.i(TAG, "LIST IS NULL");
                 }
                 list.addLocation(newLocation);
                 if (list!=null) {
                     Log.i(TAG, "New size of list: " + list.getListSize());
                 }
+
+                mDb.child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
+
+                displayList(list);
+
             }
 
             @Override
@@ -106,12 +120,26 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
             }
         });
 
+        Log.i(TAG, "list list list" + list.getListName());
+
+        //Class fragmentClass = CustomListFragment.class;
+        Fragment fragment = (Fragment) CustomListFragment.newInstance(list);
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content_frag, autocompleteFragment);
         fragmentTransaction.commit();
 
         return view;
+    }
+
+    public void displayList(List list) {
+        Class fragmentClass = CustomListFragment.class;
+        Fragment fragment = CustomListFragment.newInstance(list);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content_frag, fragment);
+        fragmentTransaction.commit();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
