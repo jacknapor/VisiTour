@@ -27,7 +27,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import android.widget.ListView;
 
-
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.MapFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,12 +42,14 @@ import junit.framework.Test;
 
 
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements CreateNewListFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+        implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+
 
     private String TAG = "NAV_DRAWER";
 
 
-    private Fragment fragment;
+    private android.support.v4.app.Fragment fragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         selectDrawerItem(item);
         // Handle navigation view item clicks here.
+
         return true;
     }
 
@@ -144,6 +147,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             case R.id.search_locations:
                 fragmentClass = SearchLocationsFragment.class;
+                break;
+            case R.id.login_button:
+                fragmentClass = LoginFragment.class;
                 break;
             case R.id.default_lists:
                 fragmentClass= CustomListFragment.class;
@@ -191,17 +197,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
             if(defaultList){
                 //fragment = CustomListFragment.newInstance(dlist, true);
             }else{
-                fragment = (Fragment) fragmentClass.newInstance();
+            fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
