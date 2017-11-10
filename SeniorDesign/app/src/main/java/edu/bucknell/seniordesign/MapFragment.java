@@ -14,8 +14,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Map;
 
 
 /**
@@ -49,12 +52,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Required empty public constructor
     }
 
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MapFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -63,7 +65,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return fragment;
     }
 
+    public static MapFragment newInstance(Location loc) {
 
+        Bundle bundle = new Bundle();
+        bundle.putString("locName", loc.getLocationName());
+        bundle.putSerializable("latLng", loc);
+
+        MapFragment fragment = new MapFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public void readBundle() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String name = bundle.getString("locName");
+            Location loc = (Location) bundle.getSerializable("latLng");
+
+
+            addPoint(name, loc.getLatLng());
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -72,6 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Log.i(TAG, "onCreateView");
 
         getActivity().setTitle("Map");
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapFragment.this);
@@ -144,20 +167,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mListener = null;
     }
 
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        try {
-            mMap = googleMap;
+        mMap = googleMap;
+        readBundle();
+    }
 
-            LatLng loc = new LatLng(40.9547, -76.8836);
-            //LatLng loc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-            //mMap.addMarker(new MarkerOptions().position(loc).title("Marker for current location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+    public LatLng addPoint(String name, LatLng latLng) {
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, 13)));
+        return latLng;
     }
 
 
@@ -174,5 +205,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public GoogleMap getMap() {
+        return mMap;
     }
 }

@@ -24,6 +24,10 @@ public class List implements Serializable {
         this.listDescription = listDescription;
     }
 
+    public Location getLocation(int position) {
+        return locationArray.get(position);
+    }
+
     public String getListName() {
         return listName;
     }

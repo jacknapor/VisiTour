@@ -17,6 +17,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,14 +67,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng loc = new LatLng(40.9547, -76.8836);
-        //LatLng loc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(loc).title("Marker for current location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 13));
+        LatLng point = new LatLng(40.9547, -76.8836);
+
+        MarkerOptions m = new MarkerOptions();
+        m.position(point);
+        m.title("Bucknell");
+        m.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mMap.addMarker(m);
+
+        mMap.moveCamera((CameraUpdateFactory.newLatLng(point)));
+
+        //LatLng point = addPoint("Bucknell", 40.9547, -76.8836);
 
 
+        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13));
+
+
+    }
+
+    public LatLng addPoint(String name, double lat, double lng) {
+        LatLng point = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(point).title(name));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
+        return point;
     }
 
     private void initializeLocationManager() {

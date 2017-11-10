@@ -40,8 +40,6 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class SearchLocationsFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleApiClient mGoogleApiClient;
-
     private OnFragmentInteractionListener mListener;
 
     private String TAG = "SearchLocationsFragment";
@@ -82,6 +80,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
 
         View view = inflater.inflate(R.layout.place_autocomplete_fragment, container, false);
 
+        // Gets the List to add the locations to
         Bundle bundle = getArguments();
         if (bundle != null) {
             this.list = (List) bundle.getSerializable("current_list");
@@ -96,7 +95,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
             public void onPlaceSelected(Place place) {
                 Log.i(TAG, "Place: " + place.getName().toString());
 
-                Location newLocation = new Location(place.getName().toString(), "", place.getLatLng().latitude, place.getLatLng().longitude);
+                Location newLocation = new Location(place.getName().toString(), "", place.getLatLng());
                 if (newLocation == null) {
                     Log.i(TAG, "LOCATION IS NULL");
                 }
@@ -120,11 +119,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
             }
         });
 
-        Log.i(TAG, "list list list" + list.getListName());
-
-        //Class fragmentClass = CustomListFragment.class;
-        Fragment fragment = (Fragment) CustomListFragment.newInstance(list);
-
+        // display Places autocompleteFragment widget
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content_frag, autocompleteFragment);
@@ -133,8 +128,12 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
         return view;
     }
 
+    /**
+     * Switches fragments to display the list of locations.
+     *
+     * @param list
+     */
     public void displayList(List list) {
-        Class fragmentClass = CustomListFragment.class;
         Fragment fragment = CustomListFragment.newInstance(list);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

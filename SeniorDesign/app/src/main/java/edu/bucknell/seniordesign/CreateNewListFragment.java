@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -64,6 +65,8 @@ public class CreateNewListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        getActivity().setTitle("Create a New List");
+
         View view = inflater.inflate(R.layout.fragment_create_new_list, container, false);
 
         mNewListButton = (Button) view.findViewById(R.id.newListButton);
@@ -78,7 +81,9 @@ public class CreateNewListFragment extends Fragment {
                 String name = mNameField.getText().toString().trim();
                 Log.i(TAG, "Name: " + name);
 
-                mDatabase.push().setValue(name);
+                mDatabase.child("User Lists").child(name).setValue(name);
+
+                hideKeyboard();
 
                 Fragment fragment = null;
                 Class fragmentClass = null;
@@ -100,13 +105,20 @@ public class CreateNewListFragment extends Fragment {
                 fragmentTransaction.replace(R.id.content_frag, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                //DatabaseReference mRefChild = mRef.child("Name");
-
             }
         });
 
         return view;
 
+    }
+
+    public void hideKeyboard() {
+        // Check if no view has focus:
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
