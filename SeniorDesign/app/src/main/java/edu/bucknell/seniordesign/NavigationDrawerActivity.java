@@ -198,10 +198,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
             case R.id.nearby_sites:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
-            case R.id.test_fragment:
-                fragmentClass = TestFragment.class;
-                Log.i(TAG, "case test_fragment");
-                break;
             case R.id.search_locations:
                 fragmentClass = SearchLocationsFragment.class;
                 break;

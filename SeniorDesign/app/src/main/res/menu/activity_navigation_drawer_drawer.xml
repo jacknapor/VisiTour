@@ -16,31 +16,24 @@
             android:title="Completed Lists" />-->
         <item
             android:id="@+id/create_list"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_add_circle_black_24dp"
             android:title="Create List" />
         <item
             android:id="@+id/nearby_sites"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_near_me_black_24dp"
             android:title="Nearby Sites" />
-        <!--<item
-            android:id="@+id/top_lists"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Top Lists" />-->
         <item
             android:id="@+id/default_lists"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="Default Lists" />
-        <item
-            android:id="@+id/test_fragment"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Test" />
+
         <item
             android:id="@+id/search_locations"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/places_ic_search"
             android:title="Search Locations" />
         <item
             android:id="@+id/login_button"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_account_circle_black_24dp"
             android:title="Log In" />
     </group>
 
