@@ -69,7 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         Bundle bundle = new Bundle();
         bundle.putString("locName", loc.getLocationName());
-        bundle.putSerializable("latLng", loc);
+        bundle.putSerializable("loc", loc);
 
         MapFragment fragment = new MapFragment();
         fragment.setArguments(bundle);
@@ -80,8 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Bundle bundle = getArguments();
         if (bundle != null) {
             String name = bundle.getString("locName");
-            Location loc = (Location) bundle.getSerializable("latLng");
-
+            Location loc = (Location) bundle.getSerializable("loc");
 
             addPoint(name, loc.getLatLng());
         }

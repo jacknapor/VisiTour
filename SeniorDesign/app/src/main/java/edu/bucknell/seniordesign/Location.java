@@ -14,6 +14,9 @@ public class Location implements Serializable{
     private String locationDescription;
     private int GPS;
 
+    private double lat;
+    private double lng;
+
     private LatLng latLng;
 
     public Location (String name) {
@@ -24,6 +27,13 @@ public class Location implements Serializable{
         this.locationName = name;
         this.locationDescription = description;
         this.latLng = latLng;
+    }
+
+    public Location(String name, String description, double lat, double lng) {
+        this.locationName = name;
+        this.locationDescription = description;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public LatLng getLatLng() {

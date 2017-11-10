@@ -65,13 +65,11 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             addLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "in onClick");
                     android.support.v4.app.Fragment fragment = null;
                     Class fragmentClass = null;
                     fragmentClass = SearchLocationsFragment.class;
                     try {
                         fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-                        Log.i(TAG, "in try");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -87,10 +85,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 fragmentTransaction.replace(R.id.content_frag, fragment);
                 fragmentTransaction.addToBackStack(null);
 
-
                     fragmentTransaction.replace(R.id.content_frag, fragment);
                     fragmentTransaction.commit();
-                    Log.i(TAG, "fragment committed");
                 }
             });
 
@@ -113,8 +109,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
                     android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(v.getId(), fragment).addToBackStack(null).commit();
-
-
 
                 }});
 

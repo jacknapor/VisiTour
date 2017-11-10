@@ -35,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -51,7 +53,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
 
 
-
     private android.support.v4.app.Fragment fragment;
 
 
@@ -61,6 +62,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /*ReadData readData = new ReadData();
+        try {
+            readData.readXLSFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
         //addNationalParks();
         //addMuseums();
@@ -91,6 +99,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+     
 
     private void addNationalParks() {
         List n= new List("National Parks", "List of several National Parks");
@@ -108,7 +117,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         //Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
         //i.putExtra("list",n); //pass the list instance we just made to the new activity
         //startActivity(i);
-        mDb.child("Default Lists").child(n.getListName()).setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
     }
 
     private void addMuseums() {
@@ -123,7 +132,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         museums.add(packwood);
         n.setLocationArray(museums);
 
-        mDb.child("Default Lists").child(n.getListName()).setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
     }
 
     private void addRestaurants() {
@@ -138,7 +147,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         restaurants.add(mercado);
         n.setLocationArray(restaurants);
 
-        mDb.child("Default Lists").child(n.getListName()).setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
     }
 
     @Override
@@ -247,7 +256,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         try {
 
             if(defaultList){
-                //fragment = CustomListFragment.newInstance(dlist, true);
+                fragment = CustomListFragment.newInstance(dlist, true);
             }else{
             fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -264,8 +273,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
     }
 
     @Override
