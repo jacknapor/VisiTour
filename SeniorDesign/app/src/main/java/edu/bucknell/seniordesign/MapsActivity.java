@@ -78,7 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera((CameraUpdateFactory.newLatLng(point)));
 
-        //LatLng point = addPoint("Bucknell", 40.9547, -76.8836);
+        //TraveListLatLng point = addPoint("Bucknell", 40.9547, -76.8836);
 
 
         //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13));
@@ -126,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
+                                    new TraveListLatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         } else {
                             //Log.d(TAG, "Current location is null. Using defaults.");
