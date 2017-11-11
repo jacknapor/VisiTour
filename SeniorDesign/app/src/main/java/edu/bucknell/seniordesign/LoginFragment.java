@@ -2,6 +2,7 @@ package edu.bucknell.seniordesign;
 
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -52,7 +53,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private String TAG = "LoginFragment";
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private String user_id;
+    private String userEmail;
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
     private CallbackManager mCallbackManager;
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
@@ -84,15 +85,15 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     user = mAuth.getCurrentUser();
-                    user_id = user.getUid();
+                    userEmail = user.getEmail().replace(".", ","); //replaces "." with "," because Firebase doesn't allow "." in key
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (user != null) {
-                                if (!(dataSnapshot.child("Users").hasChild(user_id))) {
+                                Log.d(TAG, "lookforme email is " + userEmail);
+                                if (!(dataSnapshot.child("Users").hasChild(userEmail))) {
                                     try {
-                                        mDb.child("Users").child(user_id).child("displayName").setValue(user.getDisplayName());
-                                        mDb.child("Users").child(user_id).child("email").setValue(user.getEmail());
+                                        createNewUser(dataSnapshot);
                                     } catch (Exception E) {
                                         Log.d(TAG, "Error: Adding user ID to database failed");
                                     }
@@ -112,6 +113,40 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 }
             }
         });
+    }
+
+    private void createNewUser(DataSnapshot ds) {
+        mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
+        mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
+        //mDb.child("Users").child(this.userEmail).child("lists").setValue(mDb.child("Default Lists"));
+        //mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists"));
+        mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists").getValue());
+        /*mDb.child("Default Lists").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mDb.child("Users");
+                mDb.child(userEmail);
+                mDb.child("lists");
+                mDb.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError error, DatabaseReference databaseReference) {
+                        if (error != null) {
+                            Log.d(TAG, "copy failed");
+                        } else {
+                            Log.d(TAG, "success");
+                        }
+                    }
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "copy cancelled");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
     }
 
     public LoginFragment() {}

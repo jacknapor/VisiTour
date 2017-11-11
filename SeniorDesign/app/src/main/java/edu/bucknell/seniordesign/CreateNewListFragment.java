@@ -14,6 +14,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,6 +35,8 @@ public class CreateNewListFragment extends Fragment {
     private Button mNewListButton;
 
     public static DatabaseReference mDatabase;
+    private FirebaseUser user;
+    private String userEmail;
 
     private EditText mNameField;
 
@@ -73,6 +77,8 @@ public class CreateNewListFragment extends Fragment {
         mNameField = (EditText) view.findViewById(R.id.nameField);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
         mNewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +87,8 @@ public class CreateNewListFragment extends Fragment {
                 String name = mNameField.getText().toString().trim();
                 Log.i(TAG, "Name: " + name);
 
-                mDatabase.child("User Lists").child(name).setValue(name);
+                //mDatabase.child("User Lists").child(name).setValue(name);
+                mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(name);
 
                 hideKeyboard();
 

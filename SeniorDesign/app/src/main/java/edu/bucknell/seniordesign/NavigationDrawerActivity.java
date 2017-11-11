@@ -1,13 +1,11 @@
 package edu.bucknell.seniordesign;
 
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,29 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
-import android.widget.ListView;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
+//import com.google.android.gms.maps.model.TraveListLatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.Map;
-
-import junit.framework.Test;
-
 
 
 public class NavigationDrawerActivity extends AppCompatActivity
@@ -49,8 +33,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private String TAG = "NAV_DRAWER";
 
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
-
-
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
     private android.support.v4.app.Fragment fragment;
 
@@ -94,10 +78,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     private void addNationalParks() {
         List n= new List("National Parks", "List of several National Parks");
-        Location yosemite= new Location("Yosemite National Park", "Yosemite National Park", new LatLng(37.8651, -119.5383));
-        Location yellowstone= new Location("Yellowstone National Park", "Yellowstone National Park", new LatLng(44.4280, -110.5885));
-        Location grandcanyon= new Location("Grand Canyon National Park", "Grand Canyon National Park", new LatLng(36.0544, -112.1401));
-        Location acadia = new Location("Acadia National Park", "Acadia National Park", new LatLng(44.3386, -68.2733));
+        Location yosemite= new Location("Yosemite National Park", "Yosemite National Park", new TraveListLatLng(37.8651, -119.5383));
+        Location yellowstone= new Location("Yellowstone National Park", "Yellowstone National Park", new TraveListLatLng(44.4280, -110.5885));
+        Location grandcanyon= new Location("Grand Canyon National Park", "Grand Canyon National Park", new TraveListLatLng(36.0544, -112.1401));
+        Location acadia = new Location("Acadia National Park", "Acadia National Park", new TraveListLatLng(44.3386, -68.2733));
         ArrayList parks = new ArrayList();
         parks.add(yosemite);
         parks.add(yellowstone);
@@ -113,9 +97,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     private void addMuseums() {
         List n= new List("Lewisburg Museums", "List of Lewisburg Museums");
-        Location silfer= new Location("Slifer House Museum", "Slifer House Museum", new LatLng(40.975443, -76.882733));
-        Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", new LatLng(40.960241, -76.891185));
-        Location packwood = new Location("Packwood House Museum", "Packwood House Museum", new LatLng(40.966640, -76.881917));
+        Location silfer= new Location("Slifer House Museum", "Slifer House Museum", new TraveListLatLng(40.975443, -76.882733));
+        Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", new TraveListLatLng(40.960241, -76.891185));
+        Location packwood = new Location("Packwood House Museum", "Packwood House Museum", new TraveListLatLng(40.966640, -76.881917));
 
         ArrayList<Location> museums= new ArrayList();
         museums.add(silfer);
@@ -128,9 +112,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     private void addRestaurants() {
         List n= new List("Lewisburg Restaurants", "List of Lewisburg Restaurants");
-        Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new LatLng(40.962939,-76.88770));
-        Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new LatLng(40.963738, -76.886577));
-        Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new LatLng(40.962949, -76.887841));
+        Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new TraveListLatLng(40.962939,-76.88770));
+        Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new TraveListLatLng(40.963738, -76.886577));
+        Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new TraveListLatLng(40.962949, -76.887841));
 
         ArrayList<Location> restaurants = new ArrayList();
         restaurants.add(siam);
@@ -206,21 +190,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             case R.id.default_lists:
                 fragmentClass= CustomListFragment.class;
-                mDb.child("DefaultLists").addValueEventListener(new ValueEventListener() {
+                Log.d(TAG, "lookforme USER IS " + userEmail);
+                mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
                        for(DataSnapshot s:dataSnapshot.getChildren()){
 
-                           if(s.getKey().equals("DefaultList0")) {
+                           if(s.getKey().equals("National Parks")) {
                                List n = s.getValue(List.class);
                                dlist.add(n);
 
                            }
-                           if(s.getKey().equals("DefaultList1")) {
+                           if(s.getKey().equals("Lewisburg Museums")) {
                                List n = s.getValue(List.class);
                                dlist.add(n);
                            }
-                           if(s.getKey().equals("DefaultList2")) {
+                           if(s.getKey().equals("Lewisburg Restaurants")) {
                                List n = s.getValue(List.class);
                                dlist.add(n);
                                fragment = CustomListFragment.newInstance(dlist, true);

@@ -5,27 +5,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.PlaceDetectionApi;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,6 +39,8 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
     private String TAG = "SearchLocationsFragment";
 
     private DatabaseReference mDb;
+    private FirebaseUser user;
+    private String userEmail;
 
     private List list = null;
 
@@ -77,6 +73,8 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
         // Inflate the layout for this fragment
 
         mDb = FirebaseDatabase.getInstance().getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
         View view = inflater.inflate(R.layout.place_autocomplete_fragment, container, false);
 
@@ -95,7 +93,11 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
             public void onPlaceSelected(Place place) {
                 Log.i(TAG, "Place: " + place.getName().toString());
 
-                Location newLocation = new Location(place.getName().toString(), "", place.getLatLng());
+                TraveListLatLng newTraveListLatLng = new TraveListLatLng();
+                newTraveListLatLng.setLatitude(place.getLatLng().latitude);
+                newTraveListLatLng.setLongitude(place.getLatLng().longitude);
+
+                Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
                 if (newLocation == null) {
                     Log.i(TAG, "LOCATION IS NULL");
                 }
@@ -107,7 +109,7 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
                     Log.i(TAG, "New size of list: " + list.getListSize());
                 }
 
-                mDb.child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
+                mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
 
                 displayList(list);
 

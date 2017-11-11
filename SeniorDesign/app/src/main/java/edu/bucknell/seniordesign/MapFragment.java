@@ -14,11 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.Map;
 
 
 /**
@@ -82,8 +79,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             String name = bundle.getString("locName");
             Location loc = (Location) bundle.getSerializable("latLng");
 
-
-            addPoint(name, loc.getLatLng());
+            double lat = loc.getTraveListLatLng().getLatitude();
+            double lng = loc.getTraveListLatLng().getLongitude();
+            LatLng googLatLng = new LatLng(lat,lng);
+            addPoint(name, googLatLng);
         }
     }
 
