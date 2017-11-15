@@ -120,7 +120,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
         //mDb.child("Users").child(this.userEmail).child("lists").setValue(mDb.child("Default Lists"));
         //mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists"));
-        mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists").getValue());
+        mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
         /*mDb.child("Default Lists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,8 +36,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private String TAG = "NAV_DRAWER";
 
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private String userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+    private FirebaseUser user;
+    private String userEmail;
+    //private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    //private String userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
 
     private android.support.v4.app.Fragment fragment;
@@ -56,7 +59,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             e.printStackTrace();
         }*/
 
-        addNationalParks();
+        //addNationalParks();
         //addMuseums();
         //addRestaurants();
 
@@ -103,8 +106,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         //Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
         //i.putExtra("list",n); //pass the list instance we just made to the new activity
         //startActivity(i);
-       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        //mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
     }
 
     private void addMuseums() {
@@ -119,8 +122,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         museums.add(packwood);
         n.setLocationArray(museums);
 
-       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
     }
 
     private void addRestaurants() {
@@ -135,8 +138,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         restaurants.add(mercado);
         n.setLocationArray(restaurants);
 
-       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
     @Override
@@ -191,8 +194,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                if (null == user) {
+                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                    break;
+                } else {
                 fragmentClass = CreateNewListFragment.class;
                 break;
+                }
             case R.id.nearby_sites:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
@@ -203,38 +212,45 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 fragmentClass = LoginFragment.class;
                 break;
             case R.id.default_lists:
-                fragmentClass= CustomListFragment.class;
-                Log.d(TAG, "lookforme USER IS " + userEmail);
-                mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
-                   @Override
-                   public void onDataChange(DataSnapshot dataSnapshot) {
-                       for(DataSnapshot s:dataSnapshot.getChildren()){
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                if (null == user) {
+                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                    break;
+                } else {
+                    fragmentClass= CustomListFragment.class;
+                    userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+                    Log.d(TAG, "lookforme USER IS " + userEmail);
+                    mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot s : dataSnapshot.getChildren()) {
 
-                           if(s.getKey().equals("National Parks")) {
-                               List n = s.getValue(List.class);
-                               dlist.add(n);
+                                if (s.getKey().equals("National Parks")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
 
-                           }
-                           if(s.getKey().equals("Lewisburg Museums")) {
-                               List n = s.getValue(List.class);
-                               dlist.add(n);
-                           }
-                           if(s.getKey().equals("Lewisburg Restaurants")) {
-                               List n = s.getValue(List.class);
-                               dlist.add(n);
-                               fragment = CustomListFragment.newInstance(dlist, true);
-                               android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                               fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-                           }
-                       }
+                                }
+                                if (s.getKey().equals("Lewisburg Museums")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
+                                }
+                                if (s.getKey().equals("Lewisburg Restaurants")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
+                                    fragment = CustomListFragment.newInstance(dlist, true);
+                                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                }
+                            }
 
-                   }
+                        }
 
-                   @Override
-                   public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                   }
-                });
+                        }
+                    });
+                }
 
                 defaultList=true;
                 break;
