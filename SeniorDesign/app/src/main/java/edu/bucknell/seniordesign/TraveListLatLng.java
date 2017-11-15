@@ -1,10 +1,12 @@
 package edu.bucknell.seniordesign;
 
+import java.io.Serializable;
+
 /**
  * Created by nrs007 on 11/10/17.
  */
 
-public class TraveListLatLng {
+public class TraveListLatLng implements Serializable{
 
     private Double latitude;
     private Double longitude;

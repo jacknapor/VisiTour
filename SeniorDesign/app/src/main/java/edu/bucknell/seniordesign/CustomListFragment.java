@@ -58,41 +58,35 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
         View rootView = inflater.inflate(R.layout.activity_choose_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.list);
-        final ViewGroup v=container;
+        final ViewGroup vg=container;
+        final List l= this.list;
 
 
             addLocationButton = (FloatingActionButton) rootView.findViewById(R.id.add_location_button);
             addLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    android.support.v4.app.Fragment fragment = null;
-                    Class fragmentClass = null;
-                    fragmentClass = SearchLocationsFragment.class;
-                    try {
-                        fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
 
                     android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+                   // fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 Bundle bundle = new Bundle();
-                List newList = new List(listName, "");
-                bundle.putSerializable("current_list", newList);
-                fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.content_frag, fragment);
-                fragmentTransaction.addToBackStack(null);
 
-                    fragmentTransaction.replace(R.id.content_frag, fragment);
-                    fragmentTransaction.commit();
+                bundle.putSerializable("current_list", l);
+                SearchLocationsFragment fragment= SearchLocationsFragment.newInstance(l);
+                fragment.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
+
+
+
                 }
             });
 
 
         if (isLists) {
-
+            getActivity().setTitle("Lists");
             addLocationButton.hide();
 
             ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
@@ -108,12 +102,13 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
                     android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(v.getId(), fragment).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
                 }});
 
 
         } else {
+            getActivity().setTitle(this.list.getListName());
             ListAdapter adapter = new ListAdapter(getActivity(), R.layout.listlayout, this.list);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -124,11 +119,11 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
 
                     Location loc = list.getLocation(position);
-                    Log.i(TAG, "Location: " + loc.getLocationName());
+                    Log.e(TAG, "Location: " + loc.getTraveListLatLng().getLatitude());
 
                     MapFragment fragment = MapFragment.newInstance(loc);
                     android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(v.getId(), fragment).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
 
 
@@ -187,6 +182,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
 
     }

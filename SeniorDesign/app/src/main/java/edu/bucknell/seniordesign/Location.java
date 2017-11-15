@@ -15,7 +15,7 @@ public class Location implements Serializable{
     private int GPS;
 
 
-    private TraveListLatLng traveListLatLng;
+    private TraveListLatLng traveListLatLng= new TraveListLatLng();
 
     public Location (String name) {
         this.locationName = name;

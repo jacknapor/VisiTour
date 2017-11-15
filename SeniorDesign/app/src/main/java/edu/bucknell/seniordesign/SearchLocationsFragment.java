@@ -32,12 +32,12 @@ import com.google.firebase.database.FirebaseDatabase;
  * Use the {@link SearchLocationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchLocationsFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
+public class SearchLocationsFragment extends android.support.v4.app.Fragment implements GoogleApiClient.OnConnectionFailedListener , OnBackPressedListener{
 
     private OnFragmentInteractionListener mListener;
 
     private String TAG = "SearchLocationsFragment";
-
+    private final android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
     private DatabaseReference mDb;
     private FirebaseUser user;
     private String userEmail;
@@ -56,6 +56,11 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
     // TODO: Rename and change types and number of parameters
     public static SearchLocationsFragment newInstance() {
         SearchLocationsFragment fragment = new SearchLocationsFragment();
+        return fragment;
+    }
+    public static SearchLocationsFragment newInstance(List l) {
+        SearchLocationsFragment fragment = new SearchLocationsFragment();
+        fragment.list=l;
         return fragment;
     }
 
@@ -81,51 +86,89 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
         // Gets the List to add the locations to
         Bundle bundle = getArguments();
         if (bundle != null) {
-            this.list = (List) bundle.getSerializable("current_list");
+            //this.list = (List) bundle.getSerializable("current_list");
             Log.i(TAG, "List to add to: " + this.list.getListName());
+            getActivity().setTitle("Add a Location");
+
+            SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(Place place) {
+                    Log.i(TAG, "Place: " + place.getName().toString());
+
+                    TraveListLatLng newTraveListLatLng = new TraveListLatLng();
+                    newTraveListLatLng.setLatitude(place.getLatLng().latitude);
+                    newTraveListLatLng.setLongitude(place.getLatLng().longitude);
+
+                    Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
+                    if (newLocation == null) {
+                        Log.i(TAG, "LOCATION IS NULL");
+                    }
+                    if (list == null) {
+                        Log.i(TAG, "LIST IS NULL");
+                        Log.e("t", list.getListName());
+                    }
+                    list.addLocation(newLocation);
+                    if (list != null) {
+                        Log.i(TAG, list.getListName());
+                        Log.i(TAG, "New size of list: " + list.getListSize());
+
+                    }
+
+                    mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
+
+                    //  mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
+
+                    CustomListFragment fragment = CustomListFragment.newInstance(list);
+                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+
+
+
+                }
+                // display Places autocompleteFragment widget
+
+
+                @Override
+                public void onError(Status status) {
+
+                }
+            });
+            android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+
+        } else {
+            getActivity().setTitle("Location Search");
+            SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(Place place) {
+                    Log.i(TAG, "Place: " + place.getName().toString());
+
+                    TraveListLatLng newTraveListLatLng = new TraveListLatLng();
+                    newTraveListLatLng.setLatitude(place.getLatLng().latitude);
+                    newTraveListLatLng.setLongitude(place.getLatLng().longitude);
+
+                    Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
+                    MapFragment m = MapFragment.newInstance(newLocation);
+                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, m).addToBackStack(null).commit();
+                }
+
+
+                @Override
+                public void onError(Status status) {
+
+                }
+            });
+            //FragmentManager fragmentManager = getFragmentManager();
+            android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+
         }
 
-
-        SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                Log.i(TAG, "Place: " + place.getName().toString());
-
-                TraveListLatLng newTraveListLatLng = new TraveListLatLng();
-                newTraveListLatLng.setLatitude(place.getLatLng().latitude);
-                newTraveListLatLng.setLongitude(place.getLatLng().longitude);
-
-                Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
-                if (newLocation == null) {
-                    Log.i(TAG, "LOCATION IS NULL");
-                }
-                if (list == null) {
-                    Log.i(TAG, "LIST IS NULL");
-                }
-                list.addLocation(newLocation);
-                if (list!=null) {
-                    Log.i(TAG, "New size of list: " + list.getListSize());
-                }
-
-                mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
-
-                displayList(list);
-
-            }
-
-            @Override
-            public void onError(Status status) {
-
-            }
-        });
-
-        // display Places autocompleteFragment widget
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frag, autocompleteFragment);
-        fragmentTransaction.commit();
 
         return view;
     }
@@ -136,11 +179,9 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
      * @param list
      */
     public void displayList(List list) {
-        Fragment fragment = CustomListFragment.newInstance(list);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frag, fragment);
-        fragmentTransaction.commit();
+        CustomListFragment fragment = CustomListFragment.newInstance(list);
+        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -185,5 +226,9 @@ public class SearchLocationsFragment extends Fragment implements GoogleApiClient
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onBackPressed(){
+        getActivity().onBackPressed();
     }
 }

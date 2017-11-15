@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,7 +35,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private Location l;
     private String TAG = "MapFragment";
 
     MapView mapView;
@@ -70,19 +70,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         MapFragment fragment = new MapFragment();
         fragment.setArguments(bundle);
+        Log.e("a", "Location: " + loc.getLocationName());
+        //fragment.setLoc(loc);
         return fragment;
+    }
+    public void setLoc(Location a){
+        this.l=a;
+        double lat = this.l.getTraveListLatLng().getLatitude();
+        double lng = this.l.getTraveListLatLng().getLongitude();
+        LatLng googLatLng = new LatLng(lat,lng);
+        addPoint(this.l.getLocationName(), googLatLng);
     }
 
     public void readBundle() {
         Bundle bundle = getArguments();
+        Log.e(TAG, "a");
         if (bundle != null) {
+
             String name = bundle.getString("locName");
+            getActivity().setTitle(name);
 /*<<<<<<< HEAD
             Location loc = (Location) bundle.getSerializable("loc");
 
             addPoint(name, loc.getLatLng());
 =======*/
-            Location loc = (Location) bundle.getSerializable("latLng");
+
+            Location loc = (Location) bundle.getSerializable("loc");
+            Log.e(TAG, loc.getLocationName() );
 
             double lat = loc.getTraveListLatLng().getLatitude();
             double lng = loc.getTraveListLatLng().getLongitude();

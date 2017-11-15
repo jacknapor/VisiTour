@@ -56,7 +56,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             e.printStackTrace();
         }*/
 
-        //addNationalParks();
+        addNationalParks();
         //addMuseums();
         //addRestaurants();
 
@@ -103,7 +103,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         //Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
         //i.putExtra("list",n); //pass the list instance we just made to the new activity
         //startActivity(i);
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
     }
 
     private void addMuseums() {
@@ -118,7 +119,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         museums.add(packwood);
         n.setLocationArray(museums);
 
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
     }
 
     private void addRestaurants() {
@@ -133,7 +135,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         restaurants.add(mercado);
         n.setLocationArray(restaurants);
 
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
     @Override
@@ -247,7 +250,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             }else{
             fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();}
 
         } catch (Exception e) {
             e.printStackTrace();

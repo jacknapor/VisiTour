@@ -28,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Use the {@link CreateNewListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateNewListFragment extends Fragment {
+public class CreateNewListFragment extends android.support.v4.app.Fragment {
 
     private String TAG = "CreateNewListFragment";
 
@@ -88,30 +88,24 @@ public class CreateNewListFragment extends Fragment {
                 Log.i(TAG, "Name: " + name);
 
                 //mDatabase.child("User Lists").child(name).setValue(name);
-                mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(name);
+
 
                 hideKeyboard();
 
-                Fragment fragment = null;
-                Class fragmentClass = null;
-                fragmentClass = ListFragment.class;
-                try {
-                    fragment = (Fragment) fragmentClass.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+
+                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+
+                //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 Bundle bundle = new Bundle();
                 List newList = new List(name, "");
+                mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(newList);
                 bundle.putSerializable("new_list", newList);
+                CustomListFragment fragment= CustomListFragment.newInstance(newList);
                 fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.content_frag, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
             }
         });
 
