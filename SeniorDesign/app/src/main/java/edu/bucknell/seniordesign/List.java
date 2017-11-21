@@ -1,5 +1,6 @@
 package edu.bucknell.seniordesign;
 
+import android.util.Log;
 import android.widget.ExpandableListView;
 
 import java.io.Serializable;
@@ -22,6 +23,20 @@ public class List implements Serializable {
     public List(String listName, String listDescription) {
         this.listName = listName;
         this.listDescription = listDescription;
+    }
+
+    public int getCompletionStatus(){
+        double prog=0;
+        for (int q=0; q < locationArray.size(); q++){
+            if (locationArray.get(q).getVisited()){
+                prog++;
+            }
+
+        }
+        double t= (prog/(double)locationArray.size())*100;
+        int tot= (int)t;
+        Log.e("progress", Double.toString(t));
+        return tot;
     }
 
     public Location getLocation(int position) {

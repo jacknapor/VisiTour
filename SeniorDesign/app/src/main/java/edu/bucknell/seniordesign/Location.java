@@ -13,6 +13,7 @@ public class Location implements Serializable{
     private String locationName;
     private String locationDescription;
     private int GPS;
+    private boolean visited;
 
 
     private TraveListLatLng traveListLatLng= new TraveListLatLng();
@@ -25,6 +26,10 @@ public class Location implements Serializable{
         this.locationName = name;
         this.locationDescription = description;
         this.traveListLatLng = traveListLatLng;
+    }
+
+    public boolean getVisited(){
+        return this.visited;
     }
 
     public TraveListLatLng getTraveListLatLng() {
@@ -45,6 +50,10 @@ public class Location implements Serializable{
 
     public void setLocationDescription(String description){
         this.locationDescription = description;
+    }
+
+    public void setVisited(boolean v){
+        this.visited=v;
     }
 
     public Location() {}

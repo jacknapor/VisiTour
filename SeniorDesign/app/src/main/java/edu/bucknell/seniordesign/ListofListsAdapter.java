@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             ImageView icon = (ImageView) v.findViewById(R.id.imageView3);
             TextView name = (TextView) v.findViewById(R.id.textViewName);
             TextView description = (TextView) v.findViewById(R.id.textViewDescription);
+            ProgressBar progress= (ProgressBar) v.findViewById(R.id.progressBar1);
+            progress.setVisibility(View.VISIBLE);
+
+            if (progress !=null){
+            progress.setProgress(p.getCompletionStatus());
+            }
 
 
             if (icon != null) {

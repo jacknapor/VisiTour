@@ -201,7 +201,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 } else {
                 fragmentClass = CreateNewListFragment.class;
                 break;
-                }
+               }
             case R.id.nearby_sites:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
@@ -212,15 +212,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 fragmentClass = LoginFragment.class;
                 break;
             case R.id.default_lists:
-                user = FirebaseAuth.getInstance().getCurrentUser();
+               // user = FirebaseAuth.getInstance().getCurrentUser();
+
                 if (null == user) {
-                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
-                    break;
-                } else {
+                   // Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                   // break;
+                //} else {
                     fragmentClass= CustomListFragment.class;
-                    userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
-                    Log.d(TAG, "lookforme USER IS " + userEmail);
-                    mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
+                    boolean t=true;
+                    boolean f=false;
+                    mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child("Lewisburg Museums").child("locationArray").child("0").child("visited").setValue(t);
+                    mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child("Lewisburg Museums").child("locationArray").child("1").child("visited").setValue(f);
+                    mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child("Lewisburg Museums").child("locationArray").child("2").child("visited").setValue(t);
+
+                   // userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+                  //  Log.d(TAG, "lookforme USER IS " + userEmail);
+                    mDb.child("Users").child("jacknapor@yahoo,com").child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
