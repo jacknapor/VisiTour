@@ -1,6 +1,7 @@
 package edu.bucknell.seniordesign;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,12 +53,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*ReadData readData = new ReadData();
+
+        ReadData readData = new ReadData();
         try {
-            readData.readXLSFile();
+            readData.readXLSFile(this);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
 
         //addNationalParks();
         //addMuseums();
@@ -220,6 +222,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     fragmentClass= CustomListFragment.class;
                     userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
                     Log.d(TAG, "lookforme USER IS " + userEmail);
+
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -230,7 +233,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                     dlist.add(n);
 
                                 }
+                                if (s.getKey().equals("Museums Near Lewisburg")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
+                                }
                                 if (s.getKey().equals("Lewisburg Museums")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
+                                }
+                                if (s.getKey().equals("All National Parks")) {
                                     List n = s.getValue(List.class);
                                     dlist.add(n);
                                 }

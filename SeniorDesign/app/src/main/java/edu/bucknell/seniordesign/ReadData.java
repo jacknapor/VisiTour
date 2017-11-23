@@ -1,58 +1,88 @@
 package edu.bucknell.seniordesign;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.os.WorkSource;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 
 
 /**
- * Created by Acer on 11/10/2017.
+ * ReadData is a helper class that pushes default lists to the database. A default list must be an xls file with the following fields
+ * in this particular order: Name, Latitude, Longitude.
+ *
+ * Created by Caroline on 11/10/2017.
  */
 
 public class ReadData extends AppCompatActivity {
 
-    private String TAG = "ReadData";
+    private String TAG = "Read Data";
 
-    public void readXLSFile() throws IOException {
+    private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
 
-        InputStream ExcelFileToRead = getApplicationContext().getAssets().open("national_parks.xlsx");
 
-        //InputStream ExcelFileToRead = new FileInputStream("national_parks");
-        HSSFWorkbook wb = new HSSFWorkbook(ExcelFileToRead);
+    public void ReadData(Context context) {
+        try {
+            readXLSFile(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        HSSFSheet sheet=wb.getSheetAt(0);
-        HSSFRow row;
-        HSSFCell cell;
+    public void readXLSFile(Context context) throws IOException {
 
-        Iterator rows = sheet.rowIterator();
+        // Change the resources file to the proper resources file
+        //InputStream stream = context.getResources().openRawResource(R.raw.nat_parks);
+        InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_local_museums);
 
-        while (rows.hasNext()) {
-            row = (HSSFRow) rows.next();
-            Iterator cells = row.cellIterator();
+        // Change the name and description of this list to reflect the proper name and description
+        //List list = new List("All National Parks", "A list of all National Parks");
+        List list = new List("Museums Near Lewisburg", "Museums in & around Lewisburg");
 
-            while (cells.hasNext()) {
-                cell = (HSSFCell) cells.next();
+        ArrayList locations = new ArrayList();
 
-                if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-                    Log.i(TAG, cell.getStringCellValue() + " ");
-                } else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-                    Log.i(TAG, cell.getNumericCellValue() + " ");
-                } else {
-                    //U Can Handel Boolean, Formula, Errors
-                }
+        try {
+
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(stream);
+            HSSFSheet sheet = hssfWorkbook.getSheetAt(0);
+            int numRows = sheet.getPhysicalNumberOfRows();
+            Log.i(TAG, "# rows: " + numRows);
+            for (int r = 1; r < numRows; r++) {
+                Row row = sheet.getRow(r);
+
+                String locName = row.getCell(0).getStringCellValue();
+                double lat = row.getCell(1).getNumericCellValue();
+                double lng = row.getCell(2).getNumericCellValue();
+
+                Location loc = new Location(locName, "", new TraveListLatLng(lat, lng));
+                locations.add(loc);
             }
-            System.out.println();
+
+            list.setLocationArray(locations);
+            mDb.child("DefaultLists").child(list.getListName()).setValue(list);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
