@@ -4,12 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -19,6 +30,11 @@ import java.util.ArrayList;
 
 public class ListAdapter extends ArrayAdapter<Location> {
     List list;
+    Boolean isVisited;
+    Boolean made=false;
+    private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String userEmail = user.getEmail().replace(".", ",");
     public ListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
@@ -43,7 +59,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
         View v = convertView;
 
 
-        if (v == null) {
+       if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             v = vi.inflate(R.layout.listlayout, null);
@@ -57,7 +73,61 @@ public class ListAdapter extends ArrayAdapter<Location> {
             ImageView icon = (ImageView) v.findViewById(R.id.imageView3);
             TextView name = (TextView) v.findViewById(R.id.textViewName);
             TextView description = (TextView) v.findViewById(R.id.textViewDescription);
+            CheckBox checkbox= (CheckBox) v.findViewById(R.id.visited);
+            checkbox.setVisibility(View.VISIBLE);
 
+            TextView a= (TextView) v.findViewById(R.id.textView3);
+            a.setVisibility(View.VISIBLE);
+            final CheckBox c= checkbox;
+            Log.e("a", Integer.toString(position));
+            mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child("locationArray").child(Integer.toString(position)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot s : dataSnapshot.getChildren()) {
+
+                        if (s.getKey().equals("visited")) {
+                            isVisited= s.getValue(Boolean.class);
+
+
+                        }
+
+                }c.setChecked(isVisited);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+            final Location pp=p;
+            final List l=list;
+            final int pos= position;
+            c.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+
+                    if(c.isChecked()){
+                        pp.setVisited(true);
+
+                         mDb.child("Users").child(userEmail).child("lists").child(l.getListName()).child("locationArray").child(Integer.toString(pos)).child("visited").setValue(true);
+                        //mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child(l.getListName()).child("locationArray").child(Integer.toString(pos)).child("visited").setValue(true);
+                        made=true;
+
+                    }else{
+                        pp.setVisited(false);
+
+                        mDb.child("Users").child(userEmail).child("lists").child(l.getListName()).child("locationArray").child(Integer.toString(pos)).child("visited").setValue(false);
+                        made=true;
+
+                        //mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child(l.getListName()).child("locationArray").child(Integer.toString(pos)).child("visited").setValue(false);
+                    }
+
+                }
+            });
+            Log.e("wtf", "wtf");
 
             if (icon != null) {
                 icon.setImageResource(R.drawable.ic_menu_gallery);
