@@ -85,15 +85,8 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
 
                 String name = mNameField.getText().toString().trim();
-                Log.i(TAG, "Name: " + name);
-
                 //mDatabase.child("User Lists").child(name).setValue(name);
-
-
                 hideKeyboard();
-
-
-
 
                 android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
 

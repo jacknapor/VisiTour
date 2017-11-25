@@ -67,7 +67,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 @Override
                 public void onClick(View v) {
 
-
                     android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
 
                    // fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -75,7 +74,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 Bundle bundle = new Bundle();
 
                 bundle.putSerializable("current_list", l);
-                SearchLocationsFragment fragment= SearchLocationsFragment.newInstance(l);
+                SearchLocationsFragment fragment = SearchLocationsFragment.newInstance(l);
                 fragment.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 

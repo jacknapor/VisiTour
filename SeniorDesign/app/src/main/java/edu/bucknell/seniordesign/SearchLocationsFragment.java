@@ -1,6 +1,8 @@
 package edu.bucknell.seniordesign;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -86,43 +88,54 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         // Gets the List to add the locations to
         Bundle bundle = getArguments();
         if (bundle != null) {
-            //this.list = (List) bundle.getSerializable("current_list");
             Log.i(TAG, "List to add to: " + this.list.getListName());
+            final List finalList = this.list;
             getActivity().setTitle("Add a Location");
-
             SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(Place place) {
                     Log.i(TAG, "Place: " + place.getName().toString());
+                    final Place finalPlace = place;
 
-                    TraveListLatLng newTraveListLatLng = new TraveListLatLng();
-                    newTraveListLatLng.setLatitude(place.getLatLng().latitude);
-                    newTraveListLatLng.setLongitude(place.getLatLng().longitude);
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == DialogInterface.BUTTON_NEGATIVE) {
+                            }
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                TraveListLatLng newTraveListLatLng = new TraveListLatLng();
+                                newTraveListLatLng.setLatitude(finalPlace.getLatLng().latitude);
+                                newTraveListLatLng.setLongitude(finalPlace.getLatLng().longitude);
 
-                    Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
-                    if (newLocation == null) {
-                        Log.i(TAG, "LOCATION IS NULL");
-                    }
-                    if (list == null) {
-                        Log.i(TAG, "LIST IS NULL");
-                        Log.e("t", list.getListName());
-                    }
-                    list.addLocation(newLocation);
-                    if (list != null) {
-                        Log.i(TAG, list.getListName());
-                        Log.i(TAG, "New size of list: " + list.getListSize());
+                                Location newLocation = new Location(finalPlace.getName().toString(), "", newTraveListLatLng);
+                                if (newLocation == null) {
+                                    Log.i(TAG, "LOCATION IS NULL");
+                                }
+                                if (list == null) {
+                                    Log.i(TAG, "LIST IS NULL");
+                                    Log.e("t", list.getListName());
+                                }
+                                list.addLocation(newLocation);
+                                if (list != null) {
+                                    Log.i(TAG, list.getListName());
+                                    Log.i(TAG, "New size of list: " + list.getListSize());
+                                }
 
-                    }
+                                mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
 
-                    mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
+                                //  mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
 
-                    //  mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child(newLocation.getLocationName()).setValue(newLocation);
+                                CustomListFragment fragment = CustomListFragment.newInstance(list);
+                                android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                            }
+                        }
+                    };
 
-                    CustomListFragment fragment = CustomListFragment.newInstance(list);
-                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Add " + place.getName() + " to " + list.getListName() + "?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
 
 
 
@@ -163,10 +176,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                 }
             });
-            //FragmentManager fragmentManager = getFragmentManager();
             android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
-
         }
 
 

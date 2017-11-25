@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,23 +57,20 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        ReadData readData = new ReadData();
+        /*
+        Uncomment the following block of code to push default lists to database.
+         */
+        /*ReadData readData = new ReadData();
         try {
             readData.readXLSFile(this);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        //addNationalParks();
-        //addMuseums();
-        //addRestaurants();
+        }*/
 
         if (savedInstanceState == null) {
 
             Fragment fragment = null;
-            Class fragmentClass = null;
-            //fragmentClass = SearchLocationsFragment.class;
-            fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
+            Class fragmentClass = fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
@@ -90,7 +90,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-     
 
     private void addNationalParks() {
         List n= new List("National Parks", "List of several National Parks");
@@ -144,6 +143,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -158,6 +158,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation_drawer, menu);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            setUserName();
+        }
         return true;
     }
 
@@ -166,12 +171,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -188,7 +187,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public void selectDrawerItem(MenuItem menuItem) {
         this.fragment = null;
         Class fragmentClass = null;
-       final ArrayList<List> dlist= new ArrayList<List>();
+        final ArrayList<List> dlist= new ArrayList<List>();
 
         DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
 
@@ -223,6 +222,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
                     Log.d(TAG, "lookforme USER IS " + userEmail);
 
+                    dlist.clear();
+
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -231,7 +232,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                 if (s.getKey().equals("National Parks")) {
                                     List n = s.getValue(List.class);
                                     dlist.add(n);
-
                                 }
                                 if (s.getKey().equals("Museums Near Lewisburg")) {
                                     List n = s.getValue(List.class);
@@ -242,6 +242,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                     dlist.add(n);
                                 }
                                 if (s.getKey().equals("All National Parks")) {
+                                    List n = s.getValue(List.class);
+                                    dlist.add(n);
+                                }
+                                if (s.getKey().equals("my new list")) {
                                     List n = s.getValue(List.class);
                                     dlist.add(n);
                                 }
@@ -285,6 +289,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void setUserName() {
+        TextView userTextView = (TextView) findViewById(R.id.user_name);
+        TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
+        Log.i(TAG, "my user: " + user.getDisplayName());
+        userTextView.setText(user.getDisplayName());
+        userEmailTextView.setText(user.getEmail());
     }
 
     @Override
