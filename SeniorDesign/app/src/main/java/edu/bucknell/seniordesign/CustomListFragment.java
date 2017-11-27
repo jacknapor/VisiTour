@@ -1,12 +1,9 @@
 package edu.bucknell.seniordesign;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by Jack on 10/23/2017.
@@ -56,7 +49,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.activity_choose_list, container, false);
+        final View rootView = inflater.inflate(R.layout.activity_choose_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup vg=container;
         final List l= this.list;
@@ -67,7 +60,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 @Override
                 public void onClick(View v) {
 
-                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                    // fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
@@ -89,7 +82,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             addLocationButton.hide();
 
             ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
-                    R.layout.listlayout, (ArrayList<List>) getArguments().getSerializable("list"));
+                    R.layout.listlayout, listoflists);
             listView = (ListView) rootView.findViewById(R.id.list);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -100,7 +93,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
                     List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
-                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
                 }});
@@ -108,9 +101,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
         } else {
             getActivity().setTitle(this.list.getListName());
+
             ListAdapter adapter = new ListAdapter(getActivity(), R.layout.listlayout, this.list);
-            listView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -121,13 +113,16 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     Log.e(TAG, "Location: " + loc.getTraveListLatLng().getLatitude());
 
                     MapFragment fragment = MapFragment.newInstance(loc);
-                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
 
 
                 }
             });
+            listView.setAdapter(adapter);
+            //adapter.notifyDataSetChanged();
+
 
         }
         return rootView;

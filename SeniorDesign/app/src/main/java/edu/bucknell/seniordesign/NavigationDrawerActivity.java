@@ -55,8 +55,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         /*
         Uncomment the following block of code to push default lists to database.
          */
@@ -66,6 +64,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
         if (savedInstanceState == null) {
 
@@ -98,17 +98,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Location grandcanyon= new Location("Grand Canyon National Park", "Grand Canyon National Park", new TraveListLatLng(36.0544, -112.1401));
         Location acadia = new Location("Acadia National Park", "Acadia National Park", new TraveListLatLng(44.3386, -68.2733));
         ArrayList parks = new ArrayList();
+        yosemite.setVisited(false);
+        yellowstone.setVisited(false);
+        grandcanyon.setVisited(false);
+        acadia.setVisited(false);
         parks.add(yosemite);
         parks.add(yellowstone);
         parks.add(grandcanyon);
         parks.add(acadia);
 
         n.setLocationArray(parks);
-        //Intent i = new Intent(DefaultListLoader.this,ListLoader.class); // intent to start new activity
-        //i.putExtra("list",n); //pass the list instance we just made to the new activity
-        //startActivity(i);
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        //mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
+
+       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
     }
 
     private void addMuseums() {
@@ -116,15 +118,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Location silfer= new Location("Slifer House Museum", "Slifer House Museum", new TraveListLatLng(40.975443, -76.882733));
         Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", new TraveListLatLng(40.960241, -76.891185));
         Location packwood = new Location("Packwood House Museum", "Packwood House Museum", new TraveListLatLng(40.966640, -76.881917));
-
+        silfer.setVisited(false);
+        children.setVisited(false);
+        packwood.setVisited(false);
         ArrayList<Location> museums= new ArrayList();
         museums.add(silfer);
         museums.add(children);
         museums.add(packwood);
         n.setLocationArray(museums);
 
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
+        //mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
     }
 
     private void addRestaurants() {
@@ -132,15 +136,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new TraveListLatLng(40.962939,-76.88770));
         Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new TraveListLatLng(40.963738, -76.886577));
         Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new TraveListLatLng(40.962949, -76.887841));
-
+        siam.setVisited(false);
+        elizabeths.setVisited(false);
+        mercado.setVisited(false);
         ArrayList<Location> restaurants = new ArrayList();
         restaurants.add(siam);
         restaurants.add(elizabeths);
         restaurants.add(mercado);
         n.setLocationArray(restaurants);
 
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
+        //mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
 
@@ -195,14 +201,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
-                user = FirebaseAuth.getInstance().getCurrentUser();
+
                 if (null == user) {
                     Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
                     break;
                 } else {
                 fragmentClass = CreateNewListFragment.class;
                 break;
-                }
+               }
             case R.id.nearby_sites:
                 fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
                 break;
@@ -213,15 +219,21 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 fragmentClass = LoginFragment.class;
                 break;
             case R.id.default_lists:
-                user = FirebaseAuth.getInstance().getCurrentUser();
+
+                defaultList=true;
+
                 if (null == user) {
-                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
-                    break;
+                   Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                   break;
                 } else {
                     fragmentClass= CustomListFragment.class;
-                    userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
-                    Log.d(TAG, "lookforme USER IS " + userEmail);
 
+
+                    boolean t=true;
+                    boolean f=false;
+
+
+                   Log.e(TAG, "lookforme USER IS " + userEmail);
 
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
@@ -281,7 +293,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         try {
 
             if(defaultList){
-                fragment = CustomListFragment.newInstance(dlist, true);
+
             }else{
             fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
