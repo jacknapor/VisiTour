@@ -222,14 +222,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
                     Log.d(TAG, "lookforme USER IS " + userEmail);
 
-                    dlist.clear();
 
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot s : dataSnapshot.getChildren()) {
 
-                                if (s.getKey().equals("National Parks")) {
+                            for (DataSnapshot s : dataSnapshot.getChildren()) {
+                                List n = s.getValue(List.class);
+                                dlist.add(n);
+
+                                /*if (s.getKey().equals("National Parks")) {
                                     List n = s.getValue(List.class);
                                     dlist.add(n);
                                 }
@@ -255,9 +257,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                     fragment = CustomListFragment.newInstance(dlist, true);
                                     android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-                                }
+                                }*/
                             }
-
+                            fragment = CustomListFragment.newInstance(dlist, true);
+                            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                         }
 
                         @Override

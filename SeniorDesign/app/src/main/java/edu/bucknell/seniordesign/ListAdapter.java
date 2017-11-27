@@ -60,7 +60,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
 
             if (icon != null) {
-                icon.setImageResource(R.drawable.ic_menu_gallery);
+                icon.setImageResource(R.drawable.ic_image_black_24dp);
             }
 
             if (name != null) {
