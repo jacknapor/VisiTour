@@ -37,4 +37,15 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/share_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_margin="10dp"
+        android:src="@android:drawable/ic_menu_share"
+        android:tint="@android:color/white"
+        />
+
 </RelativeLayout>

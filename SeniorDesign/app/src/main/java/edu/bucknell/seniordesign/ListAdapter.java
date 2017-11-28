@@ -2,14 +2,19 @@ package edu.bucknell.seniordesign;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -58,9 +63,18 @@ public class ListAdapter extends ArrayAdapter<Location> {
             TextView name = (TextView) v.findViewById(R.id.textViewName);
             TextView description = (TextView) v.findViewById(R.id.textViewDescription);
 
+            Log.d("lookformeyayyyy", "imageUrl is: " + p.getImageUrl());
 
-            if (icon != null) {
+            if (p.getImageUrl() != null && icon != null) {
+                Log.d("lookformeyay", "in the right if sick bro");
+                Glide.with(getContext()).load(p.getImageUrl()).into(icon);
+            }
+
+
+            else if (icon != null) {
+                //Log.d("lookformeyay", "location name is " + p.getLocationName());
                 icon.setImageResource(R.drawable.ic_menu_gallery);
+
             }
 
             if (name != null) {

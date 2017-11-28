@@ -31,4 +31,16 @@
             android:tint="@android:color/white" />
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fb_share_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="10dp"
+        android:src="@android:drawable/ic_menu_share"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        />
+
+
 </FrameLayout>

@@ -128,9 +128,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     private void addRestaurants() {
         List n= new List("Lewisburg Restaurants", "List of Lewisburg Restaurants");
-        Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new TraveListLatLng(40.962939,-76.88770));
-        Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new TraveListLatLng(40.963738, -76.886577));
-        Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new TraveListLatLng(40.962949, -76.887841));
+        Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new TraveListLatLng(40.962939,-76.88770), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2Fsiam-cafe.jpg?alt=media&token=1b113486-8614-4290-b666-ef68a4b69bed");
+        Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new TraveListLatLng(40.963738, -76.886577), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2FElizabeths.jpg?alt=media&token=40be4e77-4645-4224-93ed-de58f50dfe95");
+        Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new TraveListLatLng(40.962949, -76.887841), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2Fmercado.jpg?alt=media&token=c1a68734-7dc0-463c-96be-228a0933b880");
 
         ArrayList<Location> restaurants = new ArrayList();
         restaurants.add(siam);
