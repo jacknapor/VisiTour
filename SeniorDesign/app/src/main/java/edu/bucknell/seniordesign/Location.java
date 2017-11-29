@@ -14,12 +14,21 @@ public class Location implements Serializable{
     private String locationDescription;
     private int GPS;
     private boolean visited;
+    private String imageUrl;
+
 
 
     private TraveListLatLng traveListLatLng= new TraveListLatLng();
 
     public Location (String name) {
         this.locationName = name;
+    }
+
+    public Location(String name, String description, TraveListLatLng traveListLatLng, String imageUrl) {
+        this.locationName = name;
+        this.locationDescription = description;
+        this.traveListLatLng = traveListLatLng;
+        this.imageUrl = imageUrl;
     }
 
     public Location(String name, String description, TraveListLatLng traveListLatLng) {
@@ -43,6 +52,8 @@ public class Location implements Serializable{
     public String getLocationDescription(){
         return locationDescription;
     }
+
+    public String getImageUrl() {return imageUrl; }
 
     public void setLocationName(String name){
         this.locationName = name;

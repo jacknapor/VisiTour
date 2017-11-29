@@ -15,6 +15,7 @@ import java.util.concurrent.Executor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +23,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -55,15 +58,37 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private FirebaseUser user;
     private String userEmail;
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
+    private Profile profile;
     private CallbackManager mCallbackManager;
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            AccessToken accessToken = loginResult.getAccessToken();
-            handleToken(accessToken);
-            Profile profile = Profile.getCurrentProfile();
-            if (profile != null) {
+            updateUser();
+            Log.d(TAG, "hihi you've clicked the login button great job, user is " + user + " and email is " + userEmail);
+            AccessToken accessToken;
+            if (null == user) {
+                accessToken = loginResult.getAccessToken();
+                handleToken(accessToken);
+            } else {
+                Log.d(TAG, "hihi you just clicked the logout button for the first time, user not null, and now it should log you out");
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
             }
+            AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+                @Override
+                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                    if (currentAccessToken == null) {
+                        Log.d(TAG, "hihi thinks you're logging out");
+                        FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                        Log.d(TAG, "hihi in accesstokentracker (should be loggedout), you're " + user);
+                        //how can we update the view when you log out?
+                    } else {
+                        Log.d(TAG, "hihi thinks you're signing in!");
+                        handleToken(currentAccessToken);
+                    }
+                }
+            };
         }
 
         @Override
@@ -77,6 +102,26 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         }
     };
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getActivity().setTitle("Facebook Log In");
+
+        mAuth = FirebaseAuth.getInstance();
+        mCallbackManager = CallbackManager.Factory.create();
+        //
+    }
+
+    private void updateUser() {
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            userEmail = user.getEmail().replace(".", ",");
+        } else {
+            userEmail = null;
+        }
+    }
+
     private void handleToken(AccessToken accessToken) {
         Log.d(TAG, "handleToken:" + accessToken);
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
@@ -84,21 +129,22 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    user = mAuth.getCurrentUser();
-                    userEmail = user.getEmail().replace(".", ","); //replaces "." with "," because Firebase doesn't allow "." in key
+                    updateUser();
+                    Log.d(TAG, "hihi useremail in handletoken onComplete is" + userEmail);
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (user != null) {
-                                Log.d(TAG, "lookforme email is " + userEmail);
                                 if (!(dataSnapshot.child("Users").hasChild(userEmail))) {
+                                    // if the user is not in the database (i.e. a new user), create a user in the db
                                     try {
                                         createNewUser(dataSnapshot);
+                                        Log.d(TAG, "hihi added" + userEmail + "to db successfully");
                                     } catch (Exception E) {
                                         Log.d(TAG, "Error: Adding user ID to database failed");
                                     }
                                 } else {
-                                    Log.d(TAG, "User ID is already in Database");
+                                    Log.d(TAG, "hihi User ID" + userEmail + " is already in Database");
                                 }
                             }
                         }
@@ -118,48 +164,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void createNewUser(DataSnapshot ds) {
         mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
-        //mDb.child("Users").child(this.userEmail).child("lists").setValue(mDb.child("Default Lists"));
-        //mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists"));
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
-        /*mDb.child("Default Lists").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mDb.child("Users");
-                mDb.child(userEmail);
-                mDb.child("lists");
-                mDb.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError error, DatabaseReference databaseReference) {
-                        if (error != null) {
-                            Log.d(TAG, "copy failed");
-                        } else {
-                            Log.d(TAG, "success");
-                        }
-                    }
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, "copy cancelled");
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     public LoginFragment() {}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        getActivity().setTitle("Facebook Log In");
-
-        mAuth = FirebaseAuth.getInstance();
-        mCallbackManager = CallbackManager.Factory.create();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -185,7 +195,6 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //maybe somehow make the login fragment not appear first if user is signed in?
     }
 
     public interface OnFragmentInteractionListener {
