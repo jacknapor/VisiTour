@@ -60,23 +60,31 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            final AccessToken accessToken = loginResult.getAccessToken();
-
-
+            Log.d(TAG, "hihi you've clicked the login button great job");
+            AccessToken accessToken;
+            if (null == user) {
+                accessToken = loginResult.getAccessToken();
+                handleToken(accessToken);
+            } else {
+                Log.d(TAG, "you just clicked the logout button for the first time, user not null, and now it should log you out");
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+            }
             AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
                 @Override
                 protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                     if (currentAccessToken == null) {
+                        Log.d(TAG, "hihi thinks you're logging out");
                         FirebaseAuth.getInstance().signOut();
                         LoginManager.getInstance().logOut();
+                        Log.d(TAG, "hihi in accesstokentracker (should be loggedout), you're " + user);
+                        //how can we update the view when you log out?
                     } else {
-                        //handleToken(accessToken);
+                        Log.d(TAG, "hihi thinks you're signing in!");
+                        handleToken(currentAccessToken);
                     }
                 }
             };
-
-            handleToken(accessToken);
-
         }
 
         @Override
@@ -99,6 +107,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 if (task.isSuccessful()) {
                     user = mAuth.getCurrentUser();
                     userEmail = user.getEmail().replace(".", ","); //replaces "." with "," because Firebase doesn't allow "." in key
+                    Log.d(TAG, "hihi useremail in handletoken onComplete is" + userEmail);
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -107,11 +116,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                                     // if the user is not in the database (i.e. a new user), create a user in the db
                                     try {
                                         createNewUser(dataSnapshot);
+                                        Log.d(TAG, "hihi added" + userEmail + "to db successfully");
                                     } catch (Exception E) {
                                         Log.d(TAG, "Error: Adding user ID to database failed");
                                     }
                                 } else {
-                                    Log.d(TAG, "User ID is already in Database");
+                                    Log.d(TAG, "hihi User ID" + userEmail + " is already in Database");
                                 }
                             }
                         }
