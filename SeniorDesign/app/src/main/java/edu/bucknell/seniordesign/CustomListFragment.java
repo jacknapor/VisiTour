@@ -1,5 +1,9 @@
 package edu.bucknell.seniordesign;
 
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -11,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,9 +43,12 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     private ArrayList<List> listoflists = null;
 
     private FloatingActionButton addLocationButton;
-
+    private FloatingActionButton fbShareButton;
+    private ShareDialog shareDialog; //del
 
     private String TAG = "CustomListFragment";
+    private String imageUrl = null;
+
 
 
     @Override
@@ -53,6 +64,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup vg=container;
         final List l= this.list;
+
 
 
             addLocationButton = (FloatingActionButton) rootView.findViewById(R.id.add_location_button);
@@ -75,6 +87,9 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
                 }
             });
+
+        shareDialog = new ShareDialog(this);
+        fbShareButton = (FloatingActionButton) rootView.findViewById(R.id.fb_share_button);
 
 
         if (isLists) {
@@ -100,6 +115,21 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
 
         } else {
+            fbShareButton.setVisibility(View.VISIBLE);
+            listName = this.list.getListName();
+            imageUrl = this.list.getLocation(0).getImageUrl();
+            fbShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (shareDialog.canShow(ShareLinkContent.class)) {
+                        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                .setContentUrl(Uri.parse(imageUrl))
+                                .setQuote("I have completed some of " + listName)
+                                .build();
+                        shareDialog.show(linkContent);
+                    }
+                }
+            });
             getActivity().setTitle(this.list.getListName());
 
             ListAdapter adapter = new ListAdapter(getActivity(), R.layout.listlayout, this.list);

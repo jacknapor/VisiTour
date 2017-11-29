@@ -2,8 +2,12 @@ package edu.bucknell.seniordesign;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+
+import android.support.design.widget.FloatingActionButton;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -125,12 +132,28 @@ public class ListAdapter extends ArrayAdapter<Location> {
                         //mDb.child("Users").child("jacknapor@yahoo,com").child("lists").child(l.getListName()).child("locationArray").child(Integer.toString(pos)).child("visited").setValue(false);
                     }
 
+
                 }
             });
-            Log.e("wtf", "wtf");
+            //<<<<<<<HEAD
+            /*Log.e("wtf", "wtf");
 
             if (icon != null) {
                 icon.setImageResource(R.drawable.ic_image_black_24dp);
+=======*/
+            Log.d("lookformeyayyyy", "imageUrl is: " + p.getImageUrl());
+
+            if (p.getImageUrl() != null && icon != null) {
+                Log.d("lookformeyay", "in the right if sick bro");
+                Glide.with(getContext()).load(p.getImageUrl()).into(icon);
+            }
+
+
+            else if (icon != null) {
+                //Log.d("lookformeyay", "location name is " + p.getLocationName());
+                icon.setImageResource(R.drawable.ic_menu_gallery);
+
+//>>>>>>> images
             }
 
             if (name != null) {

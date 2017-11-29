@@ -96,4 +96,5 @@
         android:text="TextView"
         android:textSize="20sp"
         android:visibility="invisible" />
+
 </RelativeLayout>

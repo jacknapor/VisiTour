@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -59,11 +60,23 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            AccessToken accessToken = loginResult.getAccessToken();
+            final AccessToken accessToken = loginResult.getAccessToken();
+
+
+            AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+                @Override
+                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                    if (currentAccessToken == null) {
+                        FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                    } else {
+                        //handleToken(accessToken);
+                    }
+                }
+            };
+
             handleToken(accessToken);
-            Profile profile = Profile.getCurrentProfile();
-            if (profile != null) {
-            }
+
         }
 
         @Override
@@ -90,8 +103,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (user != null) {
-                                Log.d(TAG, "lookforme email is " + userEmail);
                                 if (!(dataSnapshot.child("Users").hasChild(userEmail))) {
+                                    // if the user is not in the database (i.e. a new user), create a user in the db
                                     try {
                                         createNewUser(dataSnapshot);
                                     } catch (Exception E) {
@@ -118,35 +131,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void createNewUser(DataSnapshot ds) {
         mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
-        //mDb.child("Users").child(this.userEmail).child("lists").setValue(mDb.child("Default Lists"));
-        //mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("Default Lists"));
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
-        /*mDb.child("Default Lists").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mDb.child("Users");
-                mDb.child(userEmail);
-                mDb.child("lists");
-                mDb.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError error, DatabaseReference databaseReference) {
-                        if (error != null) {
-                            Log.d(TAG, "copy failed");
-                        } else {
-                            Log.d(TAG, "success");
-                        }
-                    }
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, "copy cancelled");
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     public LoginFragment() {}
@@ -185,7 +170,6 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //maybe somehow make the login fragment not appear first if user is signed in?
     }
 
     public interface OnFragmentInteractionListener {

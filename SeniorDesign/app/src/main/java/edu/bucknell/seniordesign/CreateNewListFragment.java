@@ -94,7 +94,7 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
 
                 Bundle bundle = new Bundle();
                 List newList = new List(name, "");
-                mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(newList);
+                mDatabase.child("Users").child(userEmail).child("customLists").child(name).setValue(newList);
                 bundle.putSerializable("new_list", newList);
                 CustomListFragment fragment= CustomListFragment.newInstance(newList);
                 fragment.setArguments(bundle);

@@ -89,7 +89,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
             String name = bundle.getString("locName");
             getActivity().setTitle(name);
-/*<<<<<<< HEAD
+/*<<<<<<<HEAD
             Location loc = (Location) bundle.getSerializable("loc");
 
             addPoint(name, loc.getLatLng());
