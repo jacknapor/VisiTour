@@ -51,12 +51,12 @@ public class ReadData extends AppCompatActivity {
     public void readXLSFile(Context context) throws IOException {
 
         // Change the resources file to the proper resources file
-        InputStream stream = context.getResources().openRawResource(R.raw.nat_parks);
-        //InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_local_museums);
+        //InputStream stream = context.getResources().openRawResource(R.raw.nat_parks);
+        InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_local_museums);
 
         // Change the name and description of this list to reflect the proper name and description
-        List list = new List("All National Parks", "A list of all National Parks");
-        //List list = new List("Museums Near Lewisburg", "Museums in & around Lewisburg");
+        //List list = new List("All National Parks", "A list of all National Parks");
+        List list = new List("Museums Near Lewisburg", "Museums in & around Lewisburg");
 
         ArrayList locations = new ArrayList();
 
@@ -74,6 +74,8 @@ public class ReadData extends AppCompatActivity {
                 double lng = row.getCell(2).getNumericCellValue();
 
                 Location loc = new Location(locName, "", new TraveListLatLng(lat, lng));
+                loc.setVisited(false);
+
                 locations.add(loc);
             }
 

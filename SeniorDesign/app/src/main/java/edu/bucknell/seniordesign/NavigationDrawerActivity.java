@@ -58,14 +58,22 @@ public class NavigationDrawerActivity extends AppCompatActivity
         /*
         Uncomment the following block of code to push default lists to database.
          */
-        /*ReadData readData = new ReadData();
+        ReadData readData = new ReadData();
         try {
             readData.readXLSFile(this);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
         user = FirebaseAuth.getInstance().getCurrentUser();
-        userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+        Log.i(TAG, "current user: " + user.getDisplayName());
+        if (user != null) {
+            userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+
+            addNationalParks();
+            addMuseums();
+            addRestaurants();
+
+        }
 
         if (savedInstanceState == null) {
 
@@ -78,7 +86,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             }
 
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -240,10 +248,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
-                                List n = s.getValue(List.class);
-                                dlist.add(n);
+                                /*List n = s.getValue(List.class);
+                                dlist.add(n);*/
 
-                                /*if (s.getKey().equals("National Parks")) {
+                                if (s.getKey().equals("National Parks")) {
                                     List n = s.getValue(List.class);
                                     dlist.add(n);
                                 }
@@ -269,11 +277,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                     fragment = CustomListFragment.newInstance(dlist, true);
                                     android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-                                }*/
+                                }
                             }
-                            fragment = CustomListFragment.newInstance(dlist, true);
+                            /*fragment = CustomListFragment.newInstance(dlist, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();*/
                         }
 
                         @Override

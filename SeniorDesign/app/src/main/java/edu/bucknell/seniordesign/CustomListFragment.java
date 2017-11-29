@@ -70,12 +70,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 SearchLocationsFragment fragment = SearchLocationsFragment.newInstance(l);
                 fragment.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
-
-
-
                 }
             });
-
 
         if (isLists) {
             getActivity().setTitle("Lists");
@@ -90,14 +86,12 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
 
-
                     List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
                 }});
-
 
         } else {
             getActivity().setTitle(this.list.getListName());
@@ -116,14 +110,10 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(vg.getId(), fragment).addToBackStack(null).commit();
 
-
-
                 }
             });
             listView.setAdapter(adapter);
             //adapter.notifyDataSetChanged();
-
-
         }
         return rootView;
 
