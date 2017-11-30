@@ -3,6 +3,8 @@ package edu.bucknell.seniordesign;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
@@ -10,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -81,11 +84,13 @@ public class ListAdapter extends ArrayAdapter<Location> {
             TextView description = (TextView) v.findViewById(R.id.textViewDescription);
             CheckBox checkbox= (CheckBox) v.findViewById(R.id.visited);
             checkbox.setVisibility(View.VISIBLE);
+            ImageView delete= (ImageView) v.findViewById(R.id.delete);
 
             TextView a= (TextView) v.findViewById(R.id.textView3);
             a.setVisibility(View.VISIBLE);
             final CheckBox c= checkbox;
             Log.e("a", Integer.toString(position));
+            final int pos= position;
             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child("locationArray").child(Integer.toString(position)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,7 +101,9 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                         }
 
-                }c.setChecked(isVisited);
+                }
+                    mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child("locationArray").child(Integer.toString(pos)).removeEventListener(this);
+                c.setChecked(isVisited);
                 }
 
                 @Override
@@ -108,7 +115,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
             final Location pp=p;
             final List l=list;
-            final int pos= position;
+
             c.setOnClickListener(new View.OnClickListener(){
 
                 @Override
@@ -131,6 +138,44 @@ public class ListAdapter extends ArrayAdapter<Location> {
                     }
 
 
+                }
+            });
+            final ListAdapter la= this;
+            delete.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    list.getLocationArray().remove(pos);
+                    mDb.child("Users").child(userEmail).child("lists").child(l.getListName()).child("locationArray").setValue(list.getLocationArray());
+                    la.notifyDataSetChanged();
+
+
+                }
+            });
+            delete.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            ImageView view = (ImageView) v;
+                            //overlay is black with transparency of 0x77 (119)
+                            view.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                            view.invalidate();
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL: {
+                            ImageView view = (ImageView) v;
+                            //clear the overlay
+                            view.getDrawable().clearColorFilter();
+                            view.invalidate();
+                            break;
+                        }
+                    }
+
+                    return false;
                 }
             });
             //<<<<<<<HEAD
