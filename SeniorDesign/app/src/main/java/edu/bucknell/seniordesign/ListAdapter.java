@@ -65,7 +65,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
         View v = convertView;
 
-
        if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
