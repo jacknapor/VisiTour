@@ -124,22 +124,23 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
             //final String percentage = mDb.child("Users").child(userEmail).child(listName).child("completionStatus").toString();
 
-            final String[] percentage = new String[1];
-            mDb.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    percentage[0] = dataSnapshot.child("Users").child(userEmail).child("lists").child(listName).child("completionStatus").getValue().toString();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d(TAG, "Database Snapshot to get completionStatus in CustomListFragment cancelled");
-                }
-            });
 
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final String[] percentage = new String[1];
+                    mDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            percentage[0] = dataSnapshot.child("Users").child(userEmail).child("lists").child(listName).child("completionStatus").getValue().toString();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "Database Snapshot to get completionStatus in CustomListFragment cancelled");
+                        }
+                    });
+
                     if (shareDialog.canShow(ShareLinkContent.class)) {
                         ShareLinkContent linkContent = new ShareLinkContent.Builder()
                                 .setContentUrl(Uri.parse("https://imgur.com/AYKeqRn"))
