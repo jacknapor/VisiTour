@@ -60,6 +60,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+        
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
@@ -164,8 +165,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         restaurants.add(mercado);
         n.setLocationArray(restaurants);
 
-        //mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
+        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
+        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
     @Override

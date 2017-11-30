@@ -53,8 +53,8 @@ public class ReadData extends AppCompatActivity {
 
         // Change the resources file to the proper resources file
         //InputStream stream = context.getResources().openRawResource(R.raw.nat_parks_images);
-        InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_museums_images);
-
+        //InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_museums_images);
+        InputStream stream = context.getResources().openRawResource(R.raw.nat_parks_images);
 
         // Change the name and description of this list to reflect the proper name and description
         //List list = new List("All National Parks", "A list of all National Parks");
