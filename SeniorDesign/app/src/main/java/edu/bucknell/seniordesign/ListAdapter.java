@@ -71,7 +71,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
             v = vi.inflate(R.layout.listlayout, null);
         }
 
-
         Location p = list.getLocationArray().get(position);
 
 
