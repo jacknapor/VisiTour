@@ -74,38 +74,14 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
                 handleToken(accessToken);
+                resetUserDisplay();
             } else {
                 Log.d(TAG, "hihi you just clicked the logout button for the first time, user not null, and now it should log you out");
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 resetUserDisplay();
             }
-            AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
-                @Override
-                protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                    if (currentAccessToken == null) {
-                        Log.d(TAG, "hihi thinks you're logging out");
-                        FirebaseAuth.getInstance().signOut();
-                        LoginManager.getInstance().logOut();
-                        Log.d(TAG, "hihi in accesstokentracker (should be loggedout), you're " + user);
-                        //how can we update the view when you log out?
-                    } else {
-                        Log.d(TAG, "hihi thinks you're signing in!");
-                        handleToken(currentAccessToken);
-                    }
-                }
-            };
         }
-
-        public void resetUserDisplay() {
-            Log.i(TAG, "in resetUserDisplay");
-            TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
-            userName.setText("Not Logged In");
-            TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
-            userEmail.setText("");
-        }
-
-
 
         @Override
         public void onCancel() {
@@ -117,6 +93,32 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
         }
     };
+
+    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+        @Override
+        protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            if (currentAccessToken == null) {
+                Log.d(TAG, "hihi thinks you're logging out");
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+                Log.d(TAG, "hihi in accesstokentracker (should be loggedout), you're " + user);
+                resetUserDisplay();
+                //how can we update the view when you log out?
+            } else {
+                Log.d(TAG, "hihi thinks you're signing in!");
+                handleToken(currentAccessToken);
+                resetUserDisplay();
+            }
+        }
+    };
+
+    public void resetUserDisplay() {
+        Log.i(TAG, "in resetUserDisplay");
+        TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
+        userName.setText("Not Logged In");
+        TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
+        userEmail.setText("");
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
