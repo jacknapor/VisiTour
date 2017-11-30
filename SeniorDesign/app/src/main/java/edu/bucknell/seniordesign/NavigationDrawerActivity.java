@@ -251,7 +251,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                     updateUser();
                     Log.e(TAG, "USER IS " + userEmail);
-
+                    final DatabaseReference m= this.mDb;
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -261,6 +261,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                 List n = s.getValue(List.class);
                                 dlist.add(n);
                             }
+                            m.child("Users").child(userEmail).child("lists").removeEventListener(this);
                             fragment = CustomListFragment.newInstance(dlist, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
