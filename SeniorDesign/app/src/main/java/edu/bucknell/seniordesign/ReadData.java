@@ -50,9 +50,11 @@ public class ReadData extends AppCompatActivity {
 
     public void readXLSFile(Context context) throws IOException {
 
+
         // Change the resources file to the proper resources file
-        //InputStream stream = context.getResources().openRawResource(R.raw.nat_parks);
-        InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_local_museums);
+        //InputStream stream = context.getResources().openRawResource(R.raw.nat_parks_images);
+        //InputStream stream = context.getResources().openRawResource(R.raw.lewisburg_museums_images);
+        InputStream stream = context.getResources().openRawResource(R.raw.nat_parks_images);
 
         // Change the name and description of this list to reflect the proper name and description
         //List list = new List("All National Parks", "A list of all National Parks");
@@ -61,10 +63,12 @@ public class ReadData extends AppCompatActivity {
         ArrayList locations = new ArrayList();
 
         try {
-
             HSSFWorkbook hssfWorkbook = new HSSFWorkbook(stream);
+            Log.d(TAG, "Creating HSSFWorkbook successful");
             HSSFSheet sheet = hssfWorkbook.getSheetAt(0);
-            int numRows = sheet.getPhysicalNumberOfRows();
+            // Change the number of rows to reflect the proper list size
+            //int numRows = 60; // For National Parks
+            int numRows = 12; // For Lewisburg Museums
             Log.i(TAG, "# rows: " + numRows);
             for (int r = 1; r < numRows; r++) {
                 Row row = sheet.getRow(r);
@@ -72,8 +76,9 @@ public class ReadData extends AppCompatActivity {
                 String locName = row.getCell(0).getStringCellValue();
                 double lat = row.getCell(1).getNumericCellValue();
                 double lng = row.getCell(2).getNumericCellValue();
+                String imageUrl = row.getCell(3).getStringCellValue();
 
-                Location loc = new Location(locName, "", new TraveListLatLng(lat, lng));
+                Location loc = new Location(locName, "", new TraveListLatLng(lat, lng), imageUrl);
                 loc.setVisited(false);
 
                 locations.add(loc);
@@ -84,6 +89,7 @@ public class ReadData extends AppCompatActivity {
 
 
         } catch (Exception e) {
+            Log.d(TAG, "There was an error with parsing the excel file");
             e.printStackTrace();
         }
 

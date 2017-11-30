@@ -20,8 +20,13 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -48,6 +53,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
     private String TAG = "CustomListFragment";
     private String imageUrl = null;
+    private String userEmail;
 
     @Override
     public void onBackPressed(){
@@ -107,17 +113,38 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         } else {
             fbShareButton.setVisibility(View.VISIBLE);
             listName = this.list.getListName();
-            if (list.getListSize() > 0) {
-                imageUrl = this.list.getLocation(0).getImageUrl();
+            Log.d(TAG, "hihi l = " + l.getListName());
+            Log.d(TAG, "hihi this.list name = " + listName);
+            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            //imageUrl = mDb.child("Users").child(userEmail).child("")
+            if (l.getListSize() > 0) {
+                Log.d(TAG, "hihi list is greater than 0");
+                imageUrl = l.getLocation(0).getImageUrl();
             }
+
+            //final String percentage = mDb.child("Users").child(userEmail).child(listName).child("completionStatus").toString();
+
 
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final String[] percentage = new String[1];
+                    mDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            percentage[0] = dataSnapshot.child("Users").child(userEmail).child("lists").child(listName).child("completionStatus").getValue().toString();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "Database Snapshot to get completionStatus in CustomListFragment cancelled");
+                        }
+                    });
+
                     if (shareDialog.canShow(ShareLinkContent.class)) {
                         ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                .setContentUrl(Uri.parse(imageUrl))
-                                .setQuote("I have completed some of " + listName)
+                                .setContentUrl(Uri.parse("https://imgur.com/AYKeqRn"))
+                                .setQuote("I have completed " + percentage[0] + "% of the list: " + listName)
                                 .build();
                         shareDialog.show(linkContent);
                     }

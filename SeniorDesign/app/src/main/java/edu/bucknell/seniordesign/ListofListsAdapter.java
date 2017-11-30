@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -22,6 +30,9 @@ import java.util.ArrayList;
 
 public class ListofListsAdapter extends ArrayAdapter<List> {
     private ArrayList<List> listarray = new ArrayList<List>();
+    private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String userEmail = user.getEmail().replace(".", ",");
     public ListofListsAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
@@ -64,18 +75,61 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             ProgressBar progress= (ProgressBar) v.findViewById(R.id.progressBar1);
             TextView pp= (TextView) v.findViewById(R.id.textView2);
             TextView a= (TextView) v.findViewById(R.id.textView4);
+            ImageView delete= (ImageView) v.findViewById(R.id.delete);
             progress.setVisibility(View.VISIBLE);
             pp.setVisibility(View.VISIBLE);
             a.setVisibility(View.VISIBLE);
 
             if (progress !=null){
-            progress.setProgress(p.getCompletionStatus());
+                int prog= p.getCompletionStatus();
+            progress.setProgress(prog);
             a.setText(" "+Integer.toString(p.getCompletionStatus())+ "%");
             if(p.getCompletionStatus()==100){
                 int color = 0xFF00FF00;
                 progress.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-                progress.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);}
+                progress.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
             }
+                mDb.child("Users").child(userEmail).child("lists").child(listarray.get(position).getListName()).child("completionStatus").setValue(prog);
+            }
+            final ListofListsAdapter ll= this;
+            final int pos= position;
+            delete.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+
+                    mDb.child("Users").child(userEmail).child("lists").child(listarray.get(pos).getListName()).removeValue();
+                    listarray.remove(pos);
+                    ll.notifyDataSetChanged();
+                }
+            });
+            delete.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: {
+                            ImageView view = (ImageView) v;
+                            //overlay is black with transparency of 0x77 (119)
+                            view.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
+                            view.invalidate();
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL: {
+                            ImageView view = (ImageView) v;
+                            //clear the overlay
+                            view.getDrawable().clearColorFilter();
+                            view.invalidate();
+                            break;
+                        }
+                    }
+
+                    return false;
+                }
+            });
 
 
             String img = p.getLocationArray().get(0).getImageUrl();
