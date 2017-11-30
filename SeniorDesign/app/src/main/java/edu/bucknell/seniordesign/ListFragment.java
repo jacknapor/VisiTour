@@ -84,8 +84,8 @@ public class ListFragment extends Fragment implements SearchLocationsFragment.On
                     e.printStackTrace();
                 }
 
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().addToBackStack(null);
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 Bundle bundle = new Bundle();
@@ -94,9 +94,6 @@ public class ListFragment extends Fragment implements SearchLocationsFragment.On
                 fragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.content_frag, fragment);
                 fragmentTransaction.addToBackStack(null);
-
-
-                fragmentTransaction.replace(R.id.content_frag, fragment);
                 fragmentTransaction.commit();
                 Log.i(TAG, "fragment committed");
             }

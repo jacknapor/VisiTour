@@ -113,7 +113,6 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     };
 
     public void resetUserDisplay() {
-        Log.i(TAG, "in resetUserDisplay");
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText("Not Logged In");
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
@@ -123,9 +122,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getActivity().setTitle("Facebook Log In");
-
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
         //

@@ -54,12 +54,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         /*
         Uncomment the following block of code to push default lists to database.
          */
-        ReadData readData = new ReadData();
+        /*ReadData readData = new ReadData();
         try {
             readData.readXLSFile(this);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
@@ -97,6 +97,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         updateUser();
     }
+
+
 
     private void updateUser() {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -166,12 +168,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
     }
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (getFragmentManager().getBackStackEntryCount() > 0 ){
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -216,9 +219,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
-
                 if (null == user) {
-                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                    forceLogin();
                     break;
                 } else {
                 fragmentClass = CreateNewListFragment.class;
@@ -226,7 +228,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                }
             case R.id.search_locations:
                 if (null == user) {
-                    Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
+                    forceLogin();
                     break;
                 } else {
                     fragmentClass = SearchLocationsFragment.class;
@@ -237,15 +239,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 fragmentClass = LoginFragment.class;
                 break;
             case R.id.your_lists:
-
                 defaultList=true;
-
                 if (null == user) {
-                   Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
-                   break;
+                    forceLogin();
+                    break;
                 } else {
                     fragmentClass= CustomListFragment.class;
-
 
                     boolean t=true;
                     boolean f=false;
@@ -296,6 +295,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         updateUser();
+    }
+
+    private void forceLogin() {
+        Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
     }
 
     private void setUserName() {

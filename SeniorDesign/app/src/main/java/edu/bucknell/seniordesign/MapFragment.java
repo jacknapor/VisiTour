@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,25 +20,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MapFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
     private Location l;
     private String TAG = "MapFragment";
+
+    private static View view;
 
     MapView mapView;
 
@@ -109,11 +103,21 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.activity_maps, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        } catch (InflateException e) {
+            e.printStackTrace();
+        }
         Log.i(TAG, "onCreateView");
 
         getActivity().setTitle("Map");
-
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapFragment.this);
@@ -132,35 +136,44 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
     }
 
+    private void killOldMap() {
+        SupportMapFragment mapFragment = ((SupportMapFragment) getActivity()
+                .getSupportFragmentManager().findFragmentById(R.id.map));
+
+        if(mapFragment != null) {
+            FragmentManager fM = getFragmentManager();
+            fM.beginTransaction().remove(mapFragment).commit();
+        }
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        killOldMap();
+    }
+
     @Override
     public void onResume()
     {
-
         super.onResume();
     }
     @Override
     public void onDestroy()
     {
+        killOldMap();
         super.onDestroy();
-
     }
     @Override
     public void onLowMemory()
     {
         super.onLowMemory();
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -184,6 +197,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        killOldMap();
     }
 
 
