@@ -49,8 +49,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     private String TAG = "CustomListFragment";
     private String imageUrl = null;
 
-
-
     @Override
     public void onBackPressed(){
         getActivity().onBackPressed();
@@ -64,8 +62,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup vg=container;
         final List l= this.list;
-
-
 
             addLocationButton = (FloatingActionButton) rootView.findViewById(R.id.add_location_button);
             addLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +107,10 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         } else {
             fbShareButton.setVisibility(View.VISIBLE);
             listName = this.list.getListName();
-            imageUrl = this.list.getLocation(0).getImageUrl();
+            if (list.getListSize() > 0) {
+                imageUrl = this.list.getLocation(0).getImageUrl();
+            }
+
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,8 +146,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         return rootView;
 
     }
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public static CustomListFragment newInstance(List l) {

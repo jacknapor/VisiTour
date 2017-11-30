@@ -2,30 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <!--<item
-            android:id="@+id/all_lists"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="All Lists" />
-        <item
-            android:id="@+id/lists_in_progress"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Lists in Progress" />
-        <item
-            android:id="@+id/completed_lists"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Completed Lists" />-->
         <item
             android:id="@+id/create_list"
             android:icon="@drawable/ic_add_circle_black_24dp"
             android:title="Create List" />
         <item
-            android:id="@+id/nearby_sites"
-            android:icon="@drawable/ic_near_me_black_24dp"
-            android:title="Nearby Sites" />
-        <item
-            android:id="@+id/default_lists"
+            android:id="@+id/your_lists"
             android:icon="@drawable/ic_list_black_24dp"
-            android:title="Default Lists" />
+            android:title="Your Lists" />
 
         <item
             android:id="@+id/search_locations"

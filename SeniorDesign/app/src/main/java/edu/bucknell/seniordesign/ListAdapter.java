@@ -95,7 +95,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
                         if (s.getKey().equals("visited")) {
                             isVisited= s.getValue(Boolean.class);
 
-
                         }
 
                 }c.setChecked(isVisited);

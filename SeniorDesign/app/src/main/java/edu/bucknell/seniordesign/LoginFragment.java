@@ -46,6 +46,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 
 /**
  * Created by nrs007 on 11/1/17.
@@ -60,6 +62,9 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
     private Profile profile;
     private CallbackManager mCallbackManager;
+
+    public LoginFragment() {}
+
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -73,6 +78,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 Log.d(TAG, "hihi you just clicked the logout button for the first time, user not null, and now it should log you out");
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
+                resetUserDisplay();
             }
             AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
                 @Override
@@ -90,6 +96,16 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 }
             };
         }
+
+        public void resetUserDisplay() {
+            Log.i(TAG, "in resetUserDisplay");
+            TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
+            userName.setText("Not Logged In");
+            TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
+            userEmail.setText("");
+        }
+
+
 
         @Override
         public void onCancel() {
@@ -130,6 +146,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     updateUser();
+                    updateUserDisplay();
                     Log.d(TAG, "hihi useremail in handletoken onComplete is" + userEmail);
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -167,9 +184,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
     }
 
-    public LoginFragment() {}
-
-
+    private void updateUserDisplay() {
+        TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
+        userName.setText(user.getDisplayName());
+        TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
+        userEmail.setText(user.getEmail());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

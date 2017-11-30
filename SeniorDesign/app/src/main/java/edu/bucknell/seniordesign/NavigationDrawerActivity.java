@@ -1,7 +1,6 @@
 package edu.bucknell.seniordesign;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,8 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,13 +61,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
             e.printStackTrace();
         }
         user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.i(TAG, "current user: " + user.getDisplayName());
         if (user != null) {
             userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
 
-            addNationalParks();
-            addMuseums();
-            addRestaurants();
+            //addNationalParks();
+            //addMuseums();
+            //addRestaurants();
 
         }
 
@@ -228,9 +224,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 fragmentClass = CreateNewListFragment.class;
                 break;
                }
-            case R.id.nearby_sites:
-                fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
-                break;
             case R.id.search_locations:
                 if (null == user) {
                     Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
@@ -243,7 +236,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 Log.d(TAG, "hihi user when you clicked the login button was " + userEmail);
                 fragmentClass = LoginFragment.class;
                 break;
-            case R.id.default_lists:
+            case R.id.your_lists:
 
                 defaultList=true;
 
@@ -263,42 +256,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            dlist.clear();
 
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
-                                /*List n = s.getValue(List.class);
-                                dlist.add(n);*/
-
-                                if (s.getKey().equals("National Parks")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                }
-                                if (s.getKey().equals("Museums Near Lewisburg")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                }
-                                if (s.getKey().equals("Lewisburg Museums")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                }
-                                if (s.getKey().equals("All National Parks")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                }
-                                if (s.getKey().equals("my new list")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                }
-                                if (s.getKey().equals("Lewisburg Restaurants")) {
-                                    List n = s.getValue(List.class);
-                                    dlist.add(n);
-                                    fragment = CustomListFragment.newInstance(dlist, true);
-                                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-                                }
+                                List n = s.getValue(List.class);
+                                dlist.add(n);
                             }
-                            /*fragment = CustomListFragment.newInstance(dlist, true);
+                            fragment = CustomListFragment.newInstance(dlist, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();*/
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                         }
 
                         @Override
