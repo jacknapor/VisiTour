@@ -132,7 +132,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Log.i(TAG, "HERE I AM");
 
-
                     Location loc = list.getLocation(position);
                     Log.e(TAG, "Location: " + loc.getTraveListLatLng().getLatitude());
 
