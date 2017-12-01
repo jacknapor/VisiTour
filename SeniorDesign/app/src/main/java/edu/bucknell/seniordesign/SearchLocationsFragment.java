@@ -36,9 +36,11 @@ import com.google.firebase.database.FirebaseDatabase;
  * Use the {@link SearchLocationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchLocationsFragment extends android.support.v4.app.Fragment implements GoogleApiClient.OnConnectionFailedListener , OnBackPressedListener{
+public class SearchLocationsFragment extends android.support.v4.app.Fragment implements OnBackPressedListener{
 
     private OnFragmentInteractionListener mListener;
+
+    private SupportPlaceAutocompleteFragment autocompleteFragment;
 
     private String TAG = "SearchLocationsFragment";
     private DatabaseReference mDb;
@@ -46,6 +48,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     private String userEmail;
 
     private static View view;
+
+    private View mView;
 
     private List list = null;
 
@@ -99,6 +103,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             e.printStackTrace();
         }
 
+        mView = view;
+
 
         // Gets the List to add the locations to
         Bundle bundle = getArguments();
@@ -106,8 +112,10 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             Log.i(TAG, "List to add to: " + this.list.getListName());
             final List finalList = this.list;
             getActivity().setTitle("Add a Location");
+
+            //autocompleteFragment = (SupportPlaceAutocompleteFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
             
-            SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+            autocompleteFragment = new SupportPlaceAutocompleteFragment();
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
@@ -165,7 +173,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                 }
             });
             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).commit();
 
         } else {
             getActivity().setTitle("Location Search");
@@ -193,7 +201,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                 }
             });
             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).commit();
         }
 
         return view;
@@ -232,25 +240,25 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        killAutocompleteFragment();
+        //killAutocompleteFragment();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        killAutocompleteFragment();
+        //killAutocompleteFragment();
     }
 
     @Override
     public void onDestroy()
     {
-        killAutocompleteFragment();
+        //killAutocompleteFragment();
         super.onDestroy();
     }
 
     private void killAutocompleteFragment() {
-        SupportPlaceAutocompleteFragment autocompleteFragment = ((SupportPlaceAutocompleteFragment) getActivity()
-                .getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment));
+        Log.i(TAG, "in kill");
+        autocompleteFragment.getView().setVisibility(View.GONE);
 
         if(autocompleteFragment != null) {
             FragmentManager fM = getFragmentManager();
@@ -259,10 +267,6 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -278,9 +282,11 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
     @Override
-    public void onBackPressed(){
-        if(getActivity().getSupportFragmentManager().getBackStackEntryCount() > 0)
-            getActivity().getSupportFragmentManager().popBackStack();
+    public void onBackPressed() {
+        //killAutocompleteFragment();
+        autocompleteFragment.getView().setVisibility(View.GONE);
+        getActivity().onBackPressed();
     }
 }
