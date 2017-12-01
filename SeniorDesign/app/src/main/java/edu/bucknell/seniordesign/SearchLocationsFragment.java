@@ -107,7 +107,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             final List finalList = this.list;
             getActivity().setTitle("Add a Location");
             
-            SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+            SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
@@ -164,12 +164,11 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                 }
             });
-            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+           
 
         } else {
             getActivity().setTitle("Location Search");
-            SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+            SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
@@ -192,8 +191,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                 }
             });
-            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, autocompleteFragment).addToBackStack(null).commit();
+
         }
 
         return view;
