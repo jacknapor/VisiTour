@@ -98,7 +98,7 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                 bundle.putSerializable("new_list", newList);
                 CustomListFragment fragment= CustomListFragment.newInstance(newList);
                 fragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
             }
         });
 
