@@ -41,6 +41,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
     private String listName = null;
 
+    private Long percentage = 0l;
+
 
     private GoogleMap map = MapFragment.newInstance().getMap();
 
@@ -117,37 +119,37 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             Log.d(TAG, "hihi this.list name = " + listName);
             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
             //imageUrl = mDb.child("Users").child(userEmail).child("")
-            if (l.getListSize() > 0) {
+            if (l.getLocationArray().size() > 0) {
                 Log.d(TAG, "hihi list is greater than 0");
                 imageUrl = l.getLocation(0).getImageUrl();
             }
 
-            //final String percentage = mDb.child("Users").child(userEmail).child(listName).child("completionStatus").toString();
-
-
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final String[] percentage = new String[1];
-                    mDb.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    mDb.child("Users").child(userEmail).child("lists").child(listName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            percentage[0] = dataSnapshot.child("Users").child(userEmail).child("lists").child(listName).child("completionStatus").getValue().toString();
+                            for (DataSnapshot s : dataSnapshot.getChildren()) {
+                                if (s.getKey().equals("completionStatus")) {
+                                    percentage = Long.parseLong(s.getValue().toString());
+                                }
+                            }
+                            if (shareDialog.canShow(ShareLinkContent.class)) {
+                                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                        .setContentUrl(Uri.parse("https://imgur.com/AYKeqRn"))
+                                        .setQuote("I have completed " + Long.toString(percentage) + "% of the list: " + listName)
+                                        .build();
+                                shareDialog.show(linkContent);
+                            }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.d(TAG, "Database Snapshot to get completionStatus in CustomListFragment cancelled");
+
                         }
                     });
-
-                    if (shareDialog.canShow(ShareLinkContent.class)) {
-                        ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                .setContentUrl(Uri.parse("https://imgur.com/AYKeqRn"))
-                                .setQuote("I have completed " + percentage[0] + "% of the list: " + listName)
-                                .build();
-                        shareDialog.show(linkContent);
-                    }
                 }
             });
             getActivity().setTitle(this.list.getListName());

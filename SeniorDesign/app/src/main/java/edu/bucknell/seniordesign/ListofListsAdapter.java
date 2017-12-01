@@ -1,6 +1,8 @@
 package edu.bucknell.seniordesign;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
@@ -43,15 +45,12 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
         this.listarray =dList;
     }
 
-
-
     @Override
     public int getCount(){
 
         return this.listarray.size();
 
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -99,9 +98,21 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
                 @Override
                 public void onClick(View v) {
 
-                    mDb.child("Users").child(userEmail).child("lists").child(listarray.get(pos).getListName()).removeValue();
-                    listarray.remove(pos);
-                    ll.notifyDataSetChanged();
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == DialogInterface.BUTTON_POSITIVE) {
+                                mDb.child("Users").child(userEmail).child("lists").child(listarray.get(pos).getListName()).removeValue();
+                                listarray.remove(pos);
+                                ll.notifyDataSetChanged();
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Are you sure you want to delete this list? Once it has been deleted this action cannot be undone.").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+
+
                 }
             });
             delete.setOnTouchListener(new View.OnTouchListener() {
@@ -132,7 +143,11 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             });
 
 
-            String img = p.getLocationArray().get(0).getImageUrl();
+            String img = null;
+            if (p != null && p.getLocationArray().size() > 0) {
+                img = p.getLocationArray().get(0).getImageUrl();
+
+            }
 
             if (img != null && icon != null) {
                 Log.d("lookformeyay", "in the right if sick bro");

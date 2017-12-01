@@ -1,7 +1,10 @@
 package edu.bucknell.seniordesign;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.media.Image;
@@ -55,8 +58,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
         list=newList;
     }
 
-
-
     @Override
     public int getCount(){
         return list.getLocationArray().size();
@@ -97,7 +98,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                         if (s.getKey().equals("visited")) {
                             isVisited= s.getValue(Boolean.class);
-
                         }
 
                 }
@@ -144,13 +144,25 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                 @Override
                 public void onClick(View v) {
-                    list.getLocationArray().remove(pos);
-                    mDb.child("Users").child(userEmail).child("lists").child(l.getListName()).child("locationArray").setValue(list.getLocationArray());
-                    la.notifyDataSetChanged();
 
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == Dialog.BUTTON_POSITIVE) {
+                                list.getLocationArray().remove(pos);
+                                mDb.child("Users").child(userEmail).child("lists").child(l.getListName()).child("locationArray").setValue(list.getLocationArray());
+                                la.notifyDataSetChanged();
+                            }
+                        }
+                    };
 
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Are you sure you want to delete this location? Once it has been deleted this action cannot be undone.").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
                 }
             });
+
+
+
             delete.setOnTouchListener(new View.OnTouchListener() {
 
                 @Override
