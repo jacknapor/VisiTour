@@ -1,29 +1,42 @@
-package edu.bucknell.seniordesign;
-
-//import com.google.android.gms.maps.model.TraveListLatLng;
+package edu.bucknell.seniordesign.data;
 
 import java.io.Serializable;
 
 /**
+ * Location.java
+ * TraveList - Senior Design
+ *
+ * A class to represent a Location
+ *
  * Created by Jack on 9/29/2017.
  */
 
 public class Location implements Serializable{
 
+    // Location name
     private String locationName;
+
+    // Location description
     private String locationDescription;
-    private int GPS;
+
+    // Whether or not the Location has been visited
     private boolean visited;
+
+    // URL of the Location's image
     private String imageUrl;
 
-
-
+    // Latitude/Longitude coordinates
     private TraveListLatLng traveListLatLng= new TraveListLatLng();
 
+    // No arguments Location constructor
+    public Location() {}
+
+    // Location constructor given a name
     public Location (String name) {
         this.locationName = name;
     }
 
+    // Location constructor given a name, description, coordinates, and image URL
     public Location(String name, String description, TraveListLatLng traveListLatLng, String imageUrl) {
         this.locationName = name;
         this.locationDescription = description;
@@ -31,6 +44,7 @@ public class Location implements Serializable{
         this.imageUrl = imageUrl;
     }
 
+    // Location constructor given a name, description, and coordinates
     public Location(String name, String description, TraveListLatLng traveListLatLng) {
         this.locationName = name;
         this.locationDescription = description;
@@ -67,5 +81,4 @@ public class Location implements Serializable{
         this.visited=v;
     }
 
-    public Location() {}
 }

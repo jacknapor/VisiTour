@@ -9,7 +9,7 @@
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView3"
+        android:layout_alignBottom="@+id/listItemImage"
         android:layout_alignLeft="@+id/textViewName"
         android:layout_alignStart="@+id/textViewName"
         android:text="TextView"
@@ -22,7 +22,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView3"
+        android:layout_toRightOf="@+id/listItemImage"
         android:text="TextView"
         android:textSize="25sp" />
 
@@ -36,28 +36,28 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/visitedTextView"
         android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/visitedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/visited"
         android:layout_alignBottom="@+id/visited"
-        android:layout_toEndOf="@+id/imageView3"
-        android:layout_toRightOf="@+id/imageView3"
+        android:layout_toEndOf="@+id/listItemImage"
+        android:layout_toRightOf="@+id/listItemImage"
         android:text="Visited:"
         android:textSize="20sp"
         android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/progressTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignBaseline="@+id/visitedTextView"
+        android:layout_alignBottom="@+id/visitedTextView"
         android:layout_toLeftOf="@+id/visited"
         android:layout_toStartOf="@+id/visited"
         android:text="Progress:"
@@ -70,14 +70,14 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/visited"
         android:layout_alignBottom="@+id/visited"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/progressTextView"
+        android:layout_toRightOf="@+id/progressTextView"
         android:text="TextView"
         android:textSize="20sp"
         android:visibility="invisible" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/listItemImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
@@ -90,7 +90,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_below="@+id/textViewDescription"
-        android:layout_toRightOf="@+id/textView3"
+        android:layout_toRightOf="@+id/visitedTextView"
         android:background="?android:attr/listChoiceIndicatorMultiple"
         android:button="@null"
         android:focusable="false"

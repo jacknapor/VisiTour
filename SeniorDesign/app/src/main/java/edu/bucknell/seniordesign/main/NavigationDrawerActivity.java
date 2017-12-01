@@ -1,5 +1,4 @@
-package edu.bucknell.seniordesign;
-
+package edu.bucknell.seniordesign.main;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -29,21 +28,40 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import edu.bucknell.seniordesign.fragments.CreateNewListFragment;
+import edu.bucknell.seniordesign.fragments.CustomListFragment;
+import edu.bucknell.seniordesign.unused.ListFragment;
+import edu.bucknell.seniordesign.fragments.LoginFragment;
+import edu.bucknell.seniordesign.R;
+import edu.bucknell.seniordesign.fragments.SearchLocationsFragment;
+import edu.bucknell.seniordesign.data.List;
+import edu.bucknell.seniordesign.data.Location;
+import edu.bucknell.seniordesign.data.TraveListLatLng;
+import edu.bucknell.seniordesign.fragments.MapFragment;
+import edu.bucknell.seniordesign.unused.TestFragment;
+import edu.bucknell.seniordesign.util.ReadData;
 
+/**
+ * NavigationDrawerActivity.java
+ * TraveList - Senior Design
+ *
+ * This activity controls the navigation of TraveList.
+ *
+ */
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, edu.bucknell.seniordesign.MapFragment.OnFragmentInteractionListener {
+        implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
 
-
-    private String TAG = "NAV_DRAWER";
-
+    // Reference to database
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
 
+    // User email
     private String userEmail;
+
+    // User, initialized to current user
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
+    // Fragment
     private android.support.v4.app.Fragment fragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,32 +69,20 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /*
-        Uncomment the following block of code to push default lists to database.
-         */
-        /*ReadData readData = new ReadData();
-        try {
-            readData.readXLSFile(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
+        // Uncomment the following line of code to push default lists to database using ReadData.java
+        // callReadData();
         
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
-
-            //addNationalParks();
-            //addMuseums();
-            //addRestaurants();
-
+            convertUserEmail();
         }
 
         updateUser();
 
         if (savedInstanceState == null) {
-
             Fragment fragment = null;
-            Class fragmentClass = fragmentClass = edu.bucknell.seniordesign.MapFragment.class;
+            Class fragmentClass = fragmentClass = MapFragment.class;
             updateUser();
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
@@ -86,7 +92,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
             updateUser();
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,74 +104,29 @@ public class NavigationDrawerActivity extends AppCompatActivity
         updateUser();
     }
 
+    // Convert user email. Firebase keys cannot contain '.' so emails have ',' instead
+    private void convertUserEmail() {
+        userEmail = user.getEmail().replace(".", ",");
+    }
 
-
-    private void updateUser() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (null != user) {
-            userEmail = user.getEmail().replace(".", ",");
-        } else {
-            userEmail = null;
+    // Pushes a default list (in form of Excel sheet) to Firebase. Uses ReadData.java class.
+    private void callReadData() {
+        ReadData readData = new ReadData();
+        try {
+            readData.readXLSFile(this);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void addNationalParks() {
-        List n= new List("National Parks", "List of several National Parks");
-        Location yosemite= new Location("Yosemite National Park", "Yosemite National Park", new TraveListLatLng(37.8651, -119.5383));
-        Location yellowstone= new Location("Yellowstone National Park", "Yellowstone National Park", new TraveListLatLng(44.4280, -110.5885));
-        Location grandcanyon= new Location("Grand Canyon National Park", "Grand Canyon National Park", new TraveListLatLng(36.0544, -112.1401));
-        Location acadia = new Location("Acadia National Park", "Acadia National Park", new TraveListLatLng(44.3386, -68.2733));
-        ArrayList parks = new ArrayList();
-        yosemite.setVisited(false);
-        yellowstone.setVisited(false);
-        grandcanyon.setVisited(false);
-        acadia.setVisited(false);
-        parks.add(yosemite);
-        parks.add(yellowstone);
-        parks.add(grandcanyon);
-        parks.add(acadia);
-
-        n.setLocationArray(parks);
-
-       // mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("National Parks").setValue(n);
-    }
-
-    private void addMuseums() {
-        List n= new List("Lewisburg Museums", "List of Lewisburg Museums");
-        Location silfer= new Location("Slifer House Museum", "Slifer House Museum", new TraveListLatLng(40.975443, -76.882733));
-        Location children= new Location("Lewisburg Children's Museum", "Lewisburg Children's Museum", new TraveListLatLng(40.960241, -76.891185));
-        Location packwood = new Location("Packwood House Museum", "Packwood House Museum", new TraveListLatLng(40.966640, -76.881917));
-        silfer.setVisited(false);
-        children.setVisited(false);
-        packwood.setVisited(false);
-        ArrayList<Location> museums= new ArrayList();
-        museums.add(silfer);
-        museums.add(children);
-        museums.add(packwood);
-        n.setLocationArray(museums);
-
-        //mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Museums").setValue(n);
-    }
-
-    private void addRestaurants() {
-        List n= new List("Lewisburg Restaurants", "List of Lewisburg Restaurants");
-        Location siam= new Location("Siam Restaurant & Bar", "Siam Restaurant & Bar", new TraveListLatLng(40.962939,-76.88770), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2Fsiam-cafe.jpg?alt=media&token=1b113486-8614-4290-b666-ef68a4b69bed");
-        Location elizabeths= new Location("Elizabeth's", "Elizabeth's", new TraveListLatLng(40.963738, -76.886577), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2FElizabeths.jpg?alt=media&token=40be4e77-4645-4224-93ed-de58f50dfe95");
-        Location mercado = new Location("Mercado Burrito", "Mercado Burrito", new TraveListLatLng(40.962949, -76.887841), "https://firebasestorage.googleapis.com/v0/b/natparksdb.appspot.com/o/Default%2FLewisburg%20Restaurants%2Fmercado.jpg?alt=media&token=c1a68734-7dc0-463c-96be-228a0933b880");
-        siam.setVisited(false);
-        elizabeths.setVisited(false);
-        mercado.setVisited(false);
-
-        ArrayList<Location> restaurants = new ArrayList();
-        restaurants.add(siam);
-        restaurants.add(elizabeths);
-        restaurants.add(mercado);
-        n.setLocationArray(restaurants);
-
-        mDb.child("DefaultLists").child(n.getListName()).setValue(n);
-        //mDb.child("Users").child(userEmail).child("lists").child("Lewisburg Restaurants").setValue(n);
+    // Updates user to the current user
+    private void updateUser() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (null != user) {
+            convertUserEmail();
+        } else {
+            userEmail = null;
+        }
     }
 
     @Override
@@ -183,7 +143,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         updateUser();
         setUserName();
@@ -192,10 +151,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -203,20 +158,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         selectDrawerItem(item);
-        // Handle navigation view item clicks here.
-
         return true;
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
         this.fragment = null;
         Class fragmentClass = null;
-        final ArrayList<List> dlist= new ArrayList<List>();
-
-        DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
+        final ArrayList<List> listOfLists = new ArrayList<List>();
+        DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
         updateUser();
-        Log.d(TAG, "hihi in selectdraweritem, user is " + user);
-        boolean defaultList=false;
+        boolean defaultList = false;
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
@@ -236,34 +187,27 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     break;
                 }
             case R.id.login_button:
-                Log.d(TAG, "hihi user when you clicked the login button was " + userEmail);
                 fragmentClass = LoginFragment.class;
                 break;
             case R.id.your_lists:
-                defaultList=true;
+                defaultList = true;
                 if (null == user) {
                     forceLogin();
                     break;
                 } else {
-                    fragmentClass= CustomListFragment.class;
-
-                    boolean t=true;
-                    boolean f=false;
-
+                    fragmentClass = CustomListFragment.class;
                     updateUser();
-                    Log.e(TAG, "USER IS " + userEmail);
-                    final DatabaseReference m= this.mDb;
+                    final DatabaseReference finalDatabaseReference = this.mDb;
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            dlist.clear();
-
+                            listOfLists.clear();
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
-                                List n = s.getValue(List.class);
-                                dlist.add(n);
+                                List listToAdd = s.getValue(List.class);
+                                listOfLists.add(listToAdd);
                             }
-                            m.child("Users").child(userEmail).child("lists").removeEventListener(this);
-                            fragment = CustomListFragment.newInstance(dlist, true);
+                            finalDatabaseReference.child("Users").child(userEmail).child("lists").removeEventListener(this);
+                            fragment = CustomListFragment.newInstance(listOfLists, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                         }
@@ -274,8 +218,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         }
                     });
                 }
-
-                defaultList=true;
+                defaultList = true;
                 break;
             default:
                 fragmentClass = TestFragment.class;
@@ -283,7 +226,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
 
         try {
-
             if(defaultList){
             }else{
             fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
@@ -293,21 +235,21 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         updateUser();
     }
 
+    // Makes Toast text to inform user they must login to use a certain feature
     private void forceLogin() {
         Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
     }
 
+    // Sets user name and user email in Navigation Drawer profile section.
     private void setUserName() {
             TextView userTextView = (TextView) findViewById(R.id.user_name);
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
         if (null != user) {
-            Log.i(TAG, "my user: " + user.getDisplayName());
             userTextView.setText(user.getDisplayName());
             userEmailTextView.setText(user.getEmail());
         } else {
@@ -326,5 +268,4 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-
 }

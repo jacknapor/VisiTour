@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign;
+package edu.bucknell.seniordesign.unused;
 
 import android.Manifest;
 import android.content.Context;
@@ -19,6 +19,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
+
+import edu.bucknell.seniordesign.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 

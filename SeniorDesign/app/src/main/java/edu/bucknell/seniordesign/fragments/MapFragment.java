@@ -1,9 +1,8 @@
-package edu.bucknell.seniordesign;
+package edu.bucknell.seniordesign.fragments;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.InflateException;
@@ -19,43 +18,46 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import edu.bucknell.seniordesign.R;
+import edu.bucknell.seniordesign.data.Location;
 
+/**
+ * MapFragment.java
+ * TraveList - Senior Design
+ *
+ * Fragment for Google Maps
+ *
+ */
 public class MapFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    // Location
+    private Location location;
 
-    // TODO: Rename and change types of parameters
-
-    private Location l;
-    private String TAG = "MapFragment";
-
+    // View
     private static View view;
 
+    // MapView
     MapView mapView;
 
+    // Google Map
     GoogleMap mMap;
 
+    final Float ZOOM_LEVEL = 13f;
+
+    // OnFragmentInteractionListener
     private OnFragmentInteractionListener mListener;
 
-
+    // No arguments constructor
     public MapFragment() {
-        // Required empty public constructor
     }
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment MapFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+    // Creates a new instance of the fragment with no parameters
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         return fragment;
     }
 
+    // Creates a new instance of the fragment with a Location parameter
     public static MapFragment newInstance(Location loc) {
 
         Bundle bundle = new Bundle();
@@ -64,39 +66,31 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
         MapFragment fragment = new MapFragment();
         fragment.setArguments(bundle);
-        Log.e("a", "Location: " + loc.getLocationName());
-        //fragment.setLoc(loc);
         return fragment;
     }
-    public void setLoc(Location a){
-        this.l=a;
-        double lat = this.l.getTraveListLatLng().getLatitude();
-        double lng = this.l.getTraveListLatLng().getLongitude();
+
+    public void setLocation(Location a){
+        this.location =a;
+        double lat = this.location.getTraveListLatLng().getLatitude();
+        double lng = this.location.getTraveListLatLng().getLongitude();
         LatLng googLatLng = new LatLng(lat,lng);
-        addPoint(this.l.getLocationName(), googLatLng);
+        addPoint(this.location.getLocationName(), googLatLng);
     }
 
+    // Reads a bundle and retrieves arguments.
     public void readBundle() {
         Bundle bundle = getArguments();
-        Log.e(TAG, "a");
         if (bundle != null) {
 
             String name = bundle.getString("locName");
             getActivity().setTitle(name);
-/*<<<<<<<HEAD
-            Location loc = (Location) bundle.getSerializable("loc");
 
-            addPoint(name, loc.getLatLng());
-=======*/
+            Location location = (Location) bundle.getSerializable("loc");
 
-            Location loc = (Location) bundle.getSerializable("loc");
-            Log.e(TAG, loc.getLocationName() );
-
-            double lat = loc.getTraveListLatLng().getLatitude();
-            double lng = loc.getTraveListLatLng().getLongitude();
+            double lat = location.getTraveListLatLng().getLatitude();
+            double lng = location.getTraveListLatLng().getLongitude();
             LatLng googLatLng = new LatLng(lat,lng);
             addPoint(name, googLatLng);
-//>>>>>>> editdb
         }
     }
 
@@ -115,27 +109,20 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        Log.i(TAG, "onCreateView");
-
         getActivity().setTitle("Map");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapFragment.this);
 
-
         if(mapView!=null)
         {
-
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-
             mMap.getUiSettings().setZoomControlsEnabled(true);
         }
-
         return view;
-
     }
 
+    // Removes map fragment
     private void killOldMap() {
         SupportMapFragment mapFragment = ((SupportMapFragment) getActivity()
                 .getSupportFragmentManager().findFragmentById(R.id.map));
@@ -144,7 +131,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             FragmentManager fM = getFragmentManager();
             fM.beginTransaction().remove(mapFragment).commit();
         }
-
     }
 
     @Override
@@ -158,6 +144,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     {
         super.onResume();
     }
+
     @Override
     public void onDestroy()
     {
@@ -175,7 +162,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         super.onCreate(savedInstanceState);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -200,16 +186,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         killOldMap();
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -217,26 +193,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     public LatLng addPoint(String name, LatLng latLng) {
-
         mMap.addMarker(new MarkerOptions().position(latLng).title(name));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, 13)));
+        mMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)));
         return latLng;
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

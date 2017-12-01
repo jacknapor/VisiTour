@@ -1,33 +1,42 @@
-package edu.bucknell.seniordesign;
+package edu.bucknell.seniordesign.data;
 
 import java.io.Serializable;
 
 /**
+ * TraveListLatLng.java
+ * TraveList - Senior Design
+ *
  * Created by nrs007 on 11/10/17.
  */
 
+// A class to represent a TraveList LatLng object
 public class TraveListLatLng implements Serializable{
 
+    // Latitude
     private Double latitude;
+
+    // Longitude
     private Double longitude;
 
-    public TraveListLatLng() {} //constructor with no arguments
+    // No argument constructor
+    public TraveListLatLng() {}
 
+    // Constructor given a latitude and longitude
     public TraveListLatLng(double lat, double lng) {
-        latitude = lat;
-        longitude = lng;
+        this.latitude = lat;
+        this.longitude = lng;
     }
 
     public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
     public Double getLongitude() {
         return longitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public void setLongitude(Double longitude) {

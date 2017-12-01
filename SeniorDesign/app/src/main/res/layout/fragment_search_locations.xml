@@ -3,7 +3,7 @@
     android:id="@+id/search_locations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.bucknell.seniordesign.SearchLocationsFragment">
+    tools:context="edu.bucknell.seniordesign.fragments.SearchLocationsFragment">
 
 
     <fragment

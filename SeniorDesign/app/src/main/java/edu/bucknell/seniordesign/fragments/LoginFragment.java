@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign;
+package edu.bucknell.seniordesign.fragments;
 
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
@@ -48,35 +48,47 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import edu.bucknell.seniordesign.R;
 
 /**
+ * LoginFragment.java
+ * TraveList - Senior Design
+ *
+ * Fragment to log in to Facebook
+ *
  * Created by nrs007 on 11/1/17.
  */
 
 public class LoginFragment extends android.support.v4.app.Fragment {
 
-    private String TAG = "LoginFragment";
+    // Firebase authentication
     private FirebaseAuth mAuth;
+
+    // User
     private FirebaseUser user;
+
+    // User email
     private String userEmail;
+
+    // Database reference
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
-    private Profile profile;
+
+    // Callback Manager
     private CallbackManager mCallbackManager;
 
+    // No arguments constructor
     public LoginFragment() {}
 
     private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
             updateUser();
-            Log.d(TAG, "hihi you've clicked the login button great job, user is " + user + " and email is " + userEmail);
             AccessToken accessToken;
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
                 handleToken(accessToken);
                 resetUserDisplay();
             } else {
-                Log.d(TAG, "hihi you just clicked the logout button for the first time, user not null, and now it should log you out");
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 resetUserDisplay();
@@ -98,20 +110,18 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
             if (currentAccessToken == null) {
-                Log.d(TAG, "hihi thinks you're logging out");
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
-                Log.d(TAG, "hihi in accesstokentracker (should be loggedout), you're " + user);
                 resetUserDisplay();
                 //how can we update the view when you log out?
             } else {
-                Log.d(TAG, "hihi thinks you're signing in!");
                 handleToken(currentAccessToken);
                 resetUserDisplay();
             }
         }
     };
 
+    // Resets profile display after a user logs out.
     public void resetUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText("Not Logged In");
@@ -119,15 +129,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         userEmail.setText("");
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getActivity().setTitle("Facebook Log In");
-        mAuth = FirebaseAuth.getInstance();
-        mCallbackManager = CallbackManager.Factory.create();
-        //
-    }
-
+    // Updates user and user email
     private void updateUser() {
         user = mAuth.getCurrentUser();
         if (user != null) {
@@ -137,8 +139,15 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActivity().setTitle("Facebook Log In");
+        mAuth = FirebaseAuth.getInstance();
+        mCallbackManager = CallbackManager.Factory.create();
+    }
+
     private void handleToken(AccessToken accessToken) {
-        Log.d(TAG, "handleToken:" + accessToken);
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(cred).addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
@@ -146,7 +155,6 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 if (task.isSuccessful()) {
                     updateUser();
                     updateUserDisplay();
-                    Log.d(TAG, "hihi useremail in handletoken onComplete is" + userEmail);
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -155,34 +163,31 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                                     // if the user is not in the database (i.e. a new user), create a user in the db
                                     try {
                                         createNewUser(dataSnapshot);
-                                        Log.d(TAG, "hihi added" + userEmail + "to db successfully");
                                     } catch (Exception E) {
-                                        Log.d(TAG, "Error: Adding user ID to database failed");
                                     }
                                 } else {
-                                    Log.d(TAG, "hihi User ID" + userEmail + " is already in Database");
                                 }
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.d(TAG, "lookforme OH NO ADDLISTENER THING CANCELLED");
                         }
                     });
                 } else {
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
                 }
             }
         });
     }
 
+    // Creates a new user in Firebase and creates a copy of default lists for the user
     private void createNewUser(DataSnapshot ds) {
         mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
     }
 
+    // Updates the user display to display user name and email
     private void updateUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText(user.getDisplayName());

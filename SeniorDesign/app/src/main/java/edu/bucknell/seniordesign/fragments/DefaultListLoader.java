@@ -1,8 +1,9 @@
-package edu.bucknell.seniordesign;
+package edu.bucknell.seniordesign.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -17,6 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import edu.bucknell.seniordesign.R;
+import edu.bucknell.seniordesign.data.List;
+
 import static android.R.layout.simple_list_item_1;
 
 /**
@@ -29,7 +33,12 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
+
+        Log.i("LIST LOADER", "DEFAULT");
+
         setContentView(R.layout.activity_choose_list);
         ListView listView= (ListView) findViewById(R.id.list);
 
