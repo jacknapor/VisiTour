@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,10 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
 
 import static android.R.layout.simple_list_item_1;
 

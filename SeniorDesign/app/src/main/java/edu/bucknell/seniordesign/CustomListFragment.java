@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 
 import android.net.Uri;
@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.util.ListAdapter;
-import edu.bucknell.seniordesign.util.ListofListsAdapter;
 
 /**
  * CustomListFragment.java

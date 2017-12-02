@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.unused;
+package edu.bucknell.seniordesign;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

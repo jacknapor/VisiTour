@@ -1,10 +1,9 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.Location;
 
 /**
  * MapFragment.java

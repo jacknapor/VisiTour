@@ -1,9 +1,8 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
 
 /**
  * CreateNewListFragment.java

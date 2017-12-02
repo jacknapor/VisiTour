@@ -1,13 +1,10 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.data.TraveListLatLng;
 
 
 /**

@@ -1,10 +1,9 @@
-package edu.bucknell.seniordesign.main;
+package edu.bucknell.seniordesign;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,19 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import edu.bucknell.seniordesign.fragments.CreateNewListFragment;
-import edu.bucknell.seniordesign.fragments.CustomListFragment;
-import edu.bucknell.seniordesign.unused.ListFragment;
-import edu.bucknell.seniordesign.fragments.LoginFragment;
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.fragments.SearchLocationsFragment;
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.data.TraveListLatLng;
-import edu.bucknell.seniordesign.fragments.MapFragment;
-import edu.bucknell.seniordesign.unused.TestFragment;
-import edu.bucknell.seniordesign.util.ReadData;
 
 /**
  * NavigationDrawerActivity.java

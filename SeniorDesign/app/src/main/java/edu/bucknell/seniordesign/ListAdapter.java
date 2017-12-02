@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.util;
+package edu.bucknell.seniordesign;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,10 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import com.bumptech.glide.Glide;
-
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.R;
 
 /**
  * ListAdapter.java

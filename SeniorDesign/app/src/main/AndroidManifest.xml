@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".main.NavigationDrawerActivity"
+            android:name=".NavigationDrawerActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -43,21 +43,21 @@
             android:value="AIzaSyCP3eNY56w4P5OhsaUOcbQLeo_zglbcIaU"/>
 
         <activity
-            android:name=".unused.MapsActivity"
+            android:name=".MapsActivity"
 
             android:label="@string/title_activity_maps"></activity>
 
-        <activity android:name=".fragments.DefaultListLoader"
+        <activity android:name=".DefaultListLoader"
             android:label="Default Lists"
             android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".fragments.ListLoader"
+        <activity android:name=".ListLoader"
             android:label="Default Lists"
             android:theme="@style/AppTheme">
         </activity>
 
             android:label="@string/title_activity_maps" />
-        <activity android:name=".unused.NewListActivity"></activity>
+        <activity android:name=".NewListActivity"></activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>

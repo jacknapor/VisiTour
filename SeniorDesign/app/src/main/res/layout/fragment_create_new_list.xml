@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="edu.bucknell.seniordesign.fragments.CreateNewListFragment"
+    tools:context="edu.bucknell.seniordesign.CreateNewListFragment"
     android:layout_weight="1">
 
     <EditText

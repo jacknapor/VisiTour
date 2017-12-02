@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,9 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
 
 import static android.R.layout.simple_list_item_1;
 

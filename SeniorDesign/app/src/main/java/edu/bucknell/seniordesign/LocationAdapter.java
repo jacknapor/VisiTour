@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.util;
+package edu.bucknell.seniordesign;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,9 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.R;
 
 /**
  * LocationAdapter.java

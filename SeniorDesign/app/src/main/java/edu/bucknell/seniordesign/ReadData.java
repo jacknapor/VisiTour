@@ -1,8 +1,7 @@
-package edu.bucknell.seniordesign.util;
+package edu.bucknell.seniordesign;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,11 +13,6 @@ import java.util.ArrayList;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.data.Location;
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.TraveListLatLng;
 
 
 /**

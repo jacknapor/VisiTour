@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.fragments;
+package edu.bucknell.seniordesign;
 
 import android.content.pm.PackageInstaller;
 import android.net.Uri;

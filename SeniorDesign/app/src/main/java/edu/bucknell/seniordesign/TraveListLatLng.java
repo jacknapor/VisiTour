@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.data;
+package edu.bucknell.seniordesign;
 
 import java.io.Serializable;
 

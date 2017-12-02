@@ -1,4 +1,4 @@
-package edu.bucknell.seniordesign.unused;
+package edu.bucknell.seniordesign;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,10 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import edu.bucknell.seniordesign.R;
-import edu.bucknell.seniordesign.data.List;
-import edu.bucknell.seniordesign.fragments.SearchLocationsFragment;
 
 /**
  * A simple {@link Fragment} subclass.
