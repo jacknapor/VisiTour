@@ -1,5 +1,7 @@
 package edu.bucknell.seniordesign;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ import java.io.Serializable;
 
 public class Location implements Serializable{
 
+    private Bitmap pic;
     // Location name
     private String locationName;
 
@@ -50,6 +53,12 @@ public class Location implements Serializable{
         this.locationDescription = description;
         this.traveListLatLng = traveListLatLng;
     }
+    public Location(String name, String description, TraveListLatLng traveListLatLng, Bitmap b) {
+        this.locationName = name;
+        this.locationDescription = description;
+        this.traveListLatLng = traveListLatLng;
+        this.pic=b;
+    }
 
     public boolean getVisited(){
         return this.visited;
@@ -68,6 +77,10 @@ public class Location implements Serializable{
     }
 
     public String getImageUrl() {return imageUrl; }
+
+    public Bitmap getPic(){
+        return pic;
+    }
 
     public void setLocationName(String name){
         this.locationName = name;

@@ -13,7 +13,7 @@
         android:layout_alignLeft="@+id/textViewName"
         android:layout_alignStart="@+id/textViewName"
         android:text="TextView"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textViewName"

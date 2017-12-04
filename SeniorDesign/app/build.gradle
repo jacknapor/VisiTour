@@ -1,9 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+
+    }
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
-
     defaultConfig {
         applicationId "edu.bucknell.seniordesign"
         minSdkVersion 15
@@ -16,29 +18,30 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
+    }
+    dexOptions {
+        jumboMode true
     }
 }
 
 
 dependencies {
-
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     //compile fileTree(dir: 'libs', include: ['*.jar'])
-
     //compile 'com.android.support.constraint:constraint-layout:+'
-
-
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
-    compile 'com.google.firebase:firebase-core:11.0.2'
-    compile 'com.google.firebase:firebase-database:11.0.2'
-    compile 'com.google.firebase:firebase-crash:11.0.2'
-    compile 'com.google.firebase:firebase-auth:11.0.2'
-    compile 'com.google.android.gms:play-services-maps:11.0.2'
-    compile 'com.google.android.gms:play-services-location:11.0.2'
-    compile 'com.google.android.gms:play-services-places:11.0.2'
+    compile 'com.google.firebase:firebase-core:11.2.0'
+    compile 'com.google.firebase:firebase-database:11.2.0'
+    compile 'com.google.firebase:firebase-crash:11.2.0'
+    compile 'com.google.firebase:firebase-auth:11.2.0'
+    compile 'com.google.firebase:firebase-storage:11.2.0'
+    compile 'com.google.android.gms:play-services-maps:11.2.0'
+    compile 'com.google.android.gms:play-services-places:11.2.0'
+    // compile 'com.google.android.gms:play-services:11.2.0'
+    compile 'com.google.android.gms:play-services-location:11.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'
@@ -46,8 +49,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bumptech.glide:glide:4.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
-
     compile 'org.apache.poi:poi:3.9'
-
 }
 apply plugin: 'com.google.gms.google-services'

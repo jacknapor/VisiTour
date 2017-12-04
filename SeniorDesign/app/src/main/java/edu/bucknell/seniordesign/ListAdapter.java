@@ -183,6 +183,9 @@ public class ListAdapter extends ArrayAdapter<Location> {
             if (location.getImageUrl() != null && icon != null) {
                 Glide.with(getContext()).load(location.getImageUrl()).into(icon);
             }
+            else if (location.getPic() != null && icon != null) {
+                icon.setImageBitmap(location.getPic());
+            }
 
             else if (icon != null) {
                 icon.setImageResource(R.drawable.ic_menu_gallery);

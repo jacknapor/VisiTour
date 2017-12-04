@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 public class NavigationDrawerActivity extends AppCompatActivity
         implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
 
+    private GeoDataClient mGeoDataClient;
     // Reference to database
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
 
@@ -55,6 +58,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mGeoDataClient = Places.getGeoDataClient(this, null);
 
         // Uncomment the following line of code to push default lists to database using ReadData.java
         // callReadData();
