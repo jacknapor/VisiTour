@@ -209,7 +209,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
                                                             Location newLocation = new Location(finalPlace.getName().toString(), "", f);
-
+                                                            a.dismiss();
                                                             list.addLocation(newLocation);
 
                                                             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
