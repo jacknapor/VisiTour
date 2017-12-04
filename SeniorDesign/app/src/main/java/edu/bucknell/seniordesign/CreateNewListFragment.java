@@ -1,6 +1,8 @@
 package edu.bucknell.seniordesign;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -75,6 +77,15 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
 
                 String name = mNameField.getText().toString().trim();
+                if (name.contains(".")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Invalid List Name").setMessage("Please do not add periods to your list name." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }else{
                 //mDatabase.child("User Lists").child(name).setValue(name);
                 hideKeyboard();
 
@@ -88,7 +99,7 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                 bundle.putSerializable("new_list", newList);
                 CustomListFragment fragment= CustomListFragment.newInstance(newList);
                 fragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
             }
         });
 
