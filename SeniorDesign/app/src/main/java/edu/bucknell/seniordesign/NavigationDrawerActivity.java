@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -289,11 +290,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (null != user) {
             if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
+                        .getLayoutParams();
+                mlp.setMargins(10,0,0,0);
+                userTextView.setLayoutParams(mlp);
             userEmailTextView.setText(user.getEmail());
             Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
             Log.e("url:",user.getProviderId());}
         } else {
             userTextView.setText("Not Logged In");
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
+                    .getLayoutParams();
+            mlp.setMargins(10,90,0,0);
+            userTextView.setLayoutParams(mlp);
             profpic.setImageResource(android.R.drawable.sym_def_app_icon);
             userEmailTextView.setText(null);
         }

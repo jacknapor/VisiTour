@@ -129,6 +129,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     public void resetUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText("Not Logged In");
+        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userName
+                .getLayoutParams();
+        mlp.setMargins(10,90,0,0);
+        userName.setLayoutParams(mlp);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText("");
         ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
@@ -199,6 +203,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void updateUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText(user.getDisplayName());
+        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userName
+                .getLayoutParams();
+        mlp.setMargins(10,0,0,0);
+        userName.setLayoutParams(mlp);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText(user.getEmail());
         ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
