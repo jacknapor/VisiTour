@@ -153,13 +153,13 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mCallbackManager = CallbackManager.Factory.create();
     }
 
-    private void handleToken(final AccessToken accessToken) {
+    private void handleToken( AccessToken accessToken) {
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(cred).addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    fbID=accessToken.getUserId();
+
                     updateUser();
                     updateUserDisplay();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
