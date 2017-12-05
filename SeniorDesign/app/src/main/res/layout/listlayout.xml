@@ -9,9 +9,10 @@
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/listItemImage"
         android:layout_alignLeft="@+id/textViewName"
         android:layout_alignStart="@+id/textViewName"
+        android:layout_below="@id/textViewName"
+        android:layout_toLeftOf="@id/delete"
         android:text="TextView"
         android:textSize="18sp" />
 
@@ -21,7 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+
         android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/delete"
         android:layout_toRightOf="@+id/listItemImage"
         android:text="TextView"
         android:textSize="25sp" />
@@ -36,7 +39,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/visitedTextView"
+        android:layout_below="@+id/progressTextView"
         android:visibility="invisible" />
 
     <TextView
@@ -56,18 +59,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_alignBaseline="@+id/visitedTextView"
-        android:layout_alignBottom="@+id/visitedTextView"
+        android:layout_alignTop="@+id/visitedTextView"
         android:layout_toLeftOf="@+id/visited"
         android:layout_toStartOf="@+id/visited"
         android:text="Progress:"
         android:textSize="20sp"
         android:visibility="invisible" />
 
+    <!--android:layout_alignBaseline="@+id/visitedTextView"
+        android:layout_alignBottom="@+id/visitedTextView"-->
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_alignBaseline="@+id/visited"
         android:layout_alignBottom="@+id/visited"
         android:layout_toEndOf="@+id/progressTextView"
@@ -75,6 +81,9 @@
         android:text="TextView"
         android:textSize="20sp"
         android:visibility="invisible" />
+
+    <!--android:layout_alignBaseline="@+id/visited"
+        android:layout_alignBottom="@+id/visited"-->
 
     <ImageView
         android:id="@+id/listItemImage"
