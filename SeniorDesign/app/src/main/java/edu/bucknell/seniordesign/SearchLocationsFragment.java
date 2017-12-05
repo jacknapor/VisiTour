@@ -154,10 +154,23 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                         PlacePhotoMetadataResponse photos = task.getResult();
                                         // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
                                         PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                                        PlacePhotoMetadata photoMetadata;
                                         // Get the first photo in the list.
-                                        PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-                                        // Get the attribution text.
-                                        CharSequence attribution = photoMetadata.getAttributions();
+                                        if(photoMetadataBuffer.getCount()==0){
+                                            photoMetadataBuffer.release();
+                                            Location newLocation = new Location(finalPlace.getName().toString(), "", f);
+
+                                            list.addLocation(newLocation);
+
+                                            mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
+
+                                            CustomListFragment fragment = CustomListFragment.newInstance(list);
+                                            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                            return;
+                                        }else{
+                                            photoMetadata = photoMetadataBuffer.get(0);
+                                            }
 
                                         // Get a full-size bitmap for the photo.
                                         Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
@@ -202,6 +215,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+
                                                         }
                                                     });
                                                     uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -222,7 +236,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                             }
                                         }
-                                    });}
+                                    });
+                                        photoMetadataBuffer.release();}
                                 });
 
 

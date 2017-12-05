@@ -1,6 +1,8 @@
 package edu.bucknell.seniordesign;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,12 +12,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +61,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(this.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            Toast.makeText(getApplicationContext(), "No network available. Please reconnect and restart TraveList.",
+                    Toast.LENGTH_LONG).show();
+            finish();
+
+        }
         setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,6 +85,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             convertUserEmail();
+
+
         }
 
         updateUser();
@@ -87,11 +108,34 @@ public class NavigationDrawerActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                updateUser();
+                setUserName();
+            }
+        });
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        updateUser();
+
+
     }
 
     // Convert user email. Firebase keys cannot contain '.' so emails have ',' instead
@@ -133,9 +177,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         updateUser();
         setUserName();
+        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
+
         return true;
     }
 
@@ -157,6 +202,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         final ArrayList<List> listOfLists = new ArrayList<List>();
         DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
         updateUser();
+
         boolean defaultList = false;
 
         switch(menuItem.getItemId()) {
@@ -239,11 +285,16 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private void setUserName() {
             TextView userTextView = (TextView) findViewById(R.id.user_name);
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
+            ImageView profpic= (ImageView) findViewById(R.id.profile_pic);
         if (null != user) {
+            if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
             userEmailTextView.setText(user.getEmail());
+            Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
+            Log.e("url:",user.getProviderId());}
         } else {
             userTextView.setText("Not Logged In");
+            profpic.setImageResource(android.R.drawable.sym_def_app_icon);
             userEmailTextView.setText(null);
         }
     }
