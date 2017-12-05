@@ -108,28 +108,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
 
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                updateUser();
-                setUserName();
-            }
-        });
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -286,14 +265,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView userTextView = (TextView) findViewById(R.id.user_name);
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
             ImageView profpic= (ImageView) findViewById(R.id.profile_pic);
+            TextView nolog= (TextView) findViewById(R.id.notloggedin);
         if (null != user) {
             if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
+            userTextView.setVisibility(View.VISIBLE);
             userEmailTextView.setText(user.getEmail());
+            userEmailTextView.setVisibility(View.VISIBLE);
+            nolog.setVisibility(View.INVISIBLE);
             Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
             Log.e("url:",user.getProviderId());}
         } else {
-            userTextView.setText("Not Logged In");
+            userTextView.setText("");
+            userTextView.setVisibility(View.INVISIBLE);
             profpic.setImageResource(android.R.drawable.sym_def_app_icon);
             userEmailTextView.setText(null);
         }
