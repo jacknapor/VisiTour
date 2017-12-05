@@ -63,6 +63,7 @@ import edu.bucknell.seniordesign.R;
 
 public class LoginFragment extends android.support.v4.app.Fragment {
 
+    private String fbID;
 
     // Firebase authentication
     private FirebaseAuth mAuth;
@@ -127,15 +128,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     // Resets profile display after a user logs out.
     public void resetUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
-        userName.setText("");
-        userName.setVisibility(View.INVISIBLE);
+        userName.setText("Not Logged In");
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText("");
-        userEmail.setVisibility(View.INVISIBLE);
         ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
         profpic.setImageResource(android.R.drawable.sym_def_app_icon);
-        TextView nolog=(TextView) getActivity().findViewById(R.id.notloggedin);
-        nolog.setVisibility(View.VISIBLE);
     }
 
     // Updates user and user email
@@ -162,7 +159,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
+                    fbID=accessToken.getUserId();
                     updateUser();
                     updateUserDisplay();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,14 +199,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void updateUserDisplay() {
         TextView userName = (TextView) getActivity().findViewById(R.id.user_name);
         userName.setText(user.getDisplayName());
-        userName.setVisibility(View.VISIBLE);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText(user.getEmail());
-        userName.setVisibility(View.VISIBLE);
         ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
        Glide.with(this).load(user.getPhotoUrl()).into(profpic);
-        TextView nolog=(TextView) getActivity().findViewById(R.id.notloggedin);
-        nolog.setVisibility(View.INVISIBLE);
 
 
     }
