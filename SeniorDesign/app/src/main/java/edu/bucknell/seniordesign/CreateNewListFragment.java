@@ -105,12 +105,9 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                         }
                     }).show();
                 }else{
-                //mDatabase.child("User Lists").child(name).setValue(name);
                 hideKeyboard();
 
                 android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-                //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 Bundle bundle = new Bundle();
                 List newList = new List(name, "");

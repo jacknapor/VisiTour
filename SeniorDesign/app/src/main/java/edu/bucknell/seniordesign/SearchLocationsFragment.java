@@ -41,21 +41,28 @@ import java.io.ByteArrayOutputStream;
  * SearchLocationsFragment.java
  * TraveList - Senior Design
  *
- * Fragment for searching for a location.
+ * Fragment for searching for alertDialog location.
  *
  */
 public class SearchLocationsFragment extends android.support.v4.app.Fragment implements OnBackPressedListener{
-    private FirebaseStorage storage= FirebaseStorage.getInstance("gs://natparksdb.appspot.com");
-    private StorageReference storageRef= storage.getReference();
-    private String u;
-    private AlertDialog.Builder b ;
-    private AlertDialog a;
 
+    // Reference to FirebaseStorage
+    private FirebaseStorage storage= FirebaseStorage.getInstance("gs://natparksdb.appspot.com");
+
+    // StorageReference used to gt reference to Firebase Storage
+    private StorageReference storageRef= storage.getReference();
+
+    // AlertDialog builder
+    private AlertDialog.Builder builder;
+
+    // AlertDialog
+    private AlertDialog alertDialog;
+
+    // GeoDataClient
     private GeoDataClient mGeoDataClient;
+
     // OnFragmentInteractionListener
     private OnFragmentInteractionListener mListener;
-
-
 
     // Reference to database
     private DatabaseReference mDb;
@@ -81,13 +88,13 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     public SearchLocationsFragment() {
     }
 
-    // Create a new instance of SearchLocationsFragment given no parameters
+    // Create alertDialog new instance of SearchLocationsFragment given no parameters
     public static SearchLocationsFragment newInstance() {
         SearchLocationsFragment fragment = new SearchLocationsFragment();
         return fragment;
     }
 
-    // Create a new instance of SearchLocationsFragment with a List parameter
+    // Create alertDialog new instance of SearchLocationsFragment with alertDialog List parameter
     public static SearchLocationsFragment newInstance(List list) {
         SearchLocationsFragment fragment = new SearchLocationsFragment();
         fragment.list = list;
@@ -122,12 +129,12 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         }
 
         mView = view;
-        b = new AlertDialog.Builder(getContext());
+        builder = new AlertDialog.Builder(getContext());
         // Gets the List to add the locations to
         Bundle bundle = getArguments();
         if (bundle != null) {
             final List finalList = this.list;
-            getActivity().setTitle("Add a Location");
+            getActivity().setTitle("Add alertDialog Location");
 
           final SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -175,7 +182,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                             photoMetadata = photoMetadataBuffer.get(0);
                                             }
 
-                                        // Get a full-size bitmap for the photo.
+                                        // Get alertDialog full-size bitmap for the photo.
                                         Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
                                         photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
                                             @Override
@@ -184,7 +191,6 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                 Bitmap bitmap = photo.getBitmap();
                                                 pic=bitmap;
                                                 if( pic==null) {
-                                                    Log.e("ASGA", "ASGA");
                                                     Location newLocation = new Location(finalPlace.getName().toString(), "", f);
 
                                                     list.addLocation(newLocation);
@@ -195,13 +201,13 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                                     fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                                                 }else{
-                                                    b.setMessage("Loading..").setCancelable(false);
-                                                    a=b.create();
-                                                    a.show();
+                                                    builder.setMessage("Loading..").setCancelable(false);
+                                                    alertDialog = builder.create();
+                                                    alertDialog.show();
 
-                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                                    pic.compress(Bitmap.CompressFormat.JPEG,100, baos);
-                                                    byte[] data= baos.toByteArray();
+                                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                                    pic.compress(Bitmap.CompressFormat.JPEG,100, byteArrayOutputStream);
+                                                    byte[] data= byteArrayOutputStream.toByteArray();
                                                     StorageReference picRef = storageRef.child(finalPlace.getName().toString()+".jpg");
 
                                                     UploadTask uploadTask= picRef.putBytes(data);
@@ -212,7 +218,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             Location newLocation = new Location(finalPlace.getName().toString(), "", f, downloadUrl.toString());
 
                                                             list.addLocation(newLocation);
-                                                            a.dismiss();
+                                                            alertDialog.dismiss();
 
                                                             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
@@ -225,7 +231,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
                                                             Location newLocation = new Location(finalPlace.getName().toString(), "", f);
-                                                            a.dismiss();
+                                                            alertDialog.dismiss();
                                                             list.addLocation(newLocation);
 
                                                             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
@@ -242,8 +248,6 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                     });
                                         photoMetadataBuffer.release();}
                                 });
-
-
                         }
                     }};
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

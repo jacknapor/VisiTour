@@ -34,8 +34,6 @@ public class DefaultListLoader extends AppCompatActivity { //extend appcompatact
 
         super.onCreate(savedInstanceState);
 
-        Log.i("LIST LOADER", "DEFAULT");
-
         setContentView(R.layout.activity_choose_list);
         ListView listView= (ListView) findViewById(R.id.list);
 
