@@ -37,7 +37,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-
 /**
  * SearchLocationsFragment.java
  * TraveList - Senior Design
