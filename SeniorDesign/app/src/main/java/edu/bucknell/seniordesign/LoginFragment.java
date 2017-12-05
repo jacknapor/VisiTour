@@ -20,8 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -61,6 +63,8 @@ import edu.bucknell.seniordesign.R;
 
 public class LoginFragment extends android.support.v4.app.Fragment {
 
+    private String fbID;
+
     // Firebase authentication
     private FirebaseAuth mAuth;
 
@@ -87,7 +91,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
                 handleToken(accessToken);
-                resetUserDisplay();
+                //resetUserDisplay();
             } else {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
@@ -127,6 +131,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         userName.setText("Not Logged In");
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText("");
+        ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
+        profpic.setImageResource(android.R.drawable.sym_def_app_icon);
     }
 
     // Updates user and user email
@@ -147,12 +153,13 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mCallbackManager = CallbackManager.Factory.create();
     }
 
-    private void handleToken(AccessToken accessToken) {
+    private void handleToken(final AccessToken accessToken) {
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(cred).addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    fbID=accessToken.getUserId();
                     updateUser();
                     updateUserDisplay();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -185,6 +192,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
+
     }
 
     // Updates the user display to display user name and email
@@ -193,6 +201,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         userName.setText(user.getDisplayName());
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText(user.getEmail());
+        ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
+       Glide.with(this).load(user.getPhotoUrl()).into(profpic);
+
+
     }
 
     @Override

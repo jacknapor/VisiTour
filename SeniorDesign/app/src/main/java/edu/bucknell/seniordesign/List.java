@@ -52,7 +52,6 @@ public class List implements Serializable {
         }
         double doubleProgressPercent = (progress/ (double) locationArray.size())*100;
         int intProgressPercent = (int) doubleProgressPercent;
-        Log.e("progress", Double.toString(doubleProgressPercent));
         return intProgressPercent;
     }
 

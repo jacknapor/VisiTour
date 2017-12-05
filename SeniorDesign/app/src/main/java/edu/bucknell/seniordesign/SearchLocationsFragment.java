@@ -158,6 +158,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                         PlacePhotoMetadata photoMetadata;
                                         // Get the first photo in the list.
                                         if(photoMetadataBuffer.getCount()==0){
+                                            photoMetadataBuffer.release();
                                             Location newLocation = new Location(finalPlace.getName().toString(), "", f);
 
                                             list.addLocation(newLocation);
@@ -169,7 +170,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                                             return;
                                         }else{
-                                            photoMetadata = photoMetadataBuffer.get(0);}
+                                            photoMetadata = photoMetadataBuffer.get(0);
+                                            }
 
                                         // Get a full-size bitmap for the photo.
                                         Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
@@ -214,6 +216,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+
                                                         }
                                                     });
                                                     uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -234,7 +237,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                             }
                                         }
-                                    });}
+                                    });
+                                        photoMetadataBuffer.release();}
                                 });
 
 
