@@ -63,7 +63,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        notifyDataSetChanged();
         View view = convertView;
         if (view == null) {
             LayoutInflater layoutInflater;

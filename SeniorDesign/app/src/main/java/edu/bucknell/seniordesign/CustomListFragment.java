@@ -6,10 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.facebook.share.model.ShareLinkContent;
@@ -73,16 +75,17 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
 
     @Override
     public void onBackPressed(){
+        Log.e("j","j");
         getActivity().onBackPressed();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        final View rootView = inflater.inflate(R.layout.activity_choose_list, container, false);
+        final View rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup viewGroup = container;
+
         final List finalList = this.list;
         addLocationButton = (FloatingActionButton) rootView.findViewById(R.id.add_location_button);
         addLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +96,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 bundle.putSerializable("current_list", finalList);
                 SearchLocationsFragment fragment = SearchLocationsFragment.newInstance(finalList);
                 fragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(viewGroup .getId(), fragment).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
             }
         });
         shareDialog = new ShareDialog(this);
@@ -102,18 +105,20 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         if (isLists) {
             getActivity().setTitle("Lists");
             addLocationButton.hide();
-            ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
-                    R.layout.listlayout, listoflists);
-            listView = (ListView) rootView.findViewById(R.id.list);
+
+
+                ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
+                        R.layout.listlayout, listoflists);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
                     List n= listoflists.get(position);
                     CustomListFragment fragment= CustomListFragment.newInstance(n);
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(viewGroup .getId(), fragment).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                 }});
 
         } else {
@@ -160,7 +165,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     Location location = list.getLocation(position);
                     MapFragment fragment = MapFragment.newInstance(location);
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(viewGroup .getId(), fragment).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                 }
             });
             listView.setAdapter(adapter);
@@ -217,5 +222,35 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     @Override
     public void onClick(View v) {
     }
+
+    @Override
+    public void onResume() {
+
+        ListView listView= (ListView) getView().findViewById(R.id.list);
+        if(isLists && listView.getAdapter()!=null){
+
+        userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        mDb.child("Users").child(userEmail).child("lists").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listoflists.clear();
+                for (DataSnapshot s : dataSnapshot.getChildren()) {
+                    List listToAdd = s.getValue(List.class);
+                    listoflists.add(listToAdd);
+                }
+                ListView listView= (ListView) getView().findViewById(R.id.list);
+                ListofListsAdapter adapter= (ListofListsAdapter) listView.getAdapter();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+        super.onResume();
+    }
+
 }
 

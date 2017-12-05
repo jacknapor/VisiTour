@@ -240,6 +240,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             listOfLists.clear();
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
+                                Log.e("e", s.getKey());
                                 List listToAdd = s.getValue(List.class);
                                 listOfLists.add(listToAdd);
                             }
@@ -296,7 +297,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 userTextView.setLayoutParams(mlp);
             userEmailTextView.setText(user.getEmail());
             Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
-            Log.e("url:",user.getProviderId());}
+           }
         } else {
             userTextView.setText("Not Logged In");
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView

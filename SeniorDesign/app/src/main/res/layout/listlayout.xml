@@ -89,6 +89,8 @@
         android:id="@+id/listItemImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"

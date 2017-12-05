@@ -55,8 +55,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     // OnFragmentInteractionListener
     private OnFragmentInteractionListener mListener;
 
-    // Autocomplete fragment used to search for locations
-    private SupportPlaceAutocompleteFragment autocompleteFragment;
+
 
     // Reference to database
     private DatabaseReference mDb;
@@ -130,7 +129,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             final List finalList = this.list;
             getActivity().setTitle("Add a Location");
 
-            SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+          final SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
@@ -140,8 +140,10 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == DialogInterface.BUTTON_NEGATIVE) {
+                                getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                             }
                             if (which == DialogInterface.BUTTON_POSITIVE) {
+                                getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                                 TraveListLatLng newTraveListLatLng = new TraveListLatLng();
                                 newTraveListLatLng.setLatitude(finalPlace.getLatLng().latitude);
                                 newTraveListLatLng.setLongitude(finalPlace.getLatLng().longitude);
@@ -150,6 +152,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                 photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
                                     @Override
                                     public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+
                                         // Get the list of photos.
                                         PlacePhotoMetadataResponse photos = task.getResult();
                                         // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
@@ -255,12 +258,14 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
         } else {
             getActivity().setTitle("Location Search");
-            SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+            final SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(Place place) {
-
+                    getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                     TraveListLatLng newTraveListLatLng = new TraveListLatLng();
                     newTraveListLatLng.setLatitude(place.getLatLng().latitude);
                     newTraveListLatLng.setLongitude(place.getLatLng().longitude);
@@ -317,7 +322,18 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     @Override
     public void onDestroyView() {
+
         super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+
+        super.onSaveInstanceState(null);
+
     }
 
     @Override
@@ -332,7 +348,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     @Override
     public void onBackPressed() {
-        autocompleteFragment.getView().setVisibility(View.GONE);
+
         getActivity().onBackPressed();
     }
 }

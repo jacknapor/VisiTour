@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -85,6 +87,23 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                             dialog.dismiss();
                         }
                     }).show();
+                }else if (name.equals("")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Invalid List Name").setMessage("Your list name must be at least 1 character long." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+                }else if (name.length()>15){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Invalid List Name").setMessage("Your list name must be fewer than 15 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
                 }else{
                 //mDatabase.child("User Lists").child(name).setValue(name);
                 hideKeyboard();
@@ -97,11 +116,13 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                 List newList = new List(name, "");
                 mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(newList);
                 bundle.putSerializable("new_list", newList);
+
                 CustomListFragment fragment= CustomListFragment.newInstance(newList);
                 fragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).commit();}
-            }
-        });
+                mNameField.setText("");
+                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();}
+            }});
+
 
         return view;
     }

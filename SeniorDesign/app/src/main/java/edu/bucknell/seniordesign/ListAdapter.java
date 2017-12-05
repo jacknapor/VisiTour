@@ -73,7 +73,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        notifyDataSetChanged();
         View view = convertView;
 
        if (view == null) {
