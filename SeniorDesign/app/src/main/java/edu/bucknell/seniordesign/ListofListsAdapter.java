@@ -42,7 +42,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     // User email
-    private String userEmail = user.getEmail().replace(".", ",");
+    private String userEmail=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
 
     // Constructor given a Context and an int
     public ListofListsAdapter(Context context, int textViewResourceId) {
@@ -64,6 +64,8 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         notifyDataSetChanged();
+
+
         View view = convertView;
         if (view == null) {
             LayoutInflater layoutInflater;

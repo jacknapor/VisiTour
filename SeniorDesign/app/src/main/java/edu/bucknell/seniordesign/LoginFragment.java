@@ -1,5 +1,6 @@
 package edu.bucknell.seniordesign;
 
+import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -80,22 +82,35 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     // Callback Manager
     private CallbackManager mCallbackManager;
 
+
+
     // No arguments constructor
     public LoginFragment() {}
 
-    private FacebookCallback<LoginResult> mCallback=new FacebookCallback<LoginResult>() {
+    public static LoginFragment newInstance(){
+        LoginFragment a =new LoginFragment();
+
+        return a;
+    }
+
+    private FacebookCallback<LoginResult>  mCallback= new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
             updateUser();
             AccessToken accessToken;
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
-                handleToken(accessToken);
+                if(accessToken.getUserId()!=null) {
+                    handleToken(accessToken);
+                }
+
                 //resetUserDisplay();
             } else {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
-                resetUserDisplay();
+                Log.e("wtf", "is that");
+
+
             }
         }
 
@@ -110,20 +125,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         }
     };
 
-    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
-        @Override
-        protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-            if (currentAccessToken == null) {
-                FirebaseAuth.getInstance().signOut();
-                LoginManager.getInstance().logOut();
-                resetUserDisplay();
-                //how can we update the view when you log out?
-            } else {
-                handleToken(currentAccessToken);
-                resetUserDisplay();
-            }
-        }
-    };
+    private AccessTokenTracker accessTokenTracker ;
 
     // Resets profile display after a user logs out.
     public void resetUserDisplay() {
@@ -159,7 +161,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     private void handleToken( AccessToken accessToken) {
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
-        mAuth.signInWithCredential(cred).addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithCredential(cred).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -215,9 +217,38 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+
+        View v= inflater.inflate(R.layout.fragment_login, container, false);
+        LoginButton loginButton = (LoginButton) v.findViewById(R.id.login_button);
+        loginButton.setReadPermissions( "email", "public_profile");
+        loginButton.setFragment(this);
+        loginButton.registerCallback(mCallbackManager, mCallback);
+
+        accessTokenTracker= new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    FirebaseAuth.getInstance().signOut();
+                    LoginManager.getInstance().logOut();
+//                resetUserDisplay();
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                    this.stopTracking();
+
+                    //how can we update the view when you log out?
+                } else {
+                    handleToken(currentAccessToken);
+                    resetUserDisplay();
+                }
+            }
+        };
+
+        return v;
     }
 
     @Override
@@ -231,8 +262,14 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+    @Override
+    public void onPause() {
+        accessTokenTracker.stopTracking();
+        super.onPause();
     }
 
     @Override

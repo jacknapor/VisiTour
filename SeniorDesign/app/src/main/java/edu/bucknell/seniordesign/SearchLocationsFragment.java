@@ -3,6 +3,7 @@ package edu.bucknell.seniordesign;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -83,6 +84,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     // List to add to
     private List list = null;
+    private SearchLocationsFragment k;
 
     // No arguments constructor
     public SearchLocationsFragment() {
@@ -97,6 +99,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     // Create alertDialog new instance of SearchLocationsFragment with alertDialog List parameter
     public static SearchLocationsFragment newInstance(List list) {
         SearchLocationsFragment fragment = new SearchLocationsFragment();
+        fragment.k= fragment;
         fragment.list = list;
         return fragment;
     }
@@ -111,6 +114,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         mDb = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -134,7 +139,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         Bundle bundle = getArguments();
         if (bundle != null) {
             final List finalList = this.list;
-            getActivity().setTitle("Add alertDialog Location");
+            getActivity().setTitle("Add Location");
 
           final SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -148,9 +153,11 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == DialogInterface.BUTTON_NEGATIVE) {
                                 getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+                                //getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                             }
                             if (which == DialogInterface.BUTTON_POSITIVE) {
                                 getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+                               // getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                                 TraveListLatLng newTraveListLatLng = new TraveListLatLng();
                                 newTraveListLatLng.setLatitude(finalPlace.getLatLng().latitude);
                                 newTraveListLatLng.setLongitude(finalPlace.getLatLng().longitude);
@@ -176,6 +183,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                            fragmentManager.beginTransaction().remove(k);
                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                                             return;
                                         }else{
@@ -199,6 +207,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                                     CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                    fragmentManager.beginTransaction().remove(k);
+                                                    getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                                                     fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                                                 }else{
                                                     builder.setMessage("Loading..").setCancelable(false);
@@ -223,6 +233,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                            fragmentManager.beginTransaction().remove(k);
                                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
 
                                                         }
@@ -238,6 +249,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                            fragmentManager.beginTransaction().remove(k);
                                                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
 
                                                     }
@@ -307,7 +319,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         }
     }
 
-    @Override
+   /* @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -316,7 +328,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
+    }*/
 
     @Override
     public void onDetach() {
@@ -334,6 +346,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     public void onSaveInstanceState(Bundle outState){
         SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
 
         super.onSaveInstanceState(null);

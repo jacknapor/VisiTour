@@ -8,6 +8,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/be"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ListFragment">
@@ -22,13 +23,13 @@
     </ListView>
 
     <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_location_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="10dp"
-            android:src="@android:drawable/ic_input_add"
-            android:tint="@android:color/white" />
+        android:id="@+id/add_location_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="10dp"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@android:color/white" />
 
 
     <android.support.design.widget.FloatingActionButton
@@ -39,8 +40,7 @@
         android:layout_margin="10dp"
         android:src="@android:drawable/ic_menu_share"
         android:tint="@android:color/white"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
 </FrameLayout>

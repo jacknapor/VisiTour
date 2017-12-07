@@ -1,6 +1,7 @@
 package edu.bucknell.seniordesign;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -96,6 +97,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 bundle.putSerializable("current_list", finalList);
                 SearchLocationsFragment fragment = SearchLocationsFragment.newInstance(finalList);
                 fragment.setArguments(bundle);
+
                 fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
             }
         });
@@ -103,11 +105,12 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         fbShareButton = (FloatingActionButton) rootView.findViewById(R.id.fb_share_button);
 
         if (isLists) {
+            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
             getActivity().setTitle("Lists");
             addLocationButton.hide();
 
 
-                ListofListsAdapter adapter = new ListofListsAdapter(getActivity(),
+                ListofListsAdapter adapter = new ListofListsAdapter(getContext(),
                         R.layout.listlayout, listoflists);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -158,7 +161,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             });
             getActivity().setTitle(this.list.getListName());
 
-            ListAdapter adapter = new ListAdapter(getActivity(), R.layout.listlayout, this.list);
+            ListAdapter adapter = new ListAdapter(getContext(), R.layout.listlayout, this.list);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

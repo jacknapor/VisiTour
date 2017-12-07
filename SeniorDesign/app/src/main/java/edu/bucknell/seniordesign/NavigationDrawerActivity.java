@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,8 +63,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("hello", "a");
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(this.CONNECTIVITY_SERVICE);
+        if(user!=null){
+            FirebaseAuth.getInstance().signOut();
+            LoginManager.getInstance().logOut();
+            user=null;
+            updateUser();
+        }
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
@@ -93,17 +101,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
         updateUser();
 
         if (savedInstanceState == null) {
-            Fragment fragment = null;
+
             Class fragmentClass = fragmentClass = MapFragment.class;
             updateUser();
             try {
-                fragment = (Fragment) fragmentClass.newInstance();
+                fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
             updateUser();
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().add(R.id.content_frag, fragment).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -129,6 +137,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             public void onDrawerStateChanged(int newState) {
                 updateUser();
                 setUserName();
+
             }
         });
         toggle.syncState();
@@ -159,6 +168,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (null != user) {
             convertUserEmail();
+
         } else {
             userEmail = null;
         }
@@ -166,13 +176,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getFragmentManager().getBackStackEntryCount() > 0 ){
-            getFragmentManager().popBackStack();
-        } else {
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0 ){
             super.onBackPressed();
+        } else {
+          // super.onBackPressed();
         }
     }
 
@@ -225,6 +236,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 }
             case R.id.login_button:
                 fragmentClass = LoginFragment.class;
+
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
+
                 break;
             case R.id.your_lists:
                 defaultList = true;
@@ -259,7 +274,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 defaultList = true;
                 break;
             default:
-                fragmentClass = TestFragment.class;
+
                 break;
         }
 
@@ -289,6 +304,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
             ImageView profpic= (ImageView) findViewById(R.id.profile_pic);
         if (null != user) {
+            Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
             if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
@@ -296,6 +312,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 mlp.setMargins(10,0,0,0);
                 userTextView.setLayoutParams(mlp);
             userEmailTextView.setText(user.getEmail());
+
             Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
            }
         } else {
@@ -312,6 +329,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        android.support.v4.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frag);
+        fragment.onActivityResult(requestCode, resultCode, data);
         updateUser();
     }
 
