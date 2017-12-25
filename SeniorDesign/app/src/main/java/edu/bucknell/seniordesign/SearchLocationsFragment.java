@@ -344,10 +344,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     @Override
     public void onSaveInstanceState(Bundle outState){
-        SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-        getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-        getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+
 
         super.onSaveInstanceState(null);
 

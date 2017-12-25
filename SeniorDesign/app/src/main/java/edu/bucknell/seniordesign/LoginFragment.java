@@ -187,6 +187,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                    accessTokenTracker.stopTracking();
                 } else {
                 }
             }
