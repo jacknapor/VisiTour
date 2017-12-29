@@ -1,13 +1,19 @@
 package edu.bucknell.seniordesign;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +22,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * MapFragment.java
@@ -28,9 +37,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
     // Location
     private Location location;
-
-    // View
-    private static View view;
+    private View view;
 
     // MapView
     MapView mapView;
@@ -93,6 +100,8 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
+
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
@@ -105,10 +114,10 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        getActivity().setTitle("Map");
+        getActivity().setTitle("TraveList");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(MapFragment.this);
+        mapFragment.getMapAsync(this);
 
         if(mapView!=null)
         {
@@ -132,7 +141,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        killOldMap();
+       // killOldMap();
     }
 
     @Override
@@ -144,7 +153,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public void onDestroy()
     {
-        killOldMap();
+       // killOldMap();
         super.onDestroy();
     }
     @Override
@@ -179,7 +188,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        killOldMap();
+        //killOldMap();
     }
 
     @Override
@@ -198,6 +207,12 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
 
     public GoogleMap getMap() {
         return mMap;

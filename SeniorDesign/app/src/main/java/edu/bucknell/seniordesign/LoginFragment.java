@@ -1,13 +1,19 @@
 package edu.bucknell.seniordesign;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import java.util.List;
@@ -18,12 +24,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
@@ -81,6 +89,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     // Callback Manager
     private CallbackManager mCallbackManager;
+    AlertDialog.Builder builder;
+    AlertDialog alertDialog;
 
 
 
@@ -101,6 +111,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
                 if(accessToken.getUserId()!=null) {
+
+                    builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Logging in..").setCancelable(false);
+                    alertDialog = builder.create();
+                    alertDialog.show();
                     handleToken(accessToken);
                 }
 
@@ -157,6 +172,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         getActivity().setTitle("Facebook Log In");
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
+
     }
 
     private void handleToken( AccessToken accessToken) {
@@ -168,6 +184,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
                     updateUser();
                     updateUserDisplay();
+                    alertDialog.dismiss();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -193,6 +210,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
                     accessTokenTracker.stopTracking();
                 } else {
+                    alertDialog.dismiss();
                 }
             }
         });
