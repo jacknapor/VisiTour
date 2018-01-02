@@ -338,4 +338,23 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+    public boolean isNetworkAvailable() {
+        return  isNetworkAvailable(false);
+    }
+
+    public boolean isNetworkAvailable(boolean withToast) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) this
+                .getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        if (activeNetworkInfo == null) {
+
+                Toast.makeText(getApplicationContext(),
+                        "No network available. Please reconnect and restart TraveList.", Toast.LENGTH_LONG).show();
+                finish();
+
+            return false;
+        } else
+            return activeNetworkInfo.isConnectedOrConnecting();
+    }
 }

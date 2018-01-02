@@ -105,6 +105,8 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
 
                 @Override
                 public void onClick(View v) {
+                    NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
+                    n.isNetworkAvailable();
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

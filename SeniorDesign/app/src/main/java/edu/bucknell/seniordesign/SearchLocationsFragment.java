@@ -114,7 +114,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+        n.isNetworkAvailable();
 
         mDb = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();

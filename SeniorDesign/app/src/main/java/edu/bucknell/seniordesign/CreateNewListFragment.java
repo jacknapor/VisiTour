@@ -66,7 +66,8 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+        n.isNetworkAvailable();
         getActivity().setTitle("Create a New List");
         View view = inflater.inflate(R.layout.fragment_create_new_list, container, false);
 
@@ -79,7 +80,8 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
         mNewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+                n.isNetworkAvailable();
                 String name = mNameField.getText().toString().trim();
                 if (name.contains(".")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

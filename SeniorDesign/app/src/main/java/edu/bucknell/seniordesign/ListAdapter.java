@@ -121,7 +121,8 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                 @Override
                 public void onClick(View v) {
-
+                    NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
+                    n.isNetworkAvailable();
                     if(finalCheckBox.isChecked()){
                         finalLocation.setVisited(true);
                         mDb.child("Users").child(userEmail).child("lists").child(finalList.getListName()).child("locationArray").child(Integer.toString(finalPosition)).child("visited").setValue(true);
@@ -138,7 +139,8 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                 @Override
                 public void onClick(View v) {
-
+                    NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
+                    n.isNetworkAvailable();
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

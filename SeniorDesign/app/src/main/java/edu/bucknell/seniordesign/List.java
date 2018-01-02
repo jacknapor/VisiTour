@@ -52,7 +52,10 @@ public class List implements Serializable {
         }
         double doubleProgressPercent = (progress/ (double) locationArray.size())*100;
         int intProgressPercent = (int) doubleProgressPercent;
-        return intProgressPercent;
+        if(locationArray.size()<1){
+            return 0;
+        }else{
+        return intProgressPercent;}
     }
 
     public Location getLocation(int position) {

@@ -100,7 +100,8 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
+        NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+        n.isNetworkAvailable();
 
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();

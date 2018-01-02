@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'TL'
-            keyPassword 'tlkey1'
-            storeFile file('C:/Users/Jack/keystores/TL.jks')
-            storePassword 'tlkey1'
+            keyAlias 'travelistkey'
+            keyPassword 'july7116'
+            storeFile file('C:/Users/Jack/keystores/travelist.jks')
+            storePassword 'july7116'
         }
     }
     compileSdkVersion 25
@@ -15,8 +15,8 @@ android {
         applicationId "edu.bucknell.seniordesign"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 7
-        versionName '1.6'
+        versionCode 9
+        versionName '1.8'
         signingConfig signingConfigs.config
     }
     buildTypes {

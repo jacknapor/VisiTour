@@ -106,6 +106,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private FacebookCallback<LoginResult>  mCallback= new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+            NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+            n.isNetworkAvailable();
             updateUser();
             AccessToken accessToken;
             if (null == user) {
@@ -136,7 +138,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onError(FacebookException error) {
-
+            NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+            n.isNetworkAvailable();
         }
     };
 
@@ -176,6 +179,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     }
 
     private void handleToken( AccessToken accessToken) {
+
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(cred).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
@@ -243,6 +247,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+        n.isNetworkAvailable();
 
         View v= inflater.inflate(R.layout.fragment_login, container, false);
         LoginButton loginButton = (LoginButton) v.findViewById(R.id.login_button);

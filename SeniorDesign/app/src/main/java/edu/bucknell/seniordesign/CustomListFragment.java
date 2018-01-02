@@ -83,6 +83,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+        n.isNetworkAvailable();
         final View rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
         ListView listView = (ListView) rootView.findViewById(R.id.list);
         final ViewGroup viewGroup = container;
@@ -92,6 +94,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         addLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+                n.isNetworkAvailable();
                 android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("current_list", finalList);
@@ -135,6 +139,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
+                    n.isNetworkAvailable();
                     mDb.child("Users").child(userEmail).child("lists").child(listName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -225,6 +231,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     @Override
     public void onClick(View v) {
     }
+
 
     @Override
     public void onResume() {
