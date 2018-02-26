@@ -150,7 +150,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     // Convert user email. Firebase keys cannot contain '.' so emails have ',' instead
     private void convertUserEmail() {
-        userEmail = user.getEmail().replace(".", ",");
+
+        if(user.getEmail()!=null){
+        userEmail = user.getEmail().replace(".", ",");}
+        else{
+            userEmail= user.getPhoneNumber();
+        }
     }
 
     // Pushes a default list (in form of Excel sheet) to Firebase. Uses ReadData.java class.
@@ -190,8 +195,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         updateUser();
-        setUserName();
+
         getMenuInflater().inflate(R.menu.navigation_drawer, menu);
+        setUserName();
 
         return true;
     }
