@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,7 +74,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             view = layoutInflater.inflate(R.layout.listlayout, null);
         }
 
-        List list = this.listArray.get(position);
+        final List list = this.listArray.get(position);
 
 
         if (list != null) {
@@ -114,6 +115,13 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
                                 mDb.child("Users").child(userEmail).child("lists").child(listArray.get(finalPosition).getListName()).removeValue();
                                 listArray.remove(finalPosition);
                                 finalListofListAdapter.notifyDataSetChanged();
+                                MapFragment fragment = MapFragment.newInstance();
+                                NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
+                                android.support.v4.app.FragmentManager fragmentManager = n.getSupportFragmentManager();
+                                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE );
+                                fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).addToBackStack(null).commit();
+                                fragmentManager.beginTransaction().replace(R.id.content_frag, CustomListFragment.newInstance(listArray,true)).addToBackStack(null).commit();
+
                             }
                         }
                     };
