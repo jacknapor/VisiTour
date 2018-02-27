@@ -163,11 +163,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void updateUser() {
         user = mAuth.getCurrentUser();
         if (user != null) {
-            if(user.getEmail()!=null){
-            userEmail = user.getEmail().replace(".", ",");}
-            else{
-                userEmail= user.getPhoneNumber();
-            }
+            userEmail = user.getEmail().replace(".", ",");
         } else {
             userEmail = null;
         }
