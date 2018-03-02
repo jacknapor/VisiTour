@@ -23,7 +23,9 @@ import android.widget.Toast;
 
 //import com.google.android.gms.maps.model.TraveListLatLng;
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
@@ -302,9 +304,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private void setUserName() {
             TextView userTextView = (TextView) findViewById(R.id.user_name);
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
-            ImageView profpic= (ImageView) findViewById(R.id.profile_pic);
+            ProfilePictureView profpic= (ProfilePictureView) findViewById(R.id.profile_pic);
         if (null != user) {
-            Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
+
             if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
@@ -313,7 +315,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 userTextView.setLayoutParams(mlp);
             userEmailTextView.setText(user.getEmail());
 
-            Glide.with(this).load(user.getPhotoUrl().toString()).into(profpic);
+            profpic.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
            }
         } else {
             userTextView.setText("Not Logged In");
@@ -321,7 +323,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     .getLayoutParams();
             mlp.setMargins(10,90,0,0);
             userTextView.setLayoutParams(mlp);
-            profpic.setImageResource(android.R.drawable.sym_def_app_icon);
+            profpic.setProfileId(null);
             userEmailTextView.setText(null);
         }
     }

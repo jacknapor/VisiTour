@@ -12,14 +12,15 @@
     android:backgroundTint="@color/colorPrimaryDark"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <com.facebook.login.widget.ProfilePictureView
         android:id="@+id/profile_pic"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
-        android:scaleType="fitXY"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:scaleType="fitXY" />
+
+
 
     <TextView
         android:id="@+id/user_name"
