@@ -1,5 +1,6 @@
 package edu.bucknell.seniordesign;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.poi.ss.formula.functions.Na;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -48,7 +51,8 @@ import java.util.ArrayList;
  */
 public class NavigationDrawerActivity extends AppCompatActivity
         implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
-
+    AlertDialog.Builder builder;
+    AlertDialog alertDialog;
     private GeoDataClient mGeoDataClient;
     // Reference to database
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
@@ -61,6 +65,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     // Fragment
     private android.support.v4.app.Fragment fragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,12 +254,19 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     forceLogin();
                     break;
                 } else {
+                    builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Loading..").setCancelable(false);
+                    alertDialog = builder.create();
+                    alertDialog.show();
                     fragmentClass = CustomListFragment.class;
                     updateUser();
                     final DatabaseReference finalDatabaseReference = this.mDb;
+
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                             listOfLists.clear();
                             for (DataSnapshot s : dataSnapshot.getChildren()) {
                                 Log.e("e", s.getKey());
@@ -265,6 +277,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             fragment = CustomListFragment.newInstance(listOfLists, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                            alertDialog.dismiss();
+
                         }
 
                         @Override

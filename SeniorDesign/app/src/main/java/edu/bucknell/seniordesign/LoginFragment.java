@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -253,7 +254,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         fbID=AccessToken.getCurrentAccessToken().getUserId();
        // url="https://graph.facebook.com/"+ AccessToken.getCurrentAccessToken().getUserId()+ "/picture?type=large&access_token="+ AccessToken.getCurrentAccessToken().getToken();
        // Log.i("Rasputin", url);
+
+        p.setPresetSize(ProfilePictureView.LARGE);
         p.setProfileId(fbID);
+
+
         profpic.setProfileId(fbID);
 
 
@@ -274,6 +279,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         loginButton.setFragment(this);
         loginButton.registerCallback(mCallbackManager, mCallback);
         ProfilePictureView p= (ProfilePictureView) v.findViewById(R.id.fbProfilePicture);
+
+
+        p.setPresetSize(ProfilePictureView.LARGE);
+
 
         accessTokenTracker= new AccessTokenTracker() {
             @Override
@@ -296,8 +305,9 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             }
         };
         if(AccessToken.getCurrentAccessToken()!=null) {
-
+            p.setPresetSize(ProfilePictureView.LARGE);
             p.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
+
 
         }
 
