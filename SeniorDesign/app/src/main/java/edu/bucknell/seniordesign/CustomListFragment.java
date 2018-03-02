@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -115,7 +114,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             addLocationButton.hide();
 
 
-
                 ListofListsAdapter adapter = new ListofListsAdapter(getContext(),
                         R.layout.listlayout, listoflists);
             listView.setAdapter(adapter);
@@ -131,7 +129,6 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 }});
 
         } else {
-            Toast.makeText(getContext(), "Press on a location to view it on the map.", Toast.LENGTH_SHORT).show();
             fbShareButton.setVisibility(View.VISIBLE);
             listName = this.list.getListName();
             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");

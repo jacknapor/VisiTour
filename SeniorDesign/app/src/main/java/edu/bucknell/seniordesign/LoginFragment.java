@@ -1,6 +1,5 @@
 package edu.bucknell.seniordesign;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -8,7 +7,6 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,7 +45,6 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -77,8 +74,6 @@ import edu.bucknell.seniordesign.R;
 public class LoginFragment extends android.support.v4.app.Fragment {
 
     private String fbID;
-
-    private String url;
 
     // Firebase authentication
     private FirebaseAuth mAuth;
@@ -118,7 +113,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             if (null == user) {
                 accessToken = loginResult.getAccessToken();
                 if(accessToken.getUserId()!=null) {
-                    fbID=accessToken.getUserId();
+
                     builder = new AlertDialog.Builder(getContext());
                     builder.setMessage("Logging in..").setCancelable(false);
                     alertDialog = builder.create();
@@ -160,8 +155,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         userName.setLayoutParams(mlp);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText("");
-        ProfilePictureView profpic= (ProfilePictureView) getActivity().findViewById(R.id.profile_pic);
-        profpic.setProfileId(null);
+        ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
+        profpic.setImageResource(android.R.drawable.sym_def_app_icon);
     }
 
     // Updates user and user email
@@ -183,19 +178,17 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     }
 
-    private void handleToken(final AccessToken accessToken) {
+    private void handleToken( AccessToken accessToken) {
 
         AuthCredential cred = FacebookAuthProvider.getCredential(accessToken.getToken());
-
         mAuth.signInWithCredential(cred).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    fbID=accessToken.getUserId();
+
                     updateUser();
                     updateUserDisplay();
                     alertDialog.dismiss();
-                    Toast.makeText(getContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -245,19 +238,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         userName.setLayoutParams(mlp);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
         userEmail.setText(user.getEmail());
-        ProfilePictureView profpic= (ProfilePictureView) getActivity().findViewById(R.id.profile_pic);
-
-       //download h=new download(getActivity(),fbID);
-        ProfilePictureView p= (ProfilePictureView) getActivity().findViewById(R.id.fbProfilePicture);
-        Log.i("Rasputin", AccessToken.getCurrentAccessToken().getUserId());
-        fbID=AccessToken.getCurrentAccessToken().getUserId();
-       // url="https://graph.facebook.com/"+ AccessToken.getCurrentAccessToken().getUserId()+ "/picture?type=large&access_token="+ AccessToken.getCurrentAccessToken().getToken();
-       // Log.i("Rasputin", url);
-        p.setProfileId(fbID);
-        profpic.setProfileId(fbID);
-
-
-
+        ImageView profpic= (ImageView) getActivity().findViewById(R.id.profile_pic);
+       Glide.with(this).load(user.getPhotoUrl()).into(profpic);
 
 
     }
@@ -273,7 +255,6 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         loginButton.setReadPermissions( "email", "public_profile");
         loginButton.setFragment(this);
         loginButton.registerCallback(mCallbackManager, mCallback);
-        ProfilePictureView p= (ProfilePictureView) v.findViewById(R.id.fbProfilePicture);
 
         accessTokenTracker= new AccessTokenTracker() {
             @Override
@@ -291,16 +272,10 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     //how can we update the view when you log out?
                 } else {
                     handleToken(currentAccessToken);
-                    //resetUserDisplay();
+                    resetUserDisplay();
                 }
             }
         };
-        if(AccessToken.getCurrentAccessToken()!=null) {
-
-            p.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
-
-        }
-
 
         return v;
     }
@@ -336,21 +311,4 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-}
-
-class download extends AsyncTask{
-    private NavigationDrawerActivity n;
-    private String fbid;
-    public download(Activity a, String id){
-        n= (NavigationDrawerActivity)a;
-        fbid=id;
-    }
-
-    @Override
-    protected Object doInBackground(Object[] objects) {
-        ProfilePictureView p= (ProfilePictureView) n.findViewById(R.id.fbProfilePicture);
-        p.setProfileId(fbid);
-        return p;
-
-    }
 }
