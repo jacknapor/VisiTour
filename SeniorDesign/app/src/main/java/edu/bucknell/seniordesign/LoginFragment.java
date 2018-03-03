@@ -170,7 +170,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     private void updateUser() {
         user = mAuth.getCurrentUser();
         if (user != null) {
-            userEmail = user.getEmail().replace(".", ",");
+            if(user.getEmail()==null){
+                userEmail="No email provided";
+            }else {
+                userEmail = user.getEmail().replace(".", ",");
+            }
         } else {
             userEmail = null;
         }
@@ -250,7 +254,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mlp.setMargins(10,0,0,0);
         userName.setLayoutParams(mlp);
         TextView userEmail = (TextView) getActivity().findViewById(R.id.user_email);
-        userEmail.setText(user.getEmail());
+        userEmail.setText(this.userEmail.replace(",", "."));
         ProfilePictureView profpic= (ProfilePictureView) getActivity().findViewById(R.id.profile_pic);
 
        //download h=new download(getActivity(),fbID);
