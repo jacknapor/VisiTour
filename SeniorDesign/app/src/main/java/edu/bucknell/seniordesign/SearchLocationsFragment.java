@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -122,19 +123,19 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
         convertUserEmail();
 
-        if (view != null) {
-            ViewGroup parent = (ViewGroup) view.getParent();
+        if (mView != null) {
+            ViewGroup parent = (ViewGroup) mView.getParent();
             if (parent != null) {
-                parent.removeView(view);
+                parent.removeView(mView);
             }
         }
         try {
-            view = inflater.inflate(R.layout.fragment_search_locations, container, false);
+            mView = inflater.inflate(R.layout.fragment_search_locations, container, false);
         } catch (InflateException e) {
             e.printStackTrace();
         }
 
-        mView = view;
+       // mView = view;
         builder = new AlertDialog.Builder(getContext());
         // Gets the List to add the locations to
         Bundle bundle = getArguments();
@@ -184,8 +185,10 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                            fragmentManager.beginTransaction().remove(k);
-                                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                            //fragmentManager.beginTransaction().remove(k).commit();
+                                            fragmentManager.popBackStack();
+                                            fragmentManager.beginTransaction().replace(R.id.content_frag,fragment).addToBackStack(null).commit();
+                                            fragmentManager.popBackStack();
                                             return;
                                         }else{
                                             photoMetadata = photoMetadataBuffer.get(0);
@@ -208,9 +211,12 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                                     CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                    fragmentManager.beginTransaction().remove(k);
+                                                    //fragmentManager.beginTransaction().remove(k).commit();
+
                                                     getActivity().getSupportFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
-                                                    fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                                    fragmentManager.popBackStack();
+                                                    fragmentManager.beginTransaction().replace(R.id.content_frag,fragment).addToBackStack(null).commit();
+                                                    fragmentManager.popBackStack();
                                                 }else{
                                                     builder.setMessage("Loading..").setCancelable(false);
                                                     alertDialog = builder.create();
@@ -234,8 +240,10 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).setValue(list);
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                            fragmentManager.beginTransaction().remove(k);
-                                                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                                          //  fragmentManager.beginTransaction().remove(k).commit();
+                                                            fragmentManager.popBackStack();
+                                                            fragmentManager.beginTransaction().replace(R.id.content_frag,fragment).addToBackStack(null).commit();
+                                                            fragmentManager.popBackStack();
 
                                                         }
                                                     });
@@ -250,8 +258,10 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
                                                             CustomListFragment fragment = CustomListFragment.newInstance(list);
                                                             android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                            fragmentManager.beginTransaction().remove(k);
-                                                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                                           // fragmentManager.beginTransaction().remove(k).commit();
+                                                            fragmentManager.popBackStack();
+                                                            fragmentManager.beginTransaction().replace(R.id.content_frag,fragment).addToBackStack(null).commit();
+                                                            fragmentManager.popBackStack();
 
                                                     }
                                                 });
@@ -282,7 +292,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(Place place) {
-                    getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+                    //getChildFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
                     TraveListLatLng newTraveListLatLng = new TraveListLatLng();
                     newTraveListLatLng.setLatitude(place.getLatLng().latitude);
                     newTraveListLatLng.setLongitude(place.getLatLng().longitude);
@@ -290,7 +300,11 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                     Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
                     MapFragment m = MapFragment.newInstance(newLocation);
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    getChildFragmentManager().beginTransaction().remove(getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment)).commitAllowingStateLoss();
                     fragmentManager.beginTransaction().replace(R.id.content_frag, m).addToBackStack(null).commit();
+
+
+
                 }
 
                 @Override
@@ -299,7 +313,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                 }
             });
         }
-        return view;
+        return mView;
     }
 
     // Convert user email. Firebase keys cannot contain '.' so emails must be converted to have ',' instead
@@ -350,6 +364,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         super.onSaveInstanceState(null);
 
     }
+
+
 
     @Override
     public void onDestroy()

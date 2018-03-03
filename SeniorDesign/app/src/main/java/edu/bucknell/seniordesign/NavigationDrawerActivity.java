@@ -6,8 +6,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,6 +44,8 @@ import org.apache.poi.ss.formula.functions.Na;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * NavigationDrawerActivity.java
@@ -73,12 +78,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Log.e("hello", "a");
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(this.CONNECTIVITY_SERVICE);
-        if(user!=null){
+
             FirebaseAuth.getInstance().signOut();
             LoginManager.getInstance().logOut();
-            user=null;
+           if(user!=null){ user=null;}
             updateUser();
-        }
+
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
@@ -119,6 +124,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             updateUser();
             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(R.id.content_frag, fragment).commit();
+            Toast.makeText(getApplicationContext(), "Open the menu to sign in and access app features.", Toast.LENGTH_LONG).show();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -230,7 +236,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     forceLogin();
                     break;
                 } else {
-                fragmentClass = CreateNewListFragment.class;
+                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, CreateNewListFragment.newInstance()).addToBackStack(null).commit();
                 break;
                }
             case R.id.search_locations:
@@ -238,7 +247,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     forceLogin();
                     break;
                 } else {
-                    fragmentClass = SearchLocationsFragment.class;
+
+                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, SearchLocationsFragment.newInstance()).addToBackStack(null).commit();
                     break;
                 }
             case R.id.login_button:
@@ -261,7 +274,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     fragmentClass = CustomListFragment.class;
                     updateUser();
                     final DatabaseReference finalDatabaseReference = this.mDb;
+                    Handler handler = new Handler(Looper.getMainLooper());
 
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            alertDialog.dismiss();
+                            isNetworkAvailable();
+                        }
+                    }, 25000 );
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -276,6 +297,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             finalDatabaseReference.child("Users").child(userEmail).child("lists").removeEventListener(this);
                             fragment = CustomListFragment.newInstance(listOfLists, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                             alertDialog.dismiss();
 
@@ -283,9 +306,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            alertDialog.dismiss();
+                            isNetworkAvailable();
 
                         }
+
                     });
+
                 }
                 defaultList = true;
                 break;
@@ -297,9 +324,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         try {
             if(defaultList){
             }else{
-            fragment = (android.support.v4.app.Fragment) fragmentClass.newInstance();
-                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();}
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -367,7 +392,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 Toast.makeText(getApplicationContext(),
                         "No network available. Please reconnect and restart TraveList.", Toast.LENGTH_LONG).show();
-                finish();
+            Intent i = new Intent(this, NavigationDrawerActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
 
             return false;
         } else

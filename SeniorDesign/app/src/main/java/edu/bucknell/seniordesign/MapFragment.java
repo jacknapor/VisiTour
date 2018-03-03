@@ -199,7 +199,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     public LatLng addPoint(String name, LatLng latLng) {
-        Toast.makeText(getContext(), "Press on the marker and use the icons at the bottom right to get directions.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "To get directions, tap the red marker, and then tap the Google Maps icon that appears on the bottom right.", Toast.LENGTH_LONG).show();
         mMap.addMarker(new MarkerOptions().position(latLng).title(name));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)));

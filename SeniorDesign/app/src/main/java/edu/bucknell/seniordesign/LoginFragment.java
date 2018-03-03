@@ -139,11 +139,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onCancel() {
-
+            if(alertDialog!=null){alertDialog.dismiss();}
         }
 
         @Override
         public void onError(FacebookException error) {
+            if(alertDialog!=null){alertDialog.dismiss();}
             NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
             n.isNetworkAvailable();
         }
@@ -196,7 +197,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     updateUser();
                     updateUserDisplay();
                     alertDialog.dismiss();
-                    Toast.makeText(getContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Login successful!", Toast.LENGTH_SHORT).show();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -214,15 +215,19 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            mAuth.signOut();
+                            FirebaseAuth.getInstance().signOut();
+                            LoginManager.getInstance().logOut();
                         }
                     });
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
                     accessTokenTracker.stopTracking();
                 } else {
-                    alertDialog.dismiss();
+                    if(alertDialog!=null){alertDialog.dismiss();}
                 }
             }
         });
@@ -281,6 +286,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         ProfilePictureView p= (ProfilePictureView) v.findViewById(R.id.fbProfilePicture);
 
 
+
         p.setPresetSize(ProfilePictureView.LARGE);
 
 
@@ -291,10 +297,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     FirebaseAuth.getInstance().signOut();
                     LoginManager.getInstance().logOut();
 //                resetUserDisplay();
+                    Toast.makeText(getContext(), "You have been signed out.", Toast.LENGTH_SHORT).show();
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
                     this.stopTracking();
 
                     //how can we update the view when you log out?
@@ -304,11 +312,18 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                 }
             }
         };
-        if(AccessToken.getCurrentAccessToken()!=null) {
+        if(mAuth.getCurrentUser()!=null) {
             p.setPresetSize(ProfilePictureView.LARGE);
             p.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
+            TextView t= (TextView) v.findViewById(R.id.dname);
+            t.setText("Welcome "+mAuth.getCurrentUser().getDisplayName()+"!");
+            t.setTextSize(25);
 
 
+        }else{
+            TextView t= (TextView) v.findViewById(R.id.dname);
+            t.setText("Sign in to TraveList with Facebook");
+            t.setTextSize(20);
         }
 
 
@@ -340,6 +355,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+    }
+    @Override
+    public void onResume() {
+        getActivity().setTitle("Facebook Log In");
+        super.onResume();
     }
 
     public interface OnFragmentInteractionListener {

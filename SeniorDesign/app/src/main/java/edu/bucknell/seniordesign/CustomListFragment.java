@@ -131,12 +131,15 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 }});
 
         } else {
-            Toast.makeText(getContext(), "Press on a location to view it on the map.", Toast.LENGTH_SHORT).show();
+
             fbShareButton.setVisibility(View.VISIBLE);
             listName = this.list.getListName();
             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
-            if (finalList.getLocationArray().size() > 0) {
+            if (this.list.getLocationArray().size() > 0) {
+                Toast.makeText(getContext(), "Tap on any location to view it on the map.", Toast.LENGTH_SHORT).show();
                 imageUrl = finalList.getLocation(0).getImageUrl();
+            } else if(this.list.getLocationArray().size()==0){
+                Toast.makeText(getContext(), "Tap the '+' button to begin adding locations to your list.", Toast.LENGTH_LONG).show();
             }
 
             fbShareButton.setOnClickListener(new View.OnClickListener() {
