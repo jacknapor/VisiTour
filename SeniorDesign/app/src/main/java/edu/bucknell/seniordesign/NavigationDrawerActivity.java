@@ -133,7 +133,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-
+                if(user!=null){
+                    NavigationView n= (NavigationView) drawerView;
+                    n.getMenu().findItem(R.id.login_button).setTitle("Log Out");}
+                else{
+                    NavigationView n= (NavigationView) drawerView;
+                    n.getMenu().findItem(R.id.login_button).setTitle("Log In");
+                }
             }
 
             @Override
