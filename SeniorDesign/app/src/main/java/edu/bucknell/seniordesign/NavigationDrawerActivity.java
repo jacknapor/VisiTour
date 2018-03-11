@@ -170,7 +170,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Convert user email. Firebase keys cannot contain '.' so emails have ',' instead
     private void convertUserEmail() {
         if(user.getEmail()==null){
-            userEmail= "No email provided";
+            userEmail= user.getUid();
         }else{
         userEmail = user.getEmail().replace(".", ",");}
     }
@@ -361,7 +361,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         .getLayoutParams();
                 mlp.setMargins(10,0,0,0);
                 userTextView.setLayoutParams(mlp);
-            userEmailTextView.setText(userEmail.replace(",", "."));
+                if(user.getEmail()!=null){
+            userEmailTextView.setText(userEmail.replace(",", "."));}else{
+                    userEmailTextView.setText("");
+                }
 
             profpic.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
            }

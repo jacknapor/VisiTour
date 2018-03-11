@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import com.bumptech.glide.Glide;
+
+import org.w3c.dom.Text;
 
 /**
  * ListAdapter.java
@@ -55,6 +58,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
     // User email
     private String userEmail = user.getEmail().replace(".", ",");
 
+
     // Constructor given a Context and an int
     public ListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -82,6 +86,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
             view = layoutInflater.inflate(R.layout.listlayout, null);
         }
 
+
         Location location = list.getLocationArray().get(position);
 
         if (location != null) {
@@ -91,11 +96,13 @@ public class ListAdapter extends ArrayAdapter<Location> {
             CheckBox checkbox = (CheckBox) view.findViewById(R.id.visited);
             checkbox.setVisibility(View.VISIBLE);
             ImageView delete = (ImageView) view.findViewById(R.id.delete);
+             TextView address= (TextView) view.findViewById(R.id.textViewAddress);
 
             TextView visitedText = (TextView) view.findViewById(R.id.visitedTextView);
             visitedText.setVisibility(View.VISIBLE);
             final CheckBox finalCheckBox = checkbox;
             final int finalPosition = position;
+
             mDb.child("Users").child(userEmail).child("lists").child(list.getListName()).child("locationArray").child(Integer.toString(position)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -113,6 +120,8 @@ public class ListAdapter extends ArrayAdapter<Location> {
 
                 }
             });
+
+
 
             final Location finalLocation = location;
             final List finalList = list;
@@ -135,27 +144,6 @@ public class ListAdapter extends ArrayAdapter<Location> {
                 }
             });
             final ListAdapter finalListAdapter = this;
-            delete.setOnClickListener(new View.OnClickListener(){
-
-                @Override
-                public void onClick(View v) {
-                    NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
-                    n.isNetworkAvailable();
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == Dialog.BUTTON_POSITIVE) {
-                                list.getLocationArray().remove(finalPosition);
-                                mDb.child("Users").child(userEmail).child("lists").child(finalList.getListName()).child("locationArray").setValue(list.getLocationArray());
-                                finalListAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    };
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("Are you sure you want to delete this location? Once it has been deleted this action cannot be undone.").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
-                }
-            });
-
             delete.setOnTouchListener(new View.OnTouchListener() {
 
                 @Override
@@ -181,6 +169,28 @@ public class ListAdapter extends ArrayAdapter<Location> {
                     return false;
                 }
             });
+            delete.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    NavigationDrawerActivity n= (NavigationDrawerActivity)getContext();
+                    n.isNetworkAvailable();
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == Dialog.BUTTON_POSITIVE) {
+                                list.getLocationArray().remove(finalPosition);
+                                mDb.child("Users").child(userEmail).child("lists").child(finalList.getListName()).child("locationArray").setValue(list.getLocationArray());
+                                finalListAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Are you sure you want to delete this location? Once it has been deleted this action cannot be undone.").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+                }
+            });
+
+
 
             if (location.getImageUrl() != null && icon != null) {
                 Glide.with(getContext()).load(location.getImageUrl()).into(icon);
@@ -196,10 +206,24 @@ public class ListAdapter extends ArrayAdapter<Location> {
             if (name != null) {
                 name.setText(location.getLocationName());
             }
-
             if (description != null) {
-                description.setText(location.getLocationDescription());
+                if(location.getAddress()!=null){
+
+                    if( location.getLocationDescription().equals("")){
+                        description.setText("");
+                        address.setText(location.getAddress());
+                    }else{
+                        description.setTextSize(16);
+                        description.setText("Category: "+ location.getLocationDescription());
+                        address.setText(location.getAddress());
+                    }
+
+
+
+                }
             }
+
+
         }
         return view;
     }

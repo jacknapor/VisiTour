@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +15,15 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * CreateNewListFragment.java
@@ -44,6 +49,8 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
     // Editable name of list to create
     private EditText mNameField;
 
+    private EditText mDesc;
+    private AlertDialog a;
     // OnFragmentInteractionListener
     private OnFragmentInteractionListener mListener;
 
@@ -70,12 +77,20 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
         n.isNetworkAvailable();
         getActivity().setTitle("Create a New List");
         View view = inflater.inflate(R.layout.fragment_create_new_list, container, false);
-
+        TextView title= (TextView) view.findViewById(R.id.lctitle);
+        title.setPaintFlags(title.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
         mNewListButton = (Button) view.findViewById(R.id.newListButton);
         mNameField = (EditText) view.findViewById(R.id.nameField);
+        mDesc= (EditText) view.findViewById(R.id.descriptionField);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+        if(user!=null) {
+            if(user.getEmail()!=null) {
+                userEmail = user.getEmail().replace(".", ","); //firebase keys can't contain "." so emails have "," instead
+            }else{
+                userEmail=user.getUid();
+            }
+        }
 
         mNewListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +98,7 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                 NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
                 n.isNetworkAvailable();
                 String name = mNameField.getText().toString().trim();
+                String desc = mDesc.getText().toString().trim();
                 if (name.contains(".")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("Invalid List Name").setMessage("Please do not add periods to your list name." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -102,26 +118,76 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
 
                 }else if (name.length()>15){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("Invalid List Name").setMessage("Your list name must be fewer than 15 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    builder.setTitle("Invalid List Name").setMessage("Your list name must be fewer than 16 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     }).show();
-                }else{
+                }else if(desc.contains(".")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Invalid Description").setMessage("Please do not add periods to your description." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+                }else if (desc.length()>27){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Invalid Description").setMessage("Your description must be fewer than 28 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }
+                else{
                 hideKeyboard();
 
-                android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                final android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-                Bundle bundle = new Bundle();
-                List newList = new List(name, "");
-                mDatabase.child("Users").child(userEmail).child("lists").child(name).setValue(newList);
-                bundle.putSerializable("new_list", newList);
 
-                CustomListFragment fragment= CustomListFragment.newInstance(newList);
-                fragment.setArguments(bundle);
-                mNameField.setText("");
-                fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();}
+                final List newList = new List(name, desc);
+                final String p= name;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Creating '"+ p+"'...").setCancelable(false);
+                    a = builder.create();
+                    a.show();
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        a.dismiss();
+                        if(!(dataSnapshot.child("Users").child(userEmail).child("lists").child(p).exists())){
+                            mDatabase.child("Users").child(userEmail).child("lists").child(p).setValue(newList);
+                            Bundle bundle= new Bundle();
+                            bundle.putSerializable("new_list", newList);
+
+                            CustomListFragment fragment= CustomListFragment.newInstance(newList);
+                            fragment.setArguments(bundle);
+                            mNameField.setText("");
+                            mDesc.setText("");
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                        }else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle("Duplicate List Name").setMessage("You already have a list named "+p+". Please use a different name." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, new CreateNewListFragment()).commit();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        a.dismiss();
+
+                    }
+                });
+
+                }
             }});
 
 

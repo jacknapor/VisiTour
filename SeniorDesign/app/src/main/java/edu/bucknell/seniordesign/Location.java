@@ -39,6 +39,8 @@ public class Location implements Serializable{
         this.locationName = name;
     }
 
+    private String address;
+
     // Location constructor given a name, description, coordinates, and image URL
     public Location(String name, String description, TraveListLatLng traveListLatLng, String imageUrl) {
         this.locationName = name;
@@ -88,6 +90,14 @@ public class Location implements Serializable{
 
     public void setLocationDescription(String description){
         this.locationDescription = description;
+    }
+
+    public void setAddress(String a){
+        this.address=a;
+    }
+
+    public String getAddress(){
+        return this.address;
     }
 
     public void setVisited(boolean v){

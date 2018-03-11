@@ -75,6 +75,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     // User email
     private String userEmail;
 
+    private boolean showalert=true;
+
     @Override
     public void onBackPressed(){
         Log.e("j","j");
@@ -87,7 +89,9 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
         n.isNetworkAvailable();
         final View rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
+
         ListView listView = (ListView) rootView.findViewById(R.id.list);
+
         final ViewGroup viewGroup = container;
 
         final List finalList = this.list;
@@ -136,10 +140,16 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             listName = this.list.getListName();
             userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
             if (this.list.getLocationArray().size() > 0) {
-                Toast.makeText(getContext(), "Tap on any location to view it on the map.", Toast.LENGTH_SHORT).show();
+                if(this.showalert){
+                Toast.makeText(getContext(), "Tap on any location to view it on the map.", Toast.LENGTH_SHORT).show();}else{
+                    this.showalert=true;
+                }
                 imageUrl = finalList.getLocation(0).getImageUrl();
             } else if(this.list.getLocationArray().size()==0){
-                Toast.makeText(getContext(), "Tap the '+' button to begin adding locations to your list.", Toast.LENGTH_LONG).show();
+                if(this.showalert){
+                Toast.makeText(getContext(), "Tap the '+' button to begin adding locations to your list.", Toast.LENGTH_LONG).show();}else{
+                    this.showalert=true;
+                }
             }
 
             fbShareButton.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +209,18 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         customListFragment.setList(list);
         return customListFragment;
     }
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+    public static CustomListFragment newInstance(List list, boolean alert) {
+        Bundle args = new Bundle();
+        args.putSerializable("list", list);
+        CustomListFragment customListFragment = new CustomListFragment();
+        customListFragment.setIsLists(false);
+        customListFragment.setmDb();
+        customListFragment.setArguments(args);
+        customListFragment.setList(list);
+        customListFragment.showalert=false;
+        return customListFragment;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public static CustomListFragment newInstance(ArrayList<List> defaultList, boolean isLists) {
@@ -243,6 +265,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     public void onResume() {
 
         ListView listView= (ListView) getView().findViewById(R.id.list);
+        final ListView lv= listView;
         if(isLists && listView.getAdapter()!=null){
 
         userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
@@ -254,8 +277,8 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     List listToAdd = s.getValue(List.class);
                     listoflists.add(listToAdd);
                 }
-                ListView listView= (ListView) getView().findViewById(R.id.list);
-                ListofListsAdapter adapter= (ListofListsAdapter) listView.getAdapter();
+
+                ListofListsAdapter adapter= (ListofListsAdapter) lv.getAdapter();
                 adapter.notifyDataSetChanged();
             }
 

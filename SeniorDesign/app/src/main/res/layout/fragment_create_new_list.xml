@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,20 +10,74 @@
         android:id="@+id/nameField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lname"
+        android:layout_alignBottom="@+id/lname"
+        android:layout_alignLeft="@+id/newListButton"
+        android:layout_alignStart="@+id/newListButton"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="38dp"
+        android:layout_marginStart="38dp"
         android:hint="Enter List Name..."
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/newListButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/descriptionField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ldescription"
+        android:layout_alignLeft="@+id/nameField"
+        android:layout_alignStart="@+id/nameField"
+        android:layout_gravity="center_horizontal"
+        android:hint="Enter Description..."
+        android:inputType="textPersonName" />
+
 
     <Button
         android:id="@+id/newListButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptionField"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
+        android:layout_marginTop="111dp"
         android:backgroundTint="@color/colorAccent"
         android:text="Create New List" />
 
+    <TextView
+        android:id="@+id/lname"
+        android:layout_width="117dp"
+        android:layout_height="wrap_content"
 
-</FrameLayout>
+        android:layout_alignLeft="@+id/ldescription"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/ldescription"
+        android:layout_marginTop="59dp"
+        android:text="List Name:"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/ldescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/nameField"
+        android:layout_marginTop="33dp"
+        android:layout_toLeftOf="@+id/descriptionField"
+        android:layout_toStartOf="@+id/descriptionField"
+        android:text="List Description: \n(Optional)"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/lctitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="List Creation"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        />
+
+
+</RelativeLayout>

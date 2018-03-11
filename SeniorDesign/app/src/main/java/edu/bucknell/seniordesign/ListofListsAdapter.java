@@ -3,13 +3,16 @@ package edu.bucknell.seniordesign;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -61,6 +64,8 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
 
     }
 
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         notifyDataSetChanged();
@@ -71,7 +76,11 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             LayoutInflater layoutInflater;
             layoutInflater = LayoutInflater.from(getContext());
             view = layoutInflater.inflate(R.layout.listlayout, null);
+
+
         }
+
+
 
         List list = this.listArray.get(position);
 
@@ -83,6 +92,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
             TextView progressText = (TextView) view.findViewById(R.id.progressTextView);
             TextView textView = (TextView) view.findViewById(R.id.textView4);
+            TextView address= (TextView) view.findViewById(R.id.textViewAddress);
             ImageView delete = (ImageView) view.findViewById(R.id.delete);
             progressBar.setVisibility(View.VISIBLE);
             progressText.setVisibility(View.VISIBLE);
@@ -90,12 +100,28 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
 
             if (progressBar !=null){
                 int intProgress = list.getCompletionStatus();
-                progressBar.setProgress(intProgress);
-                textView.setText(" " + Integer.toString(list.getCompletionStatus())+ "%");
-                if(list.getCompletionStatus()==100){
+
+                if(list.getListSize()<1){
+
+                    progressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
+                    progressBar.getProgressDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
+                    progressBar.setProgress(0);
+                    textView.setText(" No locations to track.");
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                }else if(list.getCompletionStatus()==100 ){
                     int color = 0xFF00FF00;
                     progressBar.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
                     progressBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                    progressBar.setProgress(intProgress);
+                    textView.setText(" " + Integer.toString(list.getCompletionStatus())+ "%");
+                    progressBar.setVisibility(View.VISIBLE);
+                }else{
+                    progressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
+                    progressBar.getProgressDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
+                progressBar.setProgress(intProgress);
+                textView.setText(" " + Integer.toString(list.getCompletionStatus())+ "%");
+                    progressBar.setVisibility(View.VISIBLE);
                 }
                 mDb.child("Users").child(userEmail).child("lists").child(listArray.get(position).getListName()).child("completionStatus").setValue(intProgress);
             }
@@ -127,7 +153,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN: {
-                            ImageView view = (ImageView) v;
+                            ImageView view = (ImageView) v.findViewById(R.id.delete);
                             //overlay is black with transparency of 0x77 (119)
                             view.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
                             view.invalidate();
@@ -135,7 +161,7 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
                         }
                         case MotionEvent.ACTION_UP:
                         case MotionEvent.ACTION_CANCEL: {
-                            ImageView view = (ImageView) v;
+                            ImageView view = (ImageView) v.findViewById(R.id.delete);
                             //clear the overlay
                             view.getDrawable().clearColorFilter();
                             view.invalidate();
@@ -162,9 +188,12 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             }
 
             if (description != null) {
-                description.setText(list.getListDescription());
+                address.setTextSize(16);
+                address.setText(list.getListDescription());
             }
         }
+
+
         return view;
     }
 }
