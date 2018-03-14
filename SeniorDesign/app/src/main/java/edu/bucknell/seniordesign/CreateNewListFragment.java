@@ -116,9 +116,9 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
                         }
                     }).show();
 
-                }else if (name.length()>15){
+                }else if (name.length()>26){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("Invalid List Name").setMessage("Your list name must be fewer than 16 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    builder.setTitle("Invalid List Name").setMessage("Your list name must be fewer than 26 characters." ).setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

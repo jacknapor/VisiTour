@@ -249,8 +249,9 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 return infoWindow;
             }
         });
-
+        mMap.getUiSettings().setMapToolbarEnabled(true);
         m.showInfoWindow();
+
         return latLng;
     }
 
