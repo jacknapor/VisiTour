@@ -15,8 +15,8 @@ android {
         applicationId "edu.bucknell.seniordesign"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 17
-        versionName '1.942'
+        versionCode 18
+        versionName '1.943'
         signingConfig signingConfigs.config
     }
     buildTypes {

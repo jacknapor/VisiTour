@@ -85,6 +85,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
     // View
     private View mView;
 
+
     // List to add to
     private List list = null;
     private SearchLocationsFragment k;
@@ -200,7 +201,24 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                             }
                                             if(finalPlace.getAddress()!=null){
                                                 newLocation.setAddress(finalPlace.getAddress().toString());
+
                                             }
+                                            String snip="";
+                                            if(!finalPlace.getAddress().equals(finalPlace.getName())){
+                                                snip=snip+ finalPlace.getAddress()+ "\n";
+                                            }
+                                            snip=snip+"Category: "+ getPlaceType(finalPlace.getPlaceTypes().get(0)) +"\n";
+                                            if(finalPlace.getRating()>0){
+                                                snip=snip+"Rating: "+ finalPlace.getRating()+"/5"+"\n";
+                                            }
+                                            if(!finalPlace.getPhoneNumber().equals("")) {
+                                                snip = snip + "Phone: " + finalPlace.getPhoneNumber()+"\n";
+
+                                            }
+
+                                            newLocation.setSnip(snip);
+
+
 
                                             list.addLocation(newLocation);
 
@@ -234,6 +252,20 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                     if(finalPlace.getAddress()!=null){
                                                         newLocation.setAddress(finalPlace.getAddress().toString());
                                                     }
+                                                    String snip="";
+                                                    if(!finalPlace.getAddress().equals(finalPlace.getName())){
+                                                        snip=snip+ finalPlace.getAddress()+ "\n";
+                                                    }
+                                                    snip=snip+"Category: "+ getPlaceType(finalPlace.getPlaceTypes().get(0)) +"\n";
+                                                    if(finalPlace.getRating()>0){
+                                                        snip=snip+"Rating: "+ finalPlace.getRating()+"/5"+"\n";
+                                                    }
+                                                    if(!finalPlace.getPhoneNumber().equals("")) {
+                                                        snip = snip + "Phone: " + finalPlace.getPhoneNumber()+"\n";
+
+                                                    }
+
+                                                    newLocation.setSnip(snip);
 
 
                                                     list.addLocation(newLocation);
@@ -271,6 +303,20 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             if(finalPlace.getAddress()!=null){
                                                                 newLocation.setAddress(finalPlace.getAddress().toString());
                                                             }
+                                                            String snip="";
+                                                            if(!finalPlace.getAddress().equals(finalPlace.getName())){
+                                                                snip=snip+ finalPlace.getAddress()+ "\n";
+                                                            }
+                                                            snip=snip+"Category: "+ getPlaceType(finalPlace.getPlaceTypes().get(0)) +"\n";
+                                                            if(finalPlace.getRating()>0){
+                                                                snip=snip+"Rating: "+ finalPlace.getRating()+"/5"+"\n";
+                                                            }
+                                                            if(!finalPlace.getPhoneNumber().equals("")) {
+                                                                snip = snip + "Phone: " + finalPlace.getPhoneNumber()+"\n";
+
+                                                            }
+
+                                                            newLocation.setSnip(snip);
 
                                                             list.addLocation(newLocation);
                                                             alertDialog.dismiss();
@@ -296,6 +342,20 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                                                             if(finalPlace.getAddress()!=null){
                                                                 newLocation.setAddress(finalPlace.getAddress().toString());
                                                             }
+                                                            String snip="";
+                                                            if(!finalPlace.getAddress().equals(finalPlace.getName())){
+                                                                snip=snip+ finalPlace.getAddress()+ "\n";
+                                                            }
+                                                            snip=snip+"Category: "+ getPlaceType(finalPlace.getPlaceTypes().get(0)) +"\n";
+                                                            if(finalPlace.getRating()>0){
+                                                                snip=snip+"Rating: "+ finalPlace.getRating()+"/5"+"\n";
+                                                            }
+                                                            if(!finalPlace.getPhoneNumber().equals("")) {
+                                                                snip = snip + "Phone: " + finalPlace.getPhoneNumber()+"\n";
+
+                                                            }
+
+                                                            newLocation.setSnip(snip);
 
                                                             alertDialog.dismiss();
                                                             list.addLocation(newLocation);
@@ -342,8 +402,25 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
                     TraveListLatLng newTraveListLatLng = new TraveListLatLng();
                     newTraveListLatLng.setLatitude(place.getLatLng().latitude);
                     newTraveListLatLng.setLongitude(place.getLatLng().longitude);
+                    String snip="";
+                    if(!place.getAddress().equals(place.getName())){
+                        snip=snip+ place.getAddress()+ "\n";
+                    }
+                    snip=snip+"Category: "+ getPlaceType(place.getPlaceTypes().get(0)) +"\n";
+                    if(place.getRating()>0){
+                        snip=snip+"Rating: "+ place.getRating()+"/5"+"\n";
+                    }
+                    if(!place.getPhoneNumber().equals("")) {
+                        snip = snip + "Phone: " + place.getPhoneNumber()+"\n";
+
+                    }
 
                     Location newLocation = new Location(place.getName().toString(), "", newTraveListLatLng);
+                    newLocation.setSnip(snip);
+
+
+
+
                     MapFragment m = MapFragment.newInstance(newLocation);
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     getChildFragmentManager().beginTransaction().remove(getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment)).commitAllowingStateLoss();

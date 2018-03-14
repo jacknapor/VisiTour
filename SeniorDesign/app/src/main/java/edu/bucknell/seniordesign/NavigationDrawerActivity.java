@@ -369,13 +369,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
             profpic.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
            }
         } else {
-            userTextView.setText("Not Logged In");
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
-                    .getLayoutParams();
-            mlp.setMargins(10,90,0,0);
-            userTextView.setLayoutParams(mlp);
-            profpic.setProfileId(null);
-            userEmailTextView.setText(null);
+            if(userTextView!=null) {
+                userTextView.setText("Not Logged In");
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView
+                        .getLayoutParams();
+                mlp.setMargins(10, 90, 0, 0);
+                userTextView.setLayoutParams(mlp);
+                profpic.setProfileId(null);
+                userEmailTextView.setText(null);
+            }
         }
     }
 

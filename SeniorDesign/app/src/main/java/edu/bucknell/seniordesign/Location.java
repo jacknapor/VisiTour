@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public class Location implements Serializable{
+    private String snip="";
 
     private Bitmap pic;
     // Location name
@@ -102,6 +103,12 @@ public class Location implements Serializable{
 
     public void setVisited(boolean v){
         this.visited=v;
+    }
+    public void setSnip(String s){
+        this.snip=s;
+    }
+    public String getSnip(){
+        return this.snip;
     }
 
 }

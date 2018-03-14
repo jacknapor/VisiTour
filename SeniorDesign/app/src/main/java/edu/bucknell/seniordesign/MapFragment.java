@@ -13,6 +13,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.security.MessageDigest;
@@ -38,6 +40,9 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     // Location
     private Location location;
     private View view;
+    private LayoutInflater i;
+    private ViewGroup c;
+    private boolean hasPoint = false;
 
     // MapView
     MapView mapView;
@@ -87,8 +92,10 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
             String name = bundle.getString("locName");
             getActivity().setTitle(name);
-
+            this.hasPoint=true;
+            location= (Location) bundle.getSerializable("loc");
             Location location = (Location) bundle.getSerializable("loc");
+
 
             double lat = location.getTraveListLatLng().getLatitude();
             double lng = location.getTraveListLatLng().getLongitude();
@@ -102,6 +109,8 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     {
         NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
         n.isNetworkAvailable();
+        i=inflater;
+        c=container;
 
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
@@ -196,13 +205,52 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         readBundle();
+        // Do other setup activities here too, as described elsewhere in this tutorial.
+        if (this.hasPoint) {
+
+
+        }
+
     }
+
 
     public LatLng addPoint(String name, LatLng latLng) {
         Toast.makeText(getContext(), "To get directions, tap the red marker, and then tap the Google Maps icon that appears on the bottom right.", Toast.LENGTH_LONG).show();
-        mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+
+        Marker m= mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+        m.setSnippet(location.getSnip());
+        Log.i("ASSFUCK2", location.getSnip());
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)));
+        this.hasPoint=true;
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            // Return null here, so that getInfoContents() is called next.
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Inflate the layouts for the info window, title and snippet.
+                View infoWindow = i.inflate(R.layout.custom_info_contents,c, false);
+
+                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
+                title.setText(marker.getTitle());
+
+
+                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
+                snippet.setText(marker.getSnippet());
+
+
+
+                return infoWindow;
+            }
+        });
+
+        m.showInfoWindow();
         return latLng;
     }
 
