@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -113,6 +115,8 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         super.onCreate(savedInstanceState);
         mGeoDataClient = Places.getGeoDataClient(getActivity(), null);
         getActivity().setTitle("Add Location");
+        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override

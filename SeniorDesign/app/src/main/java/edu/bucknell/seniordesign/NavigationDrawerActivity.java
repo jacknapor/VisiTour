@@ -245,37 +245,51 @@ public class NavigationDrawerActivity extends AppCompatActivity
         switch(menuItem.getItemId()) {
             case R.id.create_list:
                 if (null == user) {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
                     forceLogin();
                     break;
                 } else {
                     android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                    MapFragment mf= MapFragment.newInstance();
+                    CreateNewListFragment cf= CreateNewListFragment.newInstance();
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, CreateNewListFragment.newInstance()).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, cf).addToBackStack(null).commit();
                 break;
                }
             case R.id.search_locations:
                 if (null == user) {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
                     forceLogin();
                     break;
                 } else {
 
                     android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                    MapFragment mf= MapFragment.newInstance();
+                    SearchLocationsFragment sf= SearchLocationsFragment.newInstance();
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, SearchLocationsFragment.newInstance()).addToBackStack(null).commit();
+                    fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content_frag, sf).addToBackStack(null).commit();
                     break;
                 }
             case R.id.login_button:
                 fragmentClass = LoginFragment.class;
 
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
+                MapFragment mf= MapFragment.newInstance();
+                LoginFragment lf= LoginFragment.newInstance();
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frag, lf).addToBackStack(null).commit();
 
                 break;
             case R.id.your_lists:
                 defaultList = true;
                 if (null == user) {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawer.closeDrawer(GravityCompat.START);
                     forceLogin();
                     break;
                 } else {
@@ -309,6 +323,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             finalDatabaseReference.child("Users").child(userEmail).child("lists").removeEventListener(this);
                             fragment = CustomListFragment.newInstance(listOfLists, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                            isNetworkAvailable();
                             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
                             fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
@@ -341,8 +356,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
         updateUser();
     }
 

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,8 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
 
     }
 

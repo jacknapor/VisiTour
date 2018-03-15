@@ -25,6 +25,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -186,6 +188,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         getActivity().setTitle("Facebook Log In");
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
+        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
 
     }
 
