@@ -166,14 +166,13 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                                     percentage = Long.parseLong(s.getValue().toString());
                                 }
                             }
+                            String q="I have visited " + Long.toString(percentage) + "% of the locations in my list: '" + listName+ "'!"+"\nTrack your travels with TraveList.";
                            // if (shareDialog.canShow(ShareLinkContent.class)) {
                                 ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                        .setContentTitle("TraveList")
-                                        .setContentDescription("Track your travels.")
                                         .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=edu.bucknell.seniordesign"))
-                                        .setImageUrl(Uri.parse("https://imgur.com/AYKeqRn"))
-                                        .setQuote("I have completed " + Long.toString(percentage) + "% of the list: " + listName)
+                                        .setQuote(q)
                                         .build();
+
 
                                 shareDialog.show(linkContent);
 
