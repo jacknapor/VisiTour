@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 
 import java.security.MessageDigest;
@@ -188,8 +189,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         getActivity().setTitle("Facebook Log In");
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        ((NavigationDrawerActivity) getActivity()).alertDialog.dismiss();
 
     }
 
@@ -310,6 +310,9 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     LoginManager.getInstance().logOut();
 //                resetUserDisplay();
                     Toast.makeText(getContext(), "You have been signed out.", Toast.LENGTH_SHORT).show();
+
+
+
                     android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -319,7 +322,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
                     //how can we update the view when you log out?
                 } else {
+
+
+
                     handleToken(currentAccessToken);
+
                     //resetUserDisplay();
                 }
             }

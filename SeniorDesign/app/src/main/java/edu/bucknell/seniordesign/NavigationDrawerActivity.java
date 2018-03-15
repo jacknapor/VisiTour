@@ -60,6 +60,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
+
+
     private GeoDataClient mGeoDataClient;
     // Reference to database
     private DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
@@ -72,6 +74,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     // Fragment
     private android.support.v4.app.Fragment fragment;
+    private android.support.v4.app.FragmentManager fragmentManager;
 
 
     @Override
@@ -136,13 +139,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(user!=null){
-                    NavigationView n= (NavigationView) drawerView;
-                    n.getMenu().findItem(R.id.login_button).setTitle("Log Out");}
-                else{
-                    NavigationView n= (NavigationView) drawerView;
-                    n.getMenu().findItem(R.id.login_button).setTitle("Log In");
-                }
+
             }
 
             @Override
@@ -160,12 +157,20 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 updateUser();
                 setUserName();
 
+
             }
         });
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(user!=null){
+
+            navigationView.getMenu().findItem(R.id.login_button).setTitle("Log Out");}
+        else{
+
+            navigationView.getMenu().findItem(R.id.login_button).setTitle("Log In");
+        }
 
 
     }
@@ -193,6 +198,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (null != user) {
             convertUserEmail();
+            NavigationView n= (NavigationView) findViewById(R.id.nav_view);
+            n.getMenu().findItem(R.id.login_button).setTitle("Log In");
+
 
         } else {
             userEmail = null;
@@ -229,7 +237,25 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        if(user==null&&item.getItemId()!=R.id.login_button){
+            forceLogin();
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+
+            builder = new AlertDialog.Builder(this);
+            builder.setMessage("Loading..").setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.show();
+
+
+
         selectDrawerItem(item);
+
+
         return true;
     }
 
@@ -239,70 +265,92 @@ public class NavigationDrawerActivity extends AppCompatActivity
         final ArrayList<List> listOfLists = new ArrayList<List>();
         DatabaseReference mDb = FirebaseDatabase.getInstance().getReference();
         updateUser();
+        DrawerLayout d= (DrawerLayout)findViewById(R.id.drawer_layout);
+        d.setSelected(true);
 
         boolean defaultList = false;
+
 
         switch(menuItem.getItemId()) {
             case R.id.create_list:
                 if (null == user) {
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    forceLogin();
+
+
                     break;
                 } else {
-                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                    MapFragment mf= MapFragment.newInstance();
-                    CreateNewListFragment cf= CreateNewListFragment.newInstance();
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, cf).addToBackStack(null).commit();
+                    fragmentManager = getSupportFragmentManager();
+                    final MapFragment mf= MapFragment.newInstance();
+                    final CreateNewListFragment cf= CreateNewListFragment.newInstance();
+
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, cf).addToBackStack(null).commit();
+
+                        }
+                    }, 310 );
+
                 break;
                }
             case R.id.search_locations:
                 if (null == user) {
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    forceLogin();
+
+
                     break;
                 } else {
 
-                    android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                    MapFragment mf= MapFragment.newInstance();
-                    SearchLocationsFragment sf= SearchLocationsFragment.newInstance();
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, sf).addToBackStack(null).commit();
+                    fragmentManager = getSupportFragmentManager();
+                    final MapFragment mf= MapFragment.newInstance();
+                   final SearchLocationsFragment sf= SearchLocationsFragment.newInstance();
+
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, sf).addToBackStack(null).commit();
+
+                        }
+                    }, 310 );
                     break;
                 }
             case R.id.login_button:
                 fragmentClass = LoginFragment.class;
 
-                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-                MapFragment mf= MapFragment.newInstance();
-                LoginFragment lf= LoginFragment.newInstance();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
-                fragmentManager.beginTransaction().replace(R.id.content_frag, lf).addToBackStack(null).commit();
+                 fragmentManager = getSupportFragmentManager();
+               final MapFragment mf= MapFragment.newInstance();
+                final LoginFragment lf= LoginFragment.newInstance();
+
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                        fragmentManager.beginTransaction().replace(R.id.content_frag, lf).addToBackStack(null).commit();
+
+                    }
+                }, 300 );
 
                 break;
             case R.id.your_lists:
                 defaultList = true;
                 if (null == user) {
-                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawer.closeDrawer(GravityCompat.START);
-                    forceLogin();
+
+
                     break;
                 } else {
-                    builder = new AlertDialog.Builder(this);
-                    builder.setMessage("Loading..").setCancelable(false);
-                    alertDialog = builder.create();
-                    alertDialog.show();
+
                     fragmentClass = CustomListFragment.class;
                     updateUser();
                     final DatabaseReference finalDatabaseReference = this.mDb;
-                    Handler handler = new Handler(Looper.getMainLooper());
+                    Handler h = new Handler(Looper.getMainLooper());
 
-                    handler.postDelayed(new Runnable() {
+                    h.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             alertDialog.dismiss();
@@ -324,10 +372,17 @@ public class NavigationDrawerActivity extends AppCompatActivity
                             fragment = CustomListFragment.newInstance(listOfLists, true);
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                             isNetworkAvailable();
-                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
-                            fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
-                            alertDialog.dismiss();
+                            Handler h2= new Handler(Looper.getMainLooper());
+                            h2.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                    getSupportFragmentManager().beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                    alertDialog.dismiss();
+                                }
+                            }, 300 );
+
 
                         }
 
@@ -371,6 +426,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
             ProfilePictureView profpic= (ProfilePictureView) findViewById(R.id.profile_pic);
         if (null != user) {
+            NavigationView n= (NavigationView) findViewById(R.id.nav_view);
+            n.getMenu().findItem(R.id.login_button).setTitle("Log Out");
 
             if(!userTextView.getText().equals(user.getDisplayName())){
             userTextView.setText(user.getDisplayName());
@@ -386,6 +443,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
             profpic.setProfileId(AccessToken.getCurrentAccessToken().getUserId());
            }
         } else {
+            NavigationView n= (NavigationView) findViewById(R.id.nav_view);
+            n.getMenu().findItem(R.id.login_button).setTitle("Log In");
             if(userTextView!=null) {
                 userTextView.setText("Not Logged In");
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) userTextView

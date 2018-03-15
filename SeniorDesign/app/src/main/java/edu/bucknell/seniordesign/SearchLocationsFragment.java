@@ -115,8 +115,7 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
         super.onCreate(savedInstanceState);
         mGeoDataClient = Places.getGeoDataClient(getActivity(), null);
         getActivity().setTitle("Add Location");
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        ((NavigationDrawerActivity) getActivity()).alertDialog.dismiss();
     }
 
     @Override

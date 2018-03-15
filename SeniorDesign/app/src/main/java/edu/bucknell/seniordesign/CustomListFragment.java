@@ -91,8 +91,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
         n.isNetworkAvailable();
         final View rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
 
         ListView listView = (ListView) rootView.findViewById(R.id.list);
 

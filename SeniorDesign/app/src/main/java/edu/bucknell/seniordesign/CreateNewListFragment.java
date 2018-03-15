@@ -69,8 +69,7 @@ public class CreateNewListFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        ((NavigationDrawerActivity) getActivity()).alertDialog.dismiss();
 
     }
 
