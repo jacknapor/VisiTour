@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import bolts.AppLinks;
+
 /**
  * NavigationDrawerActivity.java
  * TraveList - Senior Design
@@ -75,6 +77,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.e("hello", "a");
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(this.CONNECTIVITY_SERVICE);

@@ -111,6 +111,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
             }
         });
         shareDialog = new ShareDialog(this);
+
         fbShareButton = (FloatingActionButton) rootView.findViewById(R.id.fb_share_button);
 
         if (isLists) {
@@ -151,7 +152,7 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     this.showalert=true;
                 }
             }
-
+            shareDialog = new ShareDialog(getActivity());
             fbShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -165,13 +166,18 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                                     percentage = Long.parseLong(s.getValue().toString());
                                 }
                             }
-                            if (shareDialog.canShow(ShareLinkContent.class)) {
+                           // if (shareDialog.canShow(ShareLinkContent.class)) {
                                 ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                        .setContentUrl(Uri.parse("https://imgur.com/AYKeqRn"))
+                                        .setContentTitle("TraveList")
+                                        .setContentDescription("Track your travels.")
+                                        .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=edu.bucknell.seniordesign"))
+                                        .setImageUrl(Uri.parse("https://imgur.com/AYKeqRn"))
                                         .setQuote("I have completed " + Long.toString(percentage) + "% of the list: " + listName)
                                         .build();
+
                                 shareDialog.show(linkContent);
-                            }
+
+                           // }
                         }
 
                         @Override
