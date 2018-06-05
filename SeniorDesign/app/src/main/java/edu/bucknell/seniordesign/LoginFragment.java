@@ -1,5 +1,6 @@
 package edu.bucknell.seniordesign;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,8 +8,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,11 +33,15 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,6 +60,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -81,8 +91,10 @@ import edu.bucknell.seniordesign.R;
 public class LoginFragment extends android.support.v4.app.Fragment {
 
     private String fbID;
-
+    android.support.v4.app.FragmentManager fm;
     private String url;
+    private boolean t=false;
+    ShowcaseView b;
 
     // Firebase authentication
     private FirebaseAuth mAuth;
@@ -101,6 +113,8 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
 
+   LayoutInflater i;
+
 
 
     // No arguments constructor
@@ -108,6 +122,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     public static LoginFragment newInstance(){
         LoginFragment a =new LoginFragment();
+
 
         return a;
     }
@@ -134,7 +149,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             } else {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
-                Log.e("wtf", "is that");
+
 
 
             }
@@ -190,6 +205,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
         ((NavigationDrawerActivity) getActivity()).alertDialog.dismiss();
+        fm=getActivity().getSupportFragmentManager();
 
     }
 
@@ -205,36 +221,73 @@ public class LoginFragment extends android.support.v4.app.Fragment {
                     updateUser();
                     updateUserDisplay();
                     alertDialog.dismiss();
-                    Toast.makeText(getContext(), "Login successful!", Toast.LENGTH_SHORT).show();
+
+                    builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Loading..").setCancelable(false);
+                    alertDialog = builder.create();
+                    alertDialog.show();
                     mDb.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (user != null) {
                                 if (!(dataSnapshot.child("Users").hasChild(userEmail))) {
-                                    // if the user is not in the database (i.e. a new user), create a user in the db
+
+
+
+
+
+
+
+
+
+
                                     try {
+                                        t=true;
                                         createNewUser(dataSnapshot);
+
                                     } catch (Exception E) {
                                     }
                                 } else {
+
+
+
+
                                 }
-                            }
+                                if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("F", true)){
+
+                                    Toolbar toolbar1=(Toolbar)getActivity().findViewById(R.id.toolbar);
+                                    ImageButton ib=new ImageButton(getActivity().getApplicationContext());
+                                    for (int i = 0; i < toolbar1.getChildCount(); i++)
+                                        if(toolbar1.getChildAt(i) instanceof ImageButton)
+                                            ib= (ImageButton) toolbar1.getChildAt(i);
+                                    b= new ShowcaseView.Builder(getActivity())
+                                            .setTarget(new ViewTarget(ib))
+                                            .setContentTitle("Awesome, you've successfully logged in!").blockAllTouches()
+                                            .setContentText("Now, head back over to the menu and press the button labelled 'Your Lists' to see some examples of travel lists and how they can help you organize and track your travels!").setStyle(R.style.CustomShowcaseTheme3)
+                                            .build();
+                                    b.setButtonText("Next");
+                                    b.setClickable(true);
+                                   }
+                            } alertDialog.dismiss();
+                            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            alertDialog.dismiss();
                             mAuth.signOut();
                             FirebaseAuth.getInstance().signOut();
                             LoginManager.getInstance().logOut();
                         }
                     });
-                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
-                    fragmentManager.beginTransaction().replace(R.id.content_frag, LoginFragment.newInstance()).addToBackStack(null).commit();
+
                     accessTokenTracker.stopTracking();
-                } else {
+                }
+                else {
                     if(alertDialog!=null){alertDialog.dismiss();}
                 }
             }
@@ -242,10 +295,11 @@ public class LoginFragment extends android.support.v4.app.Fragment {
     }
 
     // Creates a new user in Firebase and creates a copy of default lists for the user
-    private void createNewUser(DataSnapshot ds) {
+    private void createNewUser(DataSnapshot ds) throws IllegalAccessException, java.lang.InstantiationException {
         mDb.child("Users").child(this.userEmail).child("displayName").setValue(this.user.getDisplayName());
         mDb.child("Users").child(this.userEmail).child("userID").setValue(this.user.getUid());
         mDb.child("Users").child(this.userEmail).child("lists").setValue(ds.child("DefaultLists").getValue());
+
 
     }
 
@@ -284,12 +338,13 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     }
 
-
+    ViewGroup con;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
         n.isNetworkAvailable();
-
+        i=inflater;
+        con=container;
         View v= inflater.inflate(R.layout.fragment_login, container, false);
         LoginButton loginButton = (LoginButton) v.findViewById(R.id.login_button);
         loginButton.setReadPermissions( "email", "public_profile");
@@ -306,10 +361,12 @@ public class LoginFragment extends android.support.v4.app.Fragment {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
+                    mAuth.signOut();
                     FirebaseAuth.getInstance().signOut();
                     LoginManager.getInstance().logOut();
 //                resetUserDisplay();
                     Toast.makeText(getContext(), "You have been signed out.", Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -326,6 +383,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
 
                     handleToken(currentAccessToken);
+
 
                     //resetUserDisplay();
                 }

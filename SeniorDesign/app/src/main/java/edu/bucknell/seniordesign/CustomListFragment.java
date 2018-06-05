@@ -2,24 +2,37 @@ package edu.bucknell.seniordesign;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +91,11 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
     private String userEmail;
 
     private boolean showalert=true;
+    ShowcaseView b;
+    ListView listView;
+    View rootView;
+    ListofListsAdapter adapter;
+    SharedPreferences wmbPreference ;
 
     @Override
     public void onBackPressed(){
@@ -90,10 +108,12 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                              Bundle savedInstanceState) {
         NavigationDrawerActivity n= (NavigationDrawerActivity)getActivity();
         n.isNetworkAvailable();
-        final View rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
+
+        rootView =inflater.inflate(R.layout.activity_choose_list, container, false);;
+       wmbPreference = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
 
-        ListView listView = (ListView) rootView.findViewById(R.id.list);
+        listView = (ListView) rootView.findViewById(R.id.list);
 
         final ViewGroup viewGroup = container;
 
@@ -116,15 +136,23 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         shareDialog = new ShareDialog(this);
 
         fbShareButton = (FloatingActionButton) rootView.findViewById(R.id.fb_share_button);
+        if(FirebaseAuth.getInstance().getCurrentUser()==null){
+            return rootView;
+        }
 
         if (isLists) {
-            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+
+            if(FirebaseAuth.getInstance().getCurrentUser().getEmail()!=null ) {
+                userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            }else{
+                    userEmail= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                }
             getActivity().setTitle("Lists");
             addLocationButton.hide();
 
 
 
-                ListofListsAdapter adapter = new ListofListsAdapter(getContext(),
+                 adapter = new ListofListsAdapter(getContext(),
                         R.layout.listlayout, listoflists);
             listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -138,11 +166,80 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                     fragmentManager.beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
                 }});
 
+            boolean isFirstRun = wmbPreference.getBoolean("F", true);
+
+
+            if(isFirstRun){
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        b= new ShowcaseView.Builder(getActivity(),false)
+                                .setTarget(new ViewTarget(listView.findViewById(R.id.listItemImage)))
+                                .setContentTitle("List Features: Picture")
+                                .setContentText("Here you can see all of the lists you are tracking. Each list includes: a picture of one of the locations in your list...").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
+                                .build();
+                        b.setClickable(true);
+                        b.setButtonText("Next");
+                        b.overrideButtonClick(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                b.hide();
+                                Target a= new Target() {
+                                    @Override
+                                    public Point getPoint() {
+                                        Point p= new ViewTarget(listView.findViewById(R.id.textViewAddress)).getPoint();
+                                        p.set(p.x-30,p.y);
+                                        return p;
+                                    }
+                                };
+                                b= new ShowcaseView.Builder(getActivity(),false).withMaterialShowcase()
+                                        .setContentTitle("List Features: Title & Description").setStyle(R.style.CustomShowcaseTheme3)
+                                        .setContentText("A custom title and optional description...")
+                                        .build();
+                                b.setClickable(true);
+                                b.setButtonText("Next");
+
+                                b.setTarget(a);
+
+
+                                b.overrideButtonClick(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        b.hide();
+                                        b= new ShowcaseView.Builder(getActivity(),false)
+                                                .setTarget(new ViewTarget(listView.findViewById(R.id.progressTextView)))
+                                                .setContentTitle("List Features: Progress Bar")
+                                                .setContentText("And a progress bar that allows you to see at a glance how many locations you have visited in the list. You can create your own custom lists by tapping the 'Create List' button in the menu. But for now, tap on one of these lists to view its locations.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
+                                                .build();
+                                        b.setClickable(true);
+                                        b.setButtonText("Next");
+                                    }
+                                });
+
+
+
+
+
+                            }
+                        });
+
+
+                    }
+                }, 500);
+
+            }
+
         } else {
 
             fbShareButton.setVisibility(View.VISIBLE);
             listName = this.list.getListName();
-            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            if(FirebaseAuth.getInstance().getCurrentUser().getEmail()!=null ) {
+                userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            }else{
+                userEmail= FirebaseAuth.getInstance().getCurrentUser().getUid();
+            }
             if (this.list.getLocationArray().size() > 0) {
                 if(this.showalert){
                 Toast.makeText(getContext(), "Tap on any location to view it on the map.", Toast.LENGTH_SHORT).show();}else{
@@ -202,6 +299,67 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
                 }
             });
             listView.setAdapter(adapter);
+            boolean isFirstRun = wmbPreference.getBoolean("F", true);
+
+
+            if(isFirstRun){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                b= new ShowcaseView.Builder(getActivity())
+                        .setTarget(new ViewTarget(listView.findViewById(R.id.delete)))
+                        .setContentTitle("List Management: Deletion")
+                        .setContentText("You can delete both locations and lists at any time, including the example lists and locations, by tapping the trash can icon next to the list/location you wish to delete.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
+                        .build();
+                b.setClickable(true);
+                b.setButtonText("Next");
+                b.overrideButtonClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.setTarget(new ViewTarget(listView.findViewById(R.id.visited)));
+                        b.setContentTitle("List Management: Location Tracking");
+                        b.setContentText("To mark a location as visited, check the 'Visited' checkbox for that location. The list's progress bar will automatically update.");
+                        b.overrideButtonClick(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Target a= new Target() {
+                                    @Override
+                                    public Point getPoint() {
+                                        Point p= new ViewTarget(listView.findViewById(R.id.dummy)).getPoint();
+                                        p.set(p.x+75,p.y);
+                                        return p;
+                                    }
+                                };
+                                b.setTarget(a);
+                                b.setContentTitle("Location Exploration");
+                                b.setContentText("Tap on any location to view it on a map, and even get directions to it. ");
+                                b.overrideButtonClick(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        b.setContentTitle("Tutorial Completed!");
+                                        b.setContentText("All that's left to do now is create your own lists by pressing the 'Create List' button in the menu, choose your next travel destinations and start tracking your travels!");
+                                        b.setButtonText("Finish Tutorial");
+                                        b.overrideButtonClick(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                b.hide();
+                                                SharedPreferences.Editor editor = wmbPreference.edit();
+                                                editor.putBoolean("F", false);
+                                                editor.commit();
+                                            }
+                                        });
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                    }
+                }, 500);
+
+            }
         }
         return rootView;
     }
@@ -275,8 +433,11 @@ public class CustomListFragment extends android.support.v4.app.Fragment implemen
         ListView listView= (ListView) getView().findViewById(R.id.list);
         final ListView lv= listView;
         if(isLists && listView.getAdapter()!=null){
-
-        userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            if(FirebaseAuth.getInstance().getCurrentUser().getEmail()!=null ) {
+                userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+            }else{
+                userEmail= FirebaseAuth.getInstance().getCurrentUser().getUid();
+            }
         mDb.child("Users").child(userEmail).child("lists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -15,8 +15,8 @@ android {
         applicationId "edu.bucknell.seniordesign"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 23
-        versionName '1.948'
+        versionCode 27
+        versionName '1.97'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -57,5 +57,6 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:4.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     compile 'org.apache.poi:poi:3.9'
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 }
 apply plugin: 'com.google.gms.google-services'

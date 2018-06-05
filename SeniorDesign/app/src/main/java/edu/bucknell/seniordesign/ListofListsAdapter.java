@@ -45,7 +45,8 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     // User email
-    private String userEmail=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+    private String userEmail;
+    public View v;
 
     // Constructor given a Context and an int
     public ListofListsAdapter(Context context, int textViewResourceId) {
@@ -58,16 +59,17 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
         this.listArray = lists;
     }
 
-    @Override
-    public int getCount(){
-        return this.listArray.size();
 
-    }
 
 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if(FirebaseAuth.getInstance().getCurrentUser().getEmail()!=null ) {
+            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        }else{
+            userEmail= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
         notifyDataSetChanged();
 
 
@@ -76,6 +78,8 @@ public class ListofListsAdapter extends ArrayAdapter<List> {
             LayoutInflater layoutInflater;
             layoutInflater = LayoutInflater.from(getContext());
             view = layoutInflater.inflate(R.layout.listlayout, null);
+
+
 
 
         }

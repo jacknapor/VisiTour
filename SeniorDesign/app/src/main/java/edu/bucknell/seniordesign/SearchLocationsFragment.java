@@ -444,7 +444,12 @@ public class SearchLocationsFragment extends android.support.v4.app.Fragment imp
 
     // Convert user email. Firebase keys cannot contain '.' so emails must be converted to have ',' instead
     private void convertUserEmail() {
-        userEmail = user.getEmail().replace(".", ",");
+
+        if(user.getEmail()!=null) {
+            userEmail = user.getEmail().replace(".", ",");
+        }else{
+            userEmail=user.getUid();
+        }
     }
 
     // Switches fragments to display the list of locations.

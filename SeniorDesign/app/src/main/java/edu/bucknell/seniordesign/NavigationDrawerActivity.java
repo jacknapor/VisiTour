@@ -1,13 +1,20 @@
 package edu.bucknell.seniordesign;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -16,11 +23,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +40,10 @@ import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +71,7 @@ import bolts.AppLinks;
  *
  */
 public class NavigationDrawerActivity extends AppCompatActivity
-        implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
+        implements CreateNewListFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ListFragment.OnFragmentInteractionListener, SearchLocationsFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, Startup.OnFragmentInteractionListener {
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
 
@@ -75,7 +89,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
     // Fragment
     private android.support.v4.app.Fragment fragment;
     private android.support.v4.app.FragmentManager fragmentManager;
-
+    ShowcaseView b;
+    MapFragment m= MapFragment.newInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,10 +143,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 e.printStackTrace();
             }
             updateUser();
-            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.content_frag, fragment).commit();
-            Toast.makeText(getApplicationContext(), "Open the menu to sign in and access app features.", Toast.LENGTH_LONG).show();
-        }
+            fragmentManager=getSupportFragmentManager();
+
+
+            fragmentManager.beginTransaction().add(R.id.content_frag,m).commit();
+
+            SharedPreferences wmbPreference = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean isFirstRun = wmbPreference.getBoolean("F", true);
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -170,6 +190,30 @@ public class NavigationDrawerActivity extends AppCompatActivity
         else{
 
             navigationView.getMenu().findItem(R.id.login_button).setTitle("Log In");
+        }
+            if (isFirstRun)
+            {
+                Toolbar toolbar1=(Toolbar)findViewById(R.id.toolbar);
+                ImageButton ib=new ImageButton(getApplicationContext());
+                for (int i = 0; i < toolbar1.getChildCount(); i++)
+                    if(toolbar1.getChildAt(i) instanceof ImageButton)
+                        ib= (ImageButton) toolbar1.getChildAt(i);
+
+                b= new ShowcaseView.Builder(this)
+                        .setTarget(new ViewTarget(ib))
+                        .setContentTitle("Welcome to TraveList!")
+                        .setContentText("Thank you for downloading TraveList! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
+                        .build();
+                b.setButtonText("Next");
+                b.setClickable(true);
+
+
+
+
+            }else{
+
+
+                Toast.makeText(getApplicationContext(), "Open the menu to sign in and access app features.", Toast.LENGTH_LONG).show();}
         }
 
 
@@ -213,7 +257,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0 ){
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0 && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean("F",true)){
+
             super.onBackPressed();
         } else {
           // super.onBackPressed();
@@ -238,8 +283,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        if(user==null&&item.getItemId()!=R.id.login_button){
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("F",true)&&item.getItemId()!=R.id.login_button &&item.getItemId()!=R.id.tutorial&&item.getItemId()!=R.id.your_lists){
+            Toast.makeText(getApplicationContext(), "Please complete the tutorial first.", Toast.LENGTH_LONG).show();
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        if(user==null&&item.getItemId()!=R.id.login_button &&item.getItemId()!=R.id.tutorial){
             forceLogin();
             drawer.closeDrawer(GravityCompat.START);
             return true;
@@ -330,7 +379,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        fragmentManager.beginTransaction().add(R.id.content_frag, mf).commit();
+                        fragmentManager.beginTransaction().replace(R.id.content_frag, mf).commit();
                         fragmentManager.beginTransaction().replace(R.id.content_frag, lf).addToBackStack(null).commit();
 
                     }
@@ -358,6 +407,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         }
                     }, 25000 );
                     mDb.child("Users").child(userEmail).child("lists").addValueEventListener(new ValueEventListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -377,8 +427,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
                                 @Override
                                 public void run() {
                                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                    getSupportFragmentManager().beginTransaction().add(R.id.content_frag, MapFragment.newInstance()).commit();
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                                    if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("F", true)){
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.content_frag, fragment).commit();
+                                    }else{
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frag, fragment).addToBackStack(null).commit();}
                                     alertDialog.dismiss();
                                 }
                             }, 300 );
@@ -397,6 +450,90 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 }
                 defaultList = true;
+                break;
+            case R.id.tutorial:
+                alertDialog.dismiss();
+                Toolbar toolbar1=(Toolbar)findViewById(R.id.toolbar);
+                ImageButton ib=new ImageButton(getApplicationContext());
+                for (int i = 0; i < toolbar1.getChildCount(); i++)
+                    if(toolbar1.getChildAt(i) instanceof ImageButton)
+                        ib= (ImageButton) toolbar1.getChildAt(i);
+
+                b= new ShowcaseView.Builder(this)
+                        .setTarget(new ViewTarget(ib))
+                        .setContentTitle("Welcome to TraveList!")
+                        .setContentText("Thank you for downloading TraveList! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches().build();
+                b.hide();
+                b.setButtonText("Next");
+                b.setClickable(true);
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                            editor.putBoolean("F", true);
+                            editor.commit();
+
+                            Toast.makeText(getApplicationContext(), "Tutorial reset.",
+                                    Toast.LENGTH_LONG).show();
+                            FirebaseAuth.getInstance().signOut();
+                            LoginManager.getInstance().logOut();
+                            updateUser();
+                            Handler h = new Handler(Looper.getMainLooper());
+
+                            h.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alertDialog.dismiss();
+                                    fragmentManager.popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                    fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                                    b.show();
+                                }
+                            }, 300 );
+
+
+
+
+
+
+
+                        }else if(which==DialogInterface.BUTTON_NEGATIVE){
+                            if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("F",true)){
+                                alertDialog.dismiss();
+                            }else {
+                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                                editor.putBoolean("F", false);
+                                editor.commit();
+                                Toast.makeText(getApplicationContext(), "Tutorial skipped. Please log in again.",
+                                        Toast.LENGTH_LONG).show();
+                                FirebaseAuth.getInstance().signOut();
+                                LoginManager.getInstance().logOut();
+                                updateUser();
+                                Handler h = new Handler(Looper.getMainLooper());
+
+                                h.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alertDialog.dismiss();
+                                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                        fragmentManager.beginTransaction().replace(R.id.content_frag, MapFragment.newInstance()).commit();
+                                        b.hide();
+                                    }
+                                }, 300);
+
+                            }
+
+                        }
+                    }
+                };
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setMessage("Would you like to replay or skip the tutorial?").setPositiveButton("Replay", dialogClickListener).setNegativeButton("Skip", dialogClickListener).show();
+
                 break;
             default:
 
@@ -417,6 +554,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     // Makes Toast text to inform user they must login to use a certain feature
     private void forceLogin() {
+
         Toast.makeText(getApplicationContext(), "You must log in to use this feature", Toast.LENGTH_SHORT).show();
     }
 

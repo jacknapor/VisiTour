@@ -17,6 +17,14 @@
         android:layout_toRightOf="@+id/listItemImage"
         android:layout_toStartOf="@+id/delete"
         android:textSize="14sp" />
+    <TextView
+        android:id="@+id/dummy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/textViewAddress"
+        android:layout_below="@+id/textViewName"
+
+        />
 
     <TextView
         android:id="@+id/textViewDescription"

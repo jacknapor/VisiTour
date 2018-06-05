@@ -56,7 +56,7 @@ public class ListAdapter extends ArrayAdapter<Location> {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     // User email
-    private String userEmail = user.getEmail().replace(".", ",");
+    private String userEmail;
 
 
     // Constructor given a Context and an int
@@ -79,6 +79,11 @@ public class ListAdapter extends ArrayAdapter<Location> {
     public View getView(int position, View convertView, ViewGroup parent) {
         notifyDataSetChanged();
         View view = convertView;
+        if(FirebaseAuth.getInstance().getCurrentUser().getEmail()!=null ) {
+            userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        }else{
+            userEmail= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
 
        if (view == null) {
             LayoutInflater layoutInflater;
