@@ -9,14 +9,14 @@ android {
             storePassword 'july7116'
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "edu.bucknell.seniordesign"
         minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 27
-        versionName '1.97'
+        targetSdkVersion 27
+        versionCode 31
+        versionName '1.982'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -38,8 +38,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //compile fileTree(dir: 'libs', include: ['*.jar'])
     //compile 'com.android.support.constraint:constraint-layout:+'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.android.support:design:27.1.1'
     compile 'com.google.firebase:firebase-core:11.2.0'
     compile 'com.google.firebase:firebase-database:11.2.0'
     compile 'com.google.firebase:firebase-crash:11.2.0'
@@ -50,7 +50,7 @@ dependencies {
     // compile 'com.google.android.gms:play-services:11.2.0'
     compile 'com.google.android.gms:play-services-location:11.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v4:27.1.1'
     testCompile 'junit:junit:4.12'
     compile 'com.facebook.android:facebook-android-sdk:4.27.0'
     compile 'com.squareup.picasso:picasso:2.5.2'

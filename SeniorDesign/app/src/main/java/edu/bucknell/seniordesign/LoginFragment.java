@@ -399,7 +399,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
         }else{
             TextView t= (TextView) v.findViewById(R.id.dname);
-            t.setText("Sign in to TraveList with Facebook");
+            t.setText("Sign in to VisiTour with Facebook");
             t.setTextSize(20);
         }
 

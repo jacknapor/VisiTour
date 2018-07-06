@@ -111,7 +111,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected) {
-            Toast.makeText(getApplicationContext(), "No network available. Please reconnect and restart TraveList.",
+            Toast.makeText(getApplicationContext(), "No network available. Please reconnect and restart VisiTour.",
                     Toast.LENGTH_LONG).show();
             finish();
 
@@ -201,8 +201,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 b= new ShowcaseView.Builder(this)
                         .setTarget(new ViewTarget(ib))
-                        .setContentTitle("Welcome to TraveList!")
-                        .setContentText("Thank you for downloading TraveList! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
+                        .setContentTitle("Welcome to VisiTour!")
+                        .setContentText("Thank you for downloading VisiTour! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches()
                         .build();
                 b.setButtonText("Next");
                 b.setClickable(true);
@@ -461,8 +461,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
                 b= new ShowcaseView.Builder(this)
                         .setTarget(new ViewTarget(ib))
-                        .setContentTitle("Welcome to TraveList!")
-                        .setContentText("Thank you for downloading TraveList! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches().build();
+                        .setContentTitle("Welcome to VisiTour!")
+                        .setContentText("Thank you for downloading VisiTour! Press the menu icon indicated at the top left of your screen and log in to get started. You can skip or restart the tutorial at any time by pressing the 'Tutorial' button in the menu.").setStyle(R.style.CustomShowcaseTheme3).blockAllTouches().build();
                 b.hide();
                 b.setButtonText("Next");
                 b.setClickable(true);
@@ -619,7 +619,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if (activeNetworkInfo == null) {
 
                 Toast.makeText(getApplicationContext(),
-                        "No network available. Please reconnect and restart TraveList.", Toast.LENGTH_LONG).show();
+                        "No network available. Please reconnect and restart VisiTour.", Toast.LENGTH_LONG).show();
             Intent i = new Intent(this, NavigationDrawerActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);

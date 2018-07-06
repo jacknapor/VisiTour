@@ -124,7 +124,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        getActivity().setTitle("TraveList");
+        getActivity().setTitle("VisiTour");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
