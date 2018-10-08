@@ -40,7 +40,7 @@ To create your own lists, select *Create List* from the navigation drawer.  On t
 
 When you've opened a list, you may view the locations saved in it or add new locations, by clicking the **+** button in the bottom right of the screen.  You may mark any location as visited, or delete any location.  By clicking any location in a list, you can open that location on a map powered by Google Maps API.
 
-![](figures/natparkslist.png)
+![](figures/histsites.jpg)
 
 By selecting the Share button at the bottom right of a list screen, you may share your progress on that list on Facebook.  
 
