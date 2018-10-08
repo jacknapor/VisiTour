@@ -1,6 +1,6 @@
 # VisiTour
 
-![](figures/ic_launcherpng)
+![](figures/ic_launcher.png)
 
 VisiTour is an Android application for tracking your travels!  Create lists of locations that you would like to visit, then mark your progress as you complete your lists.
 
